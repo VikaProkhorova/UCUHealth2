@@ -1,0 +1,24 @@
+{% extends "layout.html" %} {% block title %}<title>Main Page</title>{% endblock
+%} {% block content %}
+<form method="POST">
+  <h3 align="center">Main Page</h3>
+  <div class="form-group">
+    <button
+      type="button"
+      class="form-control"
+      id="daily_distribution"
+      name="Daily Distribution">
+      Daily Distribution
+    </button>
+  </div>
+  <div class="form-group">
+    <button
+      type="button"
+      class="form-control"
+      id="One-Time"
+      name="One-Time Meal">
+      One-Time Meal
+    </button>
+  </div>
+</form>
+{% endblock content %}

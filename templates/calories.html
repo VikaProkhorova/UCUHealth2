@@ -1,0 +1,63 @@
+{% extends "layout.html" %} {% block title %}<title>Calories Page</title>{%
+endblock %} {% block content %}
+<form method="POST">
+  <h3 align="center">Calories Page</h3>
+  <div class="form-group">
+    <label for="calories">Calories</label>
+    <input
+      type="text"
+      class="form-control"
+      id="calories"
+      name="Calories"
+      placeholder="Enter the amount of Calories" />
+  </div>
+  <div class="form-group">
+    <label for="proteins">Proteins</label>
+    <input
+      type="text"
+      class="form-control"
+      id="nutrients"
+      name="Proteins"
+      placeholder="Enter the amount of Proteins" />
+  </div>
+  <div class="form-group">
+    <label for="Carbs">Carbs</label>
+    <input
+      type="text"
+      class="form-control"
+      id="nutrients"
+      name="Carbs"
+      placeholder="Enter the amount of Carbs" />
+  </div>
+  <div class="form-group">
+    <label for="Fats">Fats</label>
+    <input
+      type="text"
+      class="form-control"
+      id="nutrients"
+      name="Fats"
+      placeholder="Enter the amount of Fats" />
+  </div>
+  <div class="form-group">
+    <label for="Servings">Servings</label>
+    <input
+      type="text"
+      class="form-control"
+      id="calories"
+      name="Servings"
+      placeholder="Number of Servings" />
+  </div>
+  <div class="form-group">
+    <label for="Distribution">Distribution</label>
+    <input
+      type="text"
+      class="form-control"
+      id="calories"
+      name="Distribution"
+      placeholder="Distribution" />
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock content %}

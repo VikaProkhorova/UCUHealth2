@@ -1,0 +1,139 @@
+{% extends "layout.html" %} {% block title %}<title>Available Meals Page</title
+>{% endblock %} {% block content %}
+<form method="POST">
+    <h3 align="center">Available Meals</h3>
+
+    <!-- Soups -->
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContentSoup">
+          <div class="navbar-nav bg-steel">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Food1</label>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button
+            class="navbar-toggler"
+            type="button"
+            name="dishes"
+            data-toggle="collapse"
+            data-target="#navbarToggleExternalContentSoup" 
+            aria-controls="navbarToggleExternalContentSoup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            <span class="navbar-toggler-icon"></span>
+            Soups
+          </button>
+        </nav>
+      </div>
+
+    <!-- Side Dishes -->
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContentSide">
+          <div class="navbar-nav bg-steel">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Food1</label>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button
+            class="navbar-toggler"
+            type="button"
+            name="dishes"
+            data-toggle="collapse"
+            data-target="#navbarToggleExternalContentSide" 
+            aria-controls="navbarToggleExternalContentSide"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            <span class="navbar-toggler-icon"></span>
+            Side Dishes
+          </button>
+        </nav>
+      </div>
+
+    <!-- Meat -->
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContentMeat">
+          <div class="navbar-nav bg-steel">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Food1</label>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button
+            class="navbar-toggler"
+            type="button"
+            name="dishes"
+            data-toggle="collapse"
+            data-target="#navbarToggleExternalContentMeat" 
+            aria-controls="navbarToggleExternalContentMeat"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            <span class="navbar-toggler-icon"></span>
+            Meat
+          </button>
+        </nav>
+      </div>
+    
+    <!-- Salat -->
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContentSalat">
+          <div class="navbar-nav bg-steel">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Food1</label>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button
+            class="navbar-toggler"
+            type="button"
+            name="dishes"
+            data-toggle="collapse"
+            data-target="#navbarToggleExternalContentSalat" 
+            aria-controls="navbarToggleExternalContentSalat"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            <span class="navbar-toggler-icon"></span>
+            Salat
+          </button>
+        </nav>
+      </div>
+
+    <!-- Desserts -->
+
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContentDesserts">
+          <div class="navbar-nav bg-steel">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1">
+                <label class="custom-control-label" for="customCheck1">Food1</label>
+            </div>
+          </div>
+        </div>
+        <nav class="navbar navbar-dark bg-dark">
+          <button
+            class="navbar-toggler"
+            type="button"
+            name="dishes"
+            data-toggle="collapse"
+            data-target="#navbarToggleExternalContentDesserts" 
+            aria-controls="navbarToggleExternalContentDesserts"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            <span class="navbar-toggler-icon"></span>
+            Desserts
+          </button>
+        </nav>
+    </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock content %}

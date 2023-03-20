@@ -4,6 +4,8 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 
 
 class CalculatorForm(FlaskForm):
+    # email = StringField("Email",
+    #                 validators=[DataRequired(), Email()])
     proteins = StringField('Proteins',
                 validators=[DataRequired()])
     carbs = StringField("Carbohydrates", 
@@ -11,15 +13,17 @@ class CalculatorForm(FlaskForm):
     fats = StringField("Fats", 
                 validators=[DataRequired()])
     submit = SubmitField("Continue")
+
     
-    def validate_proteins(self, proteins):
-        if not proteins.isnumeric():
+    def validate_proteins(self, income: StringField):
+        if not income.data.isnumeric():
             raise ValidationError('Enter Numbers')
 
-    def validate_carbs(self, income_data: str):
-        if not income_data.isnumeric():
+    def validate_carbs(self, income: StringField):
+        if not income.data.isnumeric():
             raise ValidationError('Enter Numbers')
 
-    def validate_fats(self, income_data: str):
-        if not income_data.isnumeric():
+    def validate_fats(self, income: StringField):
+        if not income.data.isnumeric():
             raise ValidationError('Enter Numbers')
+

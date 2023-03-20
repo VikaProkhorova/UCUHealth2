@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash
+from flask import render_template, flash, redirect, url_for
 from Main import app
 from Main.forms import CalculatorForm
 import json
@@ -36,9 +36,6 @@ def results():
 def calculator():
     form = CalculatorForm()
     if form.validate_on_submit():
-        flash("Do you even work?")
-    
-        return render_template('available_meals.html')
-    flash("Do you even work?")
-    
-    return render_template('calculator.html')
+        print("success")
+        return redirect(url_for('meals'))
+    return render_template('calculator.html', form=form)

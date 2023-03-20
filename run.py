@@ -1,4 +1,5 @@
-from Main import app
+"Run file"
 
+from main import app
 if __name__ == "__main__":
     app.run(debug=True)

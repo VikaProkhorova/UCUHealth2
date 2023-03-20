@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash
 from Main import app
 from Main.forms import CalculatorForm
 import json
@@ -32,7 +32,13 @@ result=[(('Курка відварна', 'Крем-суп з гарбуза', '�
 def results():
     return render_template('results.html', results=result)
 
-@app.route('/calculator')
+@app.route('/calculator', methods=['GET','POST'])
 def calculator():
     form = CalculatorForm()
+    if form.validate_on_submit():
+        flash("Do you even work?")
+    
+        return render_template('available_meals.html')
+    flash("Do you even work?")
+    
     return render_template('calculator.html')

@@ -57,7 +57,9 @@ endblock %} {% block content %}
       placeholder="Distribution" />
   </div>
   <br />
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <div class="form-group">
+    {{ form.submit(class="btn btn-outline-info")}}
+  </div>
 </form>
 
 {% endblock content %}

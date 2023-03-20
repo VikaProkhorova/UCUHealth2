@@ -1,0 +1,40 @@
+{% extends "layout.html" %} {% block title %}<title>Calculator</title>{%
+    endblock %} {% block content %}
+    <form method="POST">
+      <h3 align="center">Calculator</h3>
+      <div class="form-group">
+        <label for="calories">Calories</label>
+      </div>
+      <div class="form-group">
+        <label for="proteins">Proteins</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nutrients"
+          name="Proteins"
+          placeholder="Enter the amount of Proteins" />
+      </div>
+      <div class="form-group">
+        <label for="Carbs">Carbs</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nutrients"
+          name="Carbs"
+          placeholder="Enter the amount of Carbs" />
+      </div>
+      <div class="form-group">
+        <label for="Fats">Fats</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nutrients"
+          name="Fats"
+          placeholder="Enter the amount of Fats" />
+      </div>
+      <br />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+    {% endblock content %}
+    

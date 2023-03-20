@@ -1,11 +1,10 @@
 from flask import Flask, render_template
+from Main import app
+from Main.forms import CalculatorForm
 import json
 
-with open('meals.json', 'r', encoding='utf-8') as r_file:
+with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
@@ -35,7 +34,5 @@ def results():
 
 @app.route('/calculator')
 def calculator():
+    form = CalculatorForm()
     return render_template('calculator.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)

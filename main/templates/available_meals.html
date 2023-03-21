@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  <title>Available Meals Page</title>
+{% endblock %}
+
+{% block content %}
+  <h1>Available dishes</h1>
+  <button onclick="showMeal('breakfasts')">Breakfasts</button>
+  <button onclick="showMeal('soups')">Soups</button>
+  <button onclick="showMeal('garnirs')">Main dish</button>
+  <button onclick="showMeal('second')">Second dish</button>
+  <button onclick="showMeal('salats')">Salads</button>
+  <div id="menu"></div>
+
+  <script>
+    let mealContent = {{ content | tojson | safe }};
+    let menu = document.getElementById("menu");
+
+    function showMeal(meal) {
+      let content = "";
+      for (let dish in mealContent[meal]) {
+        let checked = localStorage.getItem(dish) === 'true' ? 'checked' : '';
+        content += '<label><input type="checkbox" name="' + dish + '" ' + checked + '>' + dish + '</label><br>';
+      }
+      menu.innerHTML = content;
+
+      // Add event listeners to the checkboxes to save their state to localStorage
+      let checkboxes = menu.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+          localStorage.setItem(this.name, this.checked);
+        });
+      });
+    }
+
+    // Call the showMeal function for the first button when the page loads
+    window.onload = function() {
+      showMeal('breakfasts');
+    };
+  </script>
+
+  <button>Submit</button>
+{% endblock content %}

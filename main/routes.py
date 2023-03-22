@@ -60,7 +60,6 @@ def results():
 def test():
     'Test page'
     form = ExampleForm()
-    # form.check_options.choices =
     return render_template('test.html', form = form)
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -3,10 +3,12 @@
 import json
 from flask import render_template, redirect, url_for
 from main import app
-from main.forms import CalculatorForm
+from main.forms import CalculatorForm, ExampleForm
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
+
+NUTRIENTS = {}
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
@@ -27,9 +29,12 @@ def calories():
     return render_template('calories.html')
 
 
-@app.route("/meals", methods=['GET', 'POST'])
-def meals():
+@app.route("/meals/<nutrients>", methods=['GET', 'POST'])
+def meals(nutrients):
     "Meals page"
+    # global NUTRIENTS
+    # print(NUTRIENTS)
+    print(nutrients)
     return render_template('available_meals.html', content=content)
 
 result=[(('Курка відварна', 'Крем-суп з гарбуза',
@@ -51,11 +56,21 @@ def results():
     "Result page"
     return render_template('results.html', results=result)
 
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    'Test page'
+    form = ExampleForm()
+    form.choices()
+    # form.check_options.choices =
+    return render_template('test.html', form = form)
+
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():
     "Calculator page"
+    # global NUTRIENTS
     form = CalculatorForm()
     if form.validate_on_submit():
-        print("success")
-        return redirect(url_for('meals'))
+        # NUTRIENTS = form.data
+        nutrients = form.data
+        return redirect(url_for('meals', nutrients = nutrients))
     return render_template('calculator.html', form=form)

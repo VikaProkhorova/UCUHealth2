@@ -15,7 +15,7 @@
                            {% endfor %}
                        </div>
                    {% else %}
-                       {{ form.proteins(class="form-control form-control-lg")}}
+                       {{ form.proteins(class="form-control form-control-lg is-invalid")}}
                    {% endif%}
                </div>
                <div class="form-group">
@@ -41,7 +41,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.carbs(class="form-control form-control-lg")}}
+                    {{ form.fats(class="form-control form-control-lg")}}
                 {% endif%}
             </div>
            </fieldset>

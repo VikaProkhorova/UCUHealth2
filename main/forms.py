@@ -17,18 +17,6 @@ class CalculatorForm(FlaskForm):
                 validators=[DataRequired()])
     submit = SubmitField("Continue")
 
-    # def validate_proteins(self, income_data):
-    #     if not income_data.isnumeric():
-    #         raise ValueError("Enter numbers only")
-
-    # def validate_carbs(self, income_data):
-    #     if not income_data.isnumeric():
-    #         raise ValueError("Enter numbers only")
-
-    # def validate_fats(self, income_data):
-    #     if not income_data.isnumeric():
-    #         raise ValueError("Enter numbers only")
-
 class MultiCheckboxField(SelectMultipleField):
     "Multi check box field"
     widget = widgets.ListWidget(prefix_label=False)

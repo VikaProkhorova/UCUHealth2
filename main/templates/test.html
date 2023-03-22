@@ -1,10 +1,10 @@
-{% extends "layout.html" %} {% block title %}<title>Home Page</title>{% endblock
+{% extends "layout.html" %} {% block title %}<title>Available dishes</title>{% endblock
     %} {% block content %}
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">User Choices</legend>
+                <legend class="border-bottom mb-4">Available dishes</legend>
                 {% if form.choices.errors %}
                 <div class="invalid-feedback">
                     {% for error in form.choices.errors %}

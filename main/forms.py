@@ -2,8 +2,9 @@
 
 import json
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets
-from wtforms.validators import DataRequired
+from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
+            StringField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, EqualTo, Email, Length
 
 
 class CalculatorForm(FlaskForm):
@@ -15,22 +16,39 @@ class CalculatorForm(FlaskForm):
     fats = IntegerField("Fats",
                 validators=[DataRequired()])
     submit = SubmitField("Continue")
-    
-# class MealForm(SelectMultipleField):
-#     "Form to choose meal"
-#     meal = SelectMultipleField(label='test', validators=[DataRequired()])
-#     submit = SubmitField('Submit')
-    
+
 class MultiCheckboxField(SelectMultipleField):
+    "Multi check box field"
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
 
 
 class ExampleForm(FlaskForm):
-    data = []
+    "Example form"
     with open('main/data/meals.json', "r", encoding='utf-8') as file:
         info = json.load(file)
-        for meal in info['soups']:
-            data.append(meal)
-    choices = MultiCheckboxField('Routes', coerce=int, choices=data)
+        for meal_category in info:
+            data = []
+            for meal in info[meal_category]:
+                data.append(meal)
+            choices = MultiCheckboxField('Routes', coerce=int, choices=data)
     submit = SubmitField("Set User Choices")
+
+class LoginForm(FlaskForm):
+    "Login form"
+    email = StringField("Email",
+                    validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Agree to terms', validators=[DataRequired()])
+    submit = SubmitField("Login")
+
+class RegistrationForm(FlaskForm):
+    "Registration Form"
+    username = StringField('Username',
+                    validators=[DataRequired(), Length(min=2, max = 20)])
+    email = StringField("Email",
+                    validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', 
+                    validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField("Sign Up")

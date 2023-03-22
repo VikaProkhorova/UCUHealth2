@@ -5,12 +5,7 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Available dishes</legend>
-                <button onclick="showMeal('breakfasts')">Breakfasts</button>
-                <button onclick="showMeal('soups')">Soups</button>
-                <button onclick="showMeal('garnirs')">Main dish</button>
-                <button onclick="showMeal('second')">Second dish</button>
-                <button onclick="showMeal('salats')">Salads</button>
+                <legend class="border-bottom mb-4">{{ form.choices.label }}</legend>
                 {% if form.choices.errors %}
                 <div class="invalid-feedback">
                     {% for error in form.choices.errors %}

@@ -17,6 +17,18 @@ class CalculatorForm(FlaskForm):
                 validators=[DataRequired()])
     submit = SubmitField("Continue")
 
+    # def validate_proteins(self, income_data):
+    #     if not income_data.isnumeric():
+    #         raise ValueError("Enter numbers only")
+
+    # def validate_carbs(self, income_data):
+    #     if not income_data.isnumeric():
+    #         raise ValueError("Enter numbers only")
+
+    # def validate_fats(self, income_data):
+    #     if not income_data.isnumeric():
+    #         raise ValueError("Enter numbers only")
+
 class MultiCheckboxField(SelectMultipleField):
     "Multi check box field"
     widget = widgets.ListWidget(prefix_label=False)
@@ -25,14 +37,14 @@ class MultiCheckboxField(SelectMultipleField):
 
 class ExampleForm(FlaskForm):
     "Example form"
+    data = []
     with open('main/data/meals.json', "r", encoding='utf-8') as file:
         info = json.load(file)
         for meal_category in info:
-            data = []
             for meal in info[meal_category]:
                 data.append(meal)
-            choices = MultiCheckboxField('Routes', coerce=int, choices=data)
-    submit = SubmitField("Set User Choices")
+    choices = MultiCheckboxField('Available dishes', choices=sorted(data))
+    submit = SubmitField("Submit")
 
 class LoginForm(FlaskForm):
     "Login form"

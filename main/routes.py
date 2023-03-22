@@ -4,11 +4,12 @@ import json
 from flask import render_template, redirect, url_for
 from main import app
 from main.forms import CalculatorForm, ExampleForm, RegistrationForm, LoginForm
+from main.calculator import calculator_func
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
 
-NUTRIENTS = {}
+
 
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
@@ -28,38 +29,34 @@ def calories():
     "Calories settings page"
     return render_template('calories.html')
 
-
-@app.route("/meals/<nutrients>", methods=['GET', 'POST'])
-def meals(nutrients):
-    "Meals page"
-    # global NUTRIENTS
-    # print(NUTRIENTS)
-    print(nutrients)
-    return render_template('available_meals.html', content=content)
-
-result=[(('Курка відварна', 'Крем-суп з гарбуза',
-    'Капуста тушкована з грибами, порція - 1.5', 'Картопля фрі, порція - 0.5'), 
-    '98.91%', (999.0, 75.075, 96.445, 33.2)), 
-    (('Курка відварна', 'Баклажани тушковані з грибами, порція - 2',
-    'Капуста тушкована з грибами, порція - 1.5', 'Картопля фрі, порція - 0.5'), 
-     '98.84%', (1009.0, 77.375, 99.875, 33.15)), (('Курка відварна', 'Овочевий рататуй', 
-    'Капуста тушкована з грибами, порція - 2', 'Картопля фрі, порція - 0.5'), 
-    '95.27%', (1004.5, 77.625, 103.45, 29.195)), (('Суп-пюре морквяний', 
-    'Котлета куряча, порція - 2', 'Котлета рибна, порція - 2', 
-    'Баклажани тушковані з грибами, порція - 0.5'), '91.98%', 
-    (999.0, 74.65, 95.55, 41.925)), (('Курка відварна',
-    'Капуста тушкована з грибами, порція - 1.5', 'Картопля фрі, порція - 0.5', 
-    'Овочевий рататуй, порція - 1.5'), '95.68%', (991.5, 76.5, 102.175, 28.955))]
-
-@app.route("/results", methods=['GET', 'POST'])
-def results():
+@app.route("/results/<dishes>", methods=['GET', 'POST'])
+def results(dishes):
     "Result page"
-    return render_template('results.html', results=result)
+    with open('main/data/results.txt', 'r', encoding='utf-8') as file:
+        resul = file.read()
+        resul = resul.split('\n\n')
+        resul.pop(-1)
+        for inx, value in enumerate(resul):
+            resul[inx] = value.split('\n')
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
+    print(resul)
+    return render_template('results.html', results=resul)
+
+@app.route('/test/<nutrients>', methods=['GET', 'POST'])
+def test(nutrients):
     'Test page'
     form = ExampleForm()
+    if form.validate_on_submit():
+        nutrients = list(map(float, nutrients[1:-2].split(', ')))
+        calor = (nutrients[0]+nutrients[1])*3 + nutrients[2]*9
+        result = calculator_func(form.choices.data, nutrition=(calor, nutrients[0], nutrients[1], nutrients[2]))
+        print(result)
+        with open('main/data/results.txt', 'w', encoding='utf-8') as file:
+            for res in result:
+                for meal in res[0]:
+                    file.write(meal + '\n')
+                file.write('\n')
+        return redirect(url_for('results', dishes = result))
     return render_template('test.html', form = form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -75,10 +72,10 @@ def register():
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():
     "Calculator page"
-    # global NUTRIENTS
     form = CalculatorForm()
     if form.validate_on_submit():
-        # NUTRIENTS = form.data
-        nutrients = form.data
-        return redirect(url_for('meals', nutrients = nutrients))
+        proteins = float(form.proteins.data)
+        carbs = float(form.carbs.data)
+        fats = float(form.fats.data)
+        return redirect(url_for('test', nutrients = (proteins, carbs, fats)))
     return render_template('calculator.html', form=form)

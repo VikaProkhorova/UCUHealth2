@@ -122,7 +122,7 @@ def meal_getter(choicen_meals: List[str]) -> dict:
     "Reads json file"
     result = {}
     selection = deepcopy(choicen_meals)
-    with open("data/meals.json", "r", encoding='utf-8') as file:
+    with open("main/data/meals.json", "r", encoding='utf-8') as file:
         meals = json.load(file)
     for section in meals:
         for meal in meals[section]:
@@ -154,7 +154,7 @@ def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
         new_lst.append((variant[0], f"{round(100*numb/4, 2)}%", tuple(nutrients)))
     return new_lst
 
-def main(choicen_meals: List[str], nutrition: tuple[float]) -> List[tuple]:
+def calculator_func(choicen_meals: List[str], nutrition: tuple[float]) -> List[tuple]:
     "Main function"
     needed_meals = meal_getter(choicen_meals)
     worked_meals = rebuilder(needed_meals)
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     CARBS = (GOAL*0.4)//4
     FATS = (GOAL*0.3)//9
     GOAL_SAMPLE = (GOAL, PROTEINS, CARBS, FATS)
-    results = main(test_lst, GOAL_SAMPLE)
+    results = calculator_func(test_lst, GOAL_SAMPLE)
     print(f"""Goal was:
 Calories: {GOAL}
 Proteins: {PROTEINS}

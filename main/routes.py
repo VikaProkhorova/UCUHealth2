@@ -60,7 +60,7 @@ def results():
 def test():
     'Test page'
     form = ExampleForm()
-    form.choices()
+    form.check_options
     # form.check_options.choices =
     return render_template('test.html', form = form)
 

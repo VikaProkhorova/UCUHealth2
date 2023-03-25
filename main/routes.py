@@ -11,8 +11,6 @@ from main.calculator import calculator_func
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
 
-
-
 @app.route("/")
 @app.route("/home", methods=['GET', 'POST'])
 def home():
@@ -66,9 +64,15 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for("personal_info"))
     return render_template('register.html', title='Register', form=form)
 
+@app.route('/personal_info', methods=['GET', 'POST'])
+def personal_info():
+    form = PersonalInfoForm()
+    if form.validate_on_submit():
+        return redirect(url_for('main'))
+    return render_template('personal_info.html', title='Personal Info', form=form)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -76,15 +80,10 @@ def login():
     if form.validate_on_submit():
         if form.email.data == 'admin@blog.com' and form.password.data == 'password':
             flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('main'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
-
-@app.route('/personal_info', methods=['GET', 'POST'])
-def personal_info():
-    form = PersonalInfoForm()
-    return render_template('personal_info.html', form=form)
 
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():

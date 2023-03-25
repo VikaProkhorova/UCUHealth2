@@ -2,10 +2,11 @@
 
 import json
 from flask import render_template, redirect, url_for, flash
-from main import app
+from main import app, db, bcrypt
 from main.forms import CalculatorForm, ExampleForm, \
     RegistrationForm, LoginForm, PersonalInfoForm
 from main.calculator import calculator_func
+from main.models import User
 
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
@@ -63,15 +64,25 @@ def test(nutrients):
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for("personal_info"))
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        return redirect(url_for("personal_info", pers_info = (form.username.data, \
+        form.email.data, hashed_password)))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/personal_info', methods=['GET', 'POST'])
-def personal_info():
+@app.route('/personal_info/<pers_info>', methods=['GET', 'POST'])
+def personal_info(pers_info):
     form = PersonalInfoForm()
+    pers_infos = list(pers_info[1:-2].split(', '))
     if form.validate_on_submit():
-        return redirect(url_for('main'))
+        user1 = User(username = pers_infos[0], email = pers_infos[1], password = pers_infos[2],\
+        sex = form.sex.data, age = form.age.data, height = \
+        form.height.data, weight = form.weight.data, goal = form.goal.data)
+        db.session.add(user1)
+        db.session.commit()
+        flash('Your account had been created', 'success')
+        flash('Now you can log in!')
+        return redirect(url_for('login'))
     return render_template('personal_info.html', title='Personal Info', form=form)
 
 @app.route("/login", methods=['GET', 'POST'])

@@ -1,10 +1,11 @@
 "Routes module"
 
 import json
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from main import app
 from main.forms import CalculatorForm, ExampleForm, RegistrationForm, LoginForm
 from main.calculator import calculator_func
+
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
@@ -59,15 +60,25 @@ def test(nutrients):
         return redirect(url_for('results', dishes = result))
     return render_template('test.html', form = form)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    return render_template('login.html', form = form)
-
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    return render_template('register.html', form=form)
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
 
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():

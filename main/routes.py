@@ -3,7 +3,8 @@
 import json
 from flask import render_template, redirect, url_for, flash
 from main import app
-from main.forms import CalculatorForm, ExampleForm, RegistrationForm, LoginForm
+from main.forms import CalculatorForm, ExampleForm, \
+    RegistrationForm, LoginForm, PersonalInfoForm
 from main.calculator import calculator_func
 
 
@@ -79,6 +80,11 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+@app.route('/personal_info', methods=['GET', 'POST'])
+def personal_info():
+    form = PersonalInfoForm()
+    return render_template('personal_info.html', form=form)
 
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():

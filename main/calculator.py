@@ -1,6 +1,5 @@
 'Meals calculator'
 
-import os
 from typing import List
 from copy import deepcopy
 from itertools import combinations
@@ -8,9 +7,9 @@ import json
 
 def rebuilder(meals: dict[dict]) -> List[tuple]:
     """Rebuilds dict in conveniet form
-    >>> rebuilder({'second': {'Котлета куряча': [222.0, 21.0, 13.8, 12.0]}, \
-    'salats': {'Салат з домашнього сиру з редискою': [166.0, 8.97, 3.69, 12.61]}})
-    [('second', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salats', \
+    >>> rebuilder({'second meals': {'Котлета куряча': [222.0, 21.0, 13.8, 12.0]}, \
+    'salads': {'Салат з домашнього сиру з редискою': [166.0, 8.97, 3.69, 12.61]}})
+    [('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salads', \
 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, 12.61])]
     """
     result = []
@@ -21,19 +20,19 @@ def rebuilder(meals: dict[dict]) -> List[tuple]:
 
 def portioner(meals: List[tuple]) -> List[tuple]:
     """Adds portion variations
-    >>> portioner([('second', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salats', \
+    >>> portioner([('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salads', \
 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, 12.61])])
-    [('second', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), \
-('salats', 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, \
-12.61]), ('second', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))]
+    [('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), \
+('salads', 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, \
+12.61]), ('second meals', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))]
     """
     new_meals = deepcopy(meals)
     portions = [0.5, 1.5, 2]
     for meal in meals:
-        if meal[0] in ('soups', 'salats'):
+        if meal[0] in ('soups', 'salads'):
             continue
         for portion in portions:
-            if meal[0] in ('second', "breakfasts") and str(portion) in ("0.5", "1.5"):
+            if meal[0] in ('second meals', "breakfasts") and str(portion) in ("0.5", "1.5"):
                 continue
             new_meal = multiplier(meal, portion)
             new_meals.append(new_meal)
@@ -41,8 +40,8 @@ def portioner(meals: List[tuple]) -> List[tuple]:
 
 def multiplier(meal: tuple, portion: float) -> tuple:
     """Multiplies by amount of portion
-    >>> multiplier(('second', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), 2)
-    ('second', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))
+    >>> multiplier(('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), 2)
+    ('second meals', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))
     """
     new_values = []
     for value in meal[2]:
@@ -77,9 +76,9 @@ def checker(variant: List[tuple]) -> bool:
 (411.0, 12.0, 36.0, 21.0)), ('garnirs', 'Банош, порція - 2', \
 (548.0, 16.0, 48.0, 28.0))))
     False
-    >>> checker((('second', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]),\
-('second', 'Котлета рибна', [172.0, 13.0, 13.3, 7.6]), ('second', 'Курка відварна', \
-[276.0, 60.0, 0.0, 4.0]), ('salats', 'Салат з домашнього сиру з редискою', \
+    >>> checker((('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]),\
+('second meals', 'Котлета рибна', [172.0, 13.0, 13.3, 7.6]), ('second meals', 'Курка відварна', \
+[276.0, 60.0, 0.0, 4.0]), ('salads', 'Салат з домашнього сиру з редискою', \
     [166.0, 8.97, 3.69, 12.61])))
     True
     """
@@ -101,7 +100,7 @@ def checker(variant: List[tuple]) -> bool:
 
 def satisfactor(meal_var: tuple[tuple], goal: tuple[float]) -> tuple[tuple]:
     """Counts how meal variation satisfies need
-    >>> satisfactor((('salats', 'Салат з домашнього сиру з редискою', [170, 9, 4, 13]),\
+    >>> satisfactor((('salads', 'Салат з домашнього сиру з редискою', [170, 9, 4, 13]),\
     ('garnirs', 'Банош', [270, 8, 24, 14]), ('soups', 'Суп квасолевий', [280, 16, 42, 5])),\
     (1000, 75.0, 100.0, 33.0))
     (('Салат з домашнього сиру з редискою', 'Банош', 'Суп квасолевий'), \
@@ -124,6 +123,7 @@ def meal_getter(choicen_meals: List[str]) -> dict:
     selection = deepcopy(choicen_meals)
     with open("main/data/meals.json", "r", encoding='utf-8') as file:
         meals = json.load(file)
+    print(dict(meals).keys())
     for section in meals:
         for meal in meals[section]:
             if meal in selection:
@@ -166,7 +166,6 @@ def calculator_func(choicen_meals: List[str], nutrition: tuple[float]) -> List[t
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
-    os.chdir(os.path.dirname(os.path.realpath(__file__)))
     test_lst = ['Суп квасолевий', 'Крем-суп з гарбуза', 'Суп-пюре морквяний',
        'Макарони з томатним соусом', 'Овочевий рататуй', 'Банош',
        'Салат з домашнього сиру з редискою', 'Салат з черемші і огірків',

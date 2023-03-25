@@ -3,25 +3,24 @@
 import json
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
-            StringField, PasswordField, BooleanField
-from wtforms.validators import DataRequired, EqualTo, Email, Length
+            StringField, PasswordField, BooleanField, SelectField
+from wtforms.validators import DataRequired, EqualTo, Email, Length, NumberRange
 
 
 class CalculatorForm(FlaskForm):
     "Form for calculator page"
     proteins = IntegerField('Proteins',
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     carbs = IntegerField("Carbohydrates",
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     fats = IntegerField("Fats",
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField("Continue")
 
 class MultiCheckboxField(SelectMultipleField):
     "Multi check box field"
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
-
 
 class ExampleForm(FlaskForm):
     "Example form"
@@ -52,3 +51,17 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', 
                     validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField("Sign Up")
+
+class PersonalInfoForm(FlaskForm):
+    "Personal Info form"
+    sex = SelectField('Sex', choices=['Male', 'Female'],
+        validate_choice=[DataRequired()])
+    age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
+    height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
+    weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
+    goal = SelectField('Goal', choices=['Gain', 'Maintain', 'Loose'],
+        validate_choice=[DataRequired()])
+    agree = BooleanField('Agree to the processing of my data',
+        validators=[DataRequired()])
+    submit = SubmitField("Submit")
+    

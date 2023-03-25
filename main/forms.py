@@ -4,17 +4,17 @@ import json
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
             StringField, PasswordField, BooleanField, SelectField
-from wtforms.validators import DataRequired, EqualTo, Email, Length
+from wtforms.validators import DataRequired, EqualTo, Email, Length, NumberRange
 
 
 class CalculatorForm(FlaskForm):
     "Form for calculator page"
     proteins = IntegerField('Proteins',
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     carbs = IntegerField("Carbohydrates",
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     fats = IntegerField("Fats",
-                validators=[DataRequired()])
+                validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField("Continue")
 
 class MultiCheckboxField(SelectMultipleField):
@@ -56,9 +56,9 @@ class PersonalInfoForm(FlaskForm):
     "Personal Info form"
     sex = SelectField('Sex', choices=['Male', 'Female'],
         validate_choice=[DataRequired()])
-    age = IntegerField('Age', validators=[DataRequired()])
-    height = IntegerField('Height', validators=[DataRequired()])
-    weight = IntegerField('Weight', validators=[DataRequired()])
+    age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
+    height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
+    weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
     goal = SelectField('Goal', choices=['Gain', 'Maintain', 'Loose'],
         validate_choice=[DataRequired()])
     agree = BooleanField('Agree to the processing of my data',

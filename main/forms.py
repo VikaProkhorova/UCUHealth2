@@ -63,5 +63,5 @@ class PersonalInfoForm(FlaskForm):
         validate_choice=[DataRequired()])
     agree = BooleanField('Agree to the processing of my data',
         validators=[DataRequired()])
-    submit = SubmitField("Subnit")
+    submit = SubmitField("Submit")
     

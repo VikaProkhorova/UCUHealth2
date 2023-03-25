@@ -3,7 +3,7 @@
 import json
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
-            StringField, PasswordField, BooleanField
+            StringField, PasswordField, BooleanField, SelectField
 from wtforms.validators import DataRequired, EqualTo, Email, Length
 
 
@@ -21,7 +21,6 @@ class MultiCheckboxField(SelectMultipleField):
     "Multi check box field"
     widget = widgets.ListWidget(prefix_label=False)
     option_widget = widgets.CheckboxInput()
-
 
 class ExampleForm(FlaskForm):
     "Example form"
@@ -52,3 +51,17 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', 
                     validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField("Sign Up")
+
+class PersonalInfoForm(FlaskForm):
+    "Personal Info form"
+    sex = SelectField('Sex', choices=['Male', 'Female'],
+        validate_choice=[DataRequired()])
+    age = IntegerField('Age', validators=[DataRequired()])
+    height = IntegerField('Height', validators=[DataRequired()])
+    weight = IntegerField('Weight', validators=[DataRequired()])
+    goal = SelectField('Goal', choices=['Gain', 'Maintain', 'Loose'],
+        validate_choice=[DataRequired()])
+    agree = BooleanField('Agree to the processing of my data',
+        validators=[DataRequired()])
+    submit = SubmitField("Subnit")
+    

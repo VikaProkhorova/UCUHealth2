@@ -3,7 +3,8 @@
 import json
 from flask import render_template, redirect, url_for
 from main import app
-from main.forms import CalculatorForm, ExampleForm, RegistrationForm, LoginForm
+from main.forms import CalculatorForm, ExampleForm, \
+    RegistrationForm, LoginForm, PersonalInfoForm
 from main.calculator import calculator_func
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
@@ -68,6 +69,11 @@ def login():
 def register():
     form = RegistrationForm()
     return render_template('register.html', form=form)
+
+@app.route('/personal_info', methods=['GET', 'POST'])
+def personal_info():
+    form = PersonalInfoForm()
+    return render_template('personal_info.html', form=form)
 
 @app.route('/calculator', methods=['GET','POST'])
 def calculator():

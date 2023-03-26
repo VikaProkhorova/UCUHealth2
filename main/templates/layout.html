@@ -20,9 +20,11 @@
 
 
     <!-- Title -->
-    {% block title%}
-    <title>UCU Health</title>
-    {% endblock%}
+    {% if title %}
+        <title>Ucu Health - {{ title }}</title>
+    {% else %}
+        <title>Ucu Health</title>
+    {% endif %}
   </head>
   <body>
     <header class="site-header">
@@ -48,8 +50,13 @@
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+            {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for("logout") }}">Logout</a>
+              <a class="nav-item nav-link" href="{{ url_for("account") }}">Account</a>
+            {% else %}
+              <a class="nav-item nav-link" href="{{ url_for("login") }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for("register") }}">Register</a>
+            {% endif %}
             </div>
           </div>
         </div>

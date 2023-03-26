@@ -4,8 +4,9 @@ import json
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
             StringField, PasswordField, BooleanField, SelectField
-from wtforms.validators import DataRequired, EqualTo, Email, Length, NumberRange
-
+from wtforms.validators import DataRequired, EqualTo, Email, \
+            Length, NumberRange, ValidationError
+from main.models import User
 
 class CalculatorForm(FlaskForm):
     "Form for calculator page"
@@ -38,7 +39,7 @@ class LoginForm(FlaskForm):
     email = StringField("Email",
                     validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Agree to terms', validators=[DataRequired()])
+    remember = BooleanField('Remember me', validators=[DataRequired()])
     submit = SubmitField("Login")
 
 class RegistrationForm(FlaskForm):
@@ -48,9 +49,21 @@ class RegistrationForm(FlaskForm):
     email = StringField("Email",
                     validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', 
+    confirm_password = PasswordField('Confirm Password',
                     validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField("Continue")
+
+    def validate_username(self, username: str) -> None:
+        "Validates username"
+        user = User.query.filter_by(username = username.data).first()
+        if user:
+            raise ValidationError('That username is taken. Please choose different one')
+
+    def validate_email(self, email: str) -> None:
+        "Validates email"
+        user = User.query.filter_by(username = email.data).first()
+        if user:
+            raise ValidationError('That email is taken. Please choose different one')
 
 class PersonalInfoForm(FlaskForm):
     "Personal Info form"

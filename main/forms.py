@@ -61,7 +61,7 @@ class RegistrationForm(FlaskForm):
 
     def validate_email(self, email: str) -> None:
         "Validates email"
-        user = User.query.filter_by(username = email.data).first()
+        user = User.query.filter_by(email = email.data).first()
         if user:
             raise ValidationError('That email is taken. Please choose different one')
 
@@ -72,13 +72,14 @@ class PersonalInfoForm(FlaskForm):
     age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
     height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
     weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
-    goal = SelectField('Goal', choices=['Gain', 'Maintain', 'Loose'],
+    goal = SelectField('Goal', choices=[(2, 'Gain'),(3, 'Maintain'), (1, 'Loose')],
         validate_choice=[DataRequired()])
     agree = BooleanField('Agree to the processing of my data',
         validators=[DataRequired()])
-    activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'), (1.4, 'Active lifestyle\
-     with 2-3 workouts a week'),\
-     (1.46, 'Active lifestyle with 4-5 workouts a week'), (1.55, 'Active lifestyle with 5-6 workouts a week'),\
+    activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'), 
+    (1.4, 'Active lifestyle with 2-3 workouts a week'),
+    (1.46, 'Active lifestyle with 4-5 workouts a week'), 
+    (1.55, 'Active lifestyle with 5-6 workouts a week'),
     (1.8, 'Active lifestyle with more than 6 workouts a week')],
         validate_choice=[DataRequired()])
     submit = SubmitField("Submit")

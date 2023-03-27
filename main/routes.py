@@ -8,6 +8,7 @@ from main.forms import CalculatorForm, ExampleForm, \
     RegistrationForm, LoginForm, PersonalInfoForm
 from main.calculator import calculator_func
 from main.models import User
+from main.calccalories import calcalories
 
 with open('Main/data/meals.json', 'r', encoding='utf-8') as r_file:
     content = json.load(r_file)
@@ -78,9 +79,13 @@ def personal_info(pers_info):
     pers_infos = [x[1:-1] for x in list(pers_info[1:-1].split(', '))]
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
+        nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data), 
+            float(form.weight.data), float(form.activity.data), float(form.goal.data))
         user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
         sex = form.sex.data, age = form.age.data, height = form.height.data,\
-            weight = form.weight.data, goal = form.goal.data, activity = form.activity.data)
+            weight = form.weight.data, goal = form.goal.data, activity = form.activity.data,
+            calories = nutrients[0], proteins = nutrients[1], carbs = nutrients[2],
+            fats = nutrients[3])
         db.session.add(user)
         db.session.commit()
         flash('Your account had been created', 'success')

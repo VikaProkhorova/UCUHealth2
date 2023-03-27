@@ -18,8 +18,20 @@ class User(db.Model, UserMixin):
     age = db.Column(db.Integer, nullable = False)
     height = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
-    goal = db.Column(db.String(10), nullable=False)
+    goal = db.Column(db.Integer, nullable=False)
     activity = db.Column(db.Float, nullable=False)
+    calories = db.Column(db.Float, nullable=False)
+    proteins = db.Column(db.Float, nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
+    fats = db.Column(db.Float, nullable=False)
+    # meal_takes = db.relationship('Meal', backref="author", lazy=True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
+
+# class MealGroup(db.Model):
+#     "Meal Group"
+#     pass
+
+# class Meal(db.Model):
+#     pass

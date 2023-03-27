@@ -26,8 +26,8 @@ def portioner(meals: List[tuple]) -> List[tuple]:
 ('salads', 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, \
 12.61]), ('second meals', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))]
     """
-    new_meals = deepcopy(meals)
-    portions = [0.5, 1.5, 2]
+    new_meals = []
+    portions = [0.5, 1, 1.5, 2]
     for meal in meals:
         if meal[0] in ('soups', 'salads'):
             continue

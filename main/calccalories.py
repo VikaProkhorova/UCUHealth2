@@ -6,13 +6,9 @@
 1,72 – щоденні фізичні навантаження не менше 2 разів на день;
 1,9 – важка робота чи інтенсивні фізичні тренування двічі на день.
 """
-state = str(input()) #male, female
-hight = int(input())
-age = int(input())
-wase = float(input())
-activity = float(input()) 
-wants=int(input()) #1- lose weight 2- gain weight 3- keep in shape
-def calcalories(state, hight, age, wase, activity, wants):
+
+def calcalories(state: str, hight: int, age: int, wase: int, activity: float, wants: int) -> tuple:
+    "Cal calculator"
     if state.lower()== 'male':
         kilokalories = (10*wase + 6.25* hight - 5* age + 5)*activity
     else:

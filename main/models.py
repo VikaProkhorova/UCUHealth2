@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     proteins = db.Column(db.Float, nullable=False)
     carbs = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
-    meal_takes = db.relationship('Meal', backref="author", lazy=True)
+    meal_takes = db.relationship('Meal', backref="author", lazy = True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
@@ -33,19 +33,27 @@ class User(db.Model, UserMixin):
 class Meal(db.Model):
     "Meal Group"
     id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(30), nullable = False)
+    calories = db.Column(db.Float, nullable = False)
+    proteins = db.Column(db.Float, nullable = False)
+    carbs = db.Column(db.Float, nullable = False)
+    fats = db.Column(db.Float, nullable = False)
     choicen = db.Column(db.Boolean, nullable = False, default = False)
     date_added = db.Column(db.DateTime, nullable = False, 
         default = datetime.utcnow().strftime('%Y-%m-%d'))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
-    # meals = db.relationship('Dish', backref = 'meal', lazy=True)
+    meals = db.relationship('Dish', backref = 'meal', lazy=True)
 
-# class Dish(db.Model):
-#     "Meal class"
-#     id = db.Column(db.Integer, primary_key = True)
-#     dishes = db.Column(db.String(200), nullable = False)
-#     satis = db.Column(db.Float, nullable = False)
-#     calories = db.Column(db.Float, nullable = False)
-#     proteins = db.Column(db.Float, nullable = False)
-#     carbs = db.Column(db.Float, nullable = False)
-#     fats = db.Column(db.Float, nullable = False)
-#     mealgroup_id = db.Column(db.Integer, db.ForeignKey('mealgroup.id'), nullable = False)
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}')"
+
+class Dish(db.Model):
+    "Meal class"
+    id = db.Column(db.Integer, primary_key = True)
+    dishes = db.Column(db.String(200), nullable = False)
+    satis = db.Column(db.Float, nullable = False)
+    calories = db.Column(db.Float, nullable = False)
+    proteins = db.Column(db.Float, nullable = False)
+    carbs = db.Column(db.Float, nullable = False)
+    fats = db.Column(db.Float, nullable = False)
+    mealgroup_id = db.Column(db.Integer, db.ForeignKey('meal.id'), nullable = False)

@@ -79,8 +79,8 @@ def personal_info(pers_info):
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
         user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
-        sex = form.sex.data, age = form.age.data, height = form.height.data,
-            weight = form.weight.data, goal = form.goal.data)
+        sex = form.sex.data, age = form.age.data, height = form.height.data,\
+            weight = form.weight.data, goal = form.goal.data, activity = form.activity.data)
         db.session.add(user)
         db.session.commit()
         flash('Your account had been created', 'success')

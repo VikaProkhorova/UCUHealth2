@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     height = db.Column(db.Integer, nullable=False)
     weight = db.Column(db.Integer, nullable=False)
     goal = db.Column(db.String(10), nullable=False)
+    activity = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"

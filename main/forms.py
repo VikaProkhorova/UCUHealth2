@@ -76,5 +76,10 @@ class PersonalInfoForm(FlaskForm):
         validate_choice=[DataRequired()])
     agree = BooleanField('Agree to the processing of my data',
         validators=[DataRequired()])
+    activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'), (1.4, 'Active lifestyle\
+     with 2-3 workouts a week'),\
+     (1.46, 'Active lifestyle with 4-5 workouts a week'), (1.55, 'Active lifestyle with 5-6 workouts a week'),\
+    (1.8, 'Active lifestyle with more than 6 workouts a week')],
+        validate_choice=[DataRequired()])
     submit = SubmitField("Submit")
     

@@ -9,7 +9,8 @@
             <div class = "title">
             Calculator
             </div>
-            <div class="input_field">
+            <div, id = 'result'>Total Calories: 0</div>
+            <div class="input_field", id = 'result'>
                 {{ form.proteins.label(class="form-control-label")}}
                 {% if form.proteins.errors %}
                     {{ form.proteins(class="form-control form-control-xxl is-invalid")}}
@@ -19,7 +20,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.proteins(class="form-control form-control-xxl")}}
+                    {{ form.proteins(class="form-control form-control-xxl", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -32,7 +33,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.carbs(class="form-control form-control-xxl")}}
+                    {{ form.carbs(class="form-control form-control-xxl", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -45,7 +46,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                {{ form.fats(class="form-control form-control-xxl")}}
+                {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
             {% endif%}
         </div>
         </fieldset>
@@ -54,5 +55,19 @@
         </div>
     </form>
 </div>
+<script>
+    function updateValues() {
+      // Get the values of the input fields
+      const protein = parseInt(document.getElementById("proteins").value) || 0;
+      const carbs = parseInt(document.getElementById("carbs").value) || 0;
+      const fats = parseInt(document.getElementById("fats").value) || 0;
+  
+      // Calculate the result
+      const result = protein * 4 + carbs * 4 + fats * 9;
+  
+      // Update the text of the result box
+      document.getElementById("result").innerText = "Total Calories: " + result;
+    }
+  </script>
 {% endblock content %}
     

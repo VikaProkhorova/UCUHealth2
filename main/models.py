@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     proteins = db.Column(db.Float, nullable=False)
     carbs = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
-    meal_takes = db.relationship('Meal', backref="author", lazy = True)
+    meals = db.relationship('Meal', backref="author", lazy = True)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}')"
@@ -42,10 +42,10 @@ class Meal(db.Model):
     date_added = db.Column(db.DateTime, nullable = False, 
         default = datetime.utcnow().strftime('%Y-%m-%d'))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
-    meals = db.relationship('Dish', backref = 'meal', lazy=True)
+    dishes = db.relationship('Dish', backref = 'meal', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}')"
+        return f"Meal('{self.name}', '{self.calories}')"
 
 class Dish(db.Model):
     "Meal class"
@@ -56,4 +56,8 @@ class Dish(db.Model):
     proteins = db.Column(db.Float, nullable = False)
     carbs = db.Column(db.Float, nullable = False)
     fats = db.Column(db.Float, nullable = False)
-    mealgroup_id = db.Column(db.Integer, db.ForeignKey('meal.id'), nullable = False)
+    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'), nullable = False)
+
+    def __repr__(self):
+        return f"Dish('{self.dishes}', '{self.satis}', '{self.calories}')"
+

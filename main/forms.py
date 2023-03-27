@@ -3,7 +3,7 @@
 import json
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
-            StringField, PasswordField, BooleanField, SelectField
+            StringField, PasswordField, BooleanField, SelectField, RadioField
 from wtforms.validators import DataRequired, EqualTo, Email, \
             Length, NumberRange, ValidationError
 from main.models import User
@@ -73,7 +73,7 @@ class PersonalInfoForm(FlaskForm):
     height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
     weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
     goal = SelectField('Goal', choices=[(2, 'Gain'),(3, 'Maintain'), (1, 'Loose')],
-        validate_choice=[DataRequired()])
+        validate_choice=[DataRequired()], coerce=int)
     agree = BooleanField('Agree to the processing of my data',
         validators=[DataRequired()])
     activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'), 
@@ -81,6 +81,12 @@ class PersonalInfoForm(FlaskForm):
     (1.46, 'Active lifestyle with 4-5 workouts a week'), 
     (1.55, 'Active lifestyle with 5-6 workouts a week'),
     (1.8, 'Active lifestyle with more than 6 workouts a week')],
-        validate_choice=[DataRequired()])
+        validate_choice=[DataRequired()], coerce=float)
+    submit = SubmitField("Submit")
+    
+class PossibleMeals(FlaskForm):
+    "Possible Meals form"
+    meal_var = RadioField('Choose one from the list:', 
+                choices=['second', 'third'], validate_choice=[DataRequired()], coerce=int)
     submit = SubmitField("Submit")
     

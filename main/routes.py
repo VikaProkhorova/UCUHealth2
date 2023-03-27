@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
 from main.forms import CalculatorForm, ExampleForm, \
-    RegistrationForm, LoginForm, PersonalInfoForm
+    RegistrationForm, LoginForm, PersonalInfoForm, PossibleMeals
 from main.calculator import calculator_func
 from main.models import User
 from main.calccalories import calcalories
@@ -23,6 +23,10 @@ def home():
 @app.route("/main", methods=['GET', 'POST'])
 def main():
     "Main page"
+    if request.method == 'POST':
+        print("Success")
+        if request.form['submit_button'] == 'Do Something':
+            print("Success")
     return render_template('main.html', title = 'Main')
 
 
@@ -79,8 +83,8 @@ def personal_info(pers_info):
     pers_infos = [x[1:-1] for x in list(pers_info[1:-1].split(', '))]
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
-        nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data), 
-            float(form.weight.data), float(form.activity.data), float(form.goal.data))
+        nutrients = calcalories(form.sex.data, form.height.data, form.age.data,
+            form.weight.data, form.activity.data, form.goal.data)
         user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
         sex = form.sex.data, age = form.age.data, height = form.height.data,\
             weight = form.weight.data, goal = form.goal.data, activity = form.activity.data,
@@ -130,3 +134,19 @@ def logout():
     "Logout route"
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/test', methods=["GET", 'POST'])
+def test():
+    form = PossibleMeals()
+    users = User.query.all()
+    data = []
+    for user in users:
+        data.append((user, user.username))
+    form.meal_var.choices = data
+    if form.validate_on_submit():
+        x = form.meal_var.data
+        print(x)
+        print(type(x))
+        print('test')
+        return redirect(url_for("home"))
+    return render_template('test.html', form = form)

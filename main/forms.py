@@ -102,7 +102,7 @@ class PossibleMeals(FlaskForm):
     dish_var = RadioField('Choose one from the list:',
             choices=[], validate_choice=[DataRequired()])
     submit = SubmitField("Submit")
-    
+
 class UpdateAccountForm(FlaskForm):
     "Update user info Form"
     username = StringField('Username',
@@ -121,7 +121,7 @@ class UpdateAccountForm(FlaskForm):
     (1.4, 'Active lifestyle with 2-3 workouts a week'),
     (1.46, 'Active lifestyle with 4-5 workouts a week'),
     (1.55, 'Active lifestyle with 5-6 workouts a week'),
-    (1.8, 'Active lifestyle with more than 6 workouts a week')])
+    (1.8, 'Active lifestyle with more than 6 workouts a week')], coerce=float)
     submit = SubmitField("Update")
 
     def validate_username(self, username: str) -> None:
@@ -137,3 +137,10 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email = email.data).first()
             if user:
                 raise ValidationError('That email is taken. Please choose different one')
+
+class CustomPlan(FlaskForm):
+    'Custom Plan class'
+    plan_choice = RadioField("Choose Plan",
+        choices=[(False, "Use auto-generated"), (True, "Mannual")],
+        validate_choice=[DataRequired()], coerce=bool)
+    submit = SubmitField("Update")

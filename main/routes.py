@@ -7,8 +7,8 @@ from PIL import Image
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
-from main.forms import CalculatorForm, ExampleForm, PossibleMeals,\
-    RegistrationForm, LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm
+from main.forms import CalculatorForm, ExampleForm, PossibleMeals, RegistrationForm, \
+    LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -92,7 +92,6 @@ def view_dishes(meal_id):
         choices.append((dish.id, dish))
     form.dish_var.choices = choices
     test_form = list(zip(form.dish_var.choices, form.dish_var))
-    print(test_form)
     if form.validate_on_submit():
         meal.choicen = form.dish_var.data
         db.session.commit()
@@ -242,7 +241,7 @@ def account():
         if request.form['submit_button'] == "Personal Info":
             return redirect(url_for('account_update'))
         elif request.form['submit_button'] == "Personal Plan":
-            pass
+            return redirect(url_for('account_plan'))
         else:
             return redirect(url_for('logout'))
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
@@ -265,15 +264,16 @@ def account_update():
         current_user.weight = form.weight.data
         current_user.goal = form.goal.data
         current_user.activity = form.activity.data
-        nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data),
-            float(form.weight.data), float(form.activity.data), int(form.goal.data))
-        current_user.calories = nutrients[0]
-        current_user.proteins = nutrients[1]
-        current_user.carbs = nutrients[2]
-        current_user.fats = nutrients[3]
+        if current_user.custom_plan is False:
+            nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data),
+                float(form.weight.data), float(form.activity.data), int(form.goal.data))
+            current_user.calories = nutrients[0]
+            current_user.proteins = nutrients[1]
+            current_user.carbs = nutrients[2]
+            current_user.fats = nutrients[3]
         db.session.commit()
         flash('Your account has been updated!', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('account_update'))
     form.username.data = current_user.username
     form.email.data = current_user.email
     form.sex.data = current_user.sex
@@ -281,10 +281,46 @@ def account_update():
     form.height.data = current_user.height
     form.weight.data = current_user.weight
     form.goal.data = current_user.goal
-    form.activity.default = 'Active lifestyle with more than 6 workouts a week'
+    form.activity.data = current_user.activity
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account_update.html', title = "Account Update",
         image_file=image_file, form=form)
+
+@app.route('/account_plan', methods=["GET", 'POST'])
+@login_required
+def account_plan():
+    "Account plan page"
+    choice_form = CustomPlan()
+    nutrients_form = CalculatorForm()
+    choice_form.plan_choice.data = current_user.custom_plan
+    if choice_form.validate_on_submit():
+        user_choice = choice_form.plan_choice.data
+        print(user_choice)
+        if user_choice == 1:
+            current_user.custom_plan = user_choice
+            proteins = float(nutrients_form.proteins.data)
+            carbs = float(nutrients_form.carbs.data)
+            fats = float(nutrients_form.fats.data)
+            current_user.calories = (proteins+carbs)*4 + fats*9
+            current_user.proteins = proteins
+            current_user.carbs = carbs
+            current_user.fats = fats
+        else:
+            print('x')
+            current_user.custom_plan = user_choice
+            nutrients = calcalories(current_user.sex, current_user.height, current_user.age,
+            current_user.weight, current_user.activity, current_user.goal)
+            current_user.calories = nutrients[0]
+            current_user.proteins = nutrients[1]
+            current_user.carbs = nutrients[2]
+            current_user.fats = nutrients[3]
+        db.session.commit()
+        return redirect(url_for('account'))
+    nutrients_form.proteins.data = int(round(current_user.proteins, -1))
+    nutrients_form.carbs.data = int(round(current_user.carbs, -1))
+    nutrients_form.fats.data = int(round(current_user.fats, -1))
+    return render_template('account_plan.html', form = nutrients_form,
+        choice_form = choice_form, title = "Personal Plan")
 
 @app.route('/logout')
 def logout():

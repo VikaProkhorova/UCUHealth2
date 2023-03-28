@@ -27,7 +27,7 @@ def main():
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
     meals = Meal.query.filter_by(date_added = datetime(*tuple(map(int,
-            datetime.utcnow().strftime('%Y-%m-%d').split('-')))), author = current_user).all()
+            datetime.utcnow().strftime('%Y-%m-%d').split('-')))), user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
 @login_required

@@ -41,7 +41,7 @@ class Meal(db.Model):
     choicen = db.Column(db.Integer, nullable = False, default = 0)
     date_added = db.Column(db.DateTime, nullable = False,
         default = datetime.date(datetime.utcnow()))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), default = 0)
     dishes = db.relationship('Dish', backref = 'meal', lazy=True)
 
     def __repr__(self):

@@ -2,20 +2,13 @@
 {% block content %}
     <div class="content-section">
         <form method="POST" action="">
-            {{ form.hidden_tag() }}
             <fieldset class="form-group">
+                {{ form.hidden_tag() }}
                 <legend class="border-bottom mb-4">Choose Dish</legend>
-                {% if form.dish_var.errors %}
-                <div class="invalid-feedback">
-                    {% for error in form.dish_var.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% for choice in form.dish_var %}
+                {% for choice, radio in test %}
                     <div class="form-check">
-                        {{ choice(class="form-check-input") }}
-                        {{ choice.label(class="form-check-label") }}
+                        {{ radio() }}
+                        {{ dishes[choice[0]].dishes }} 
                     </div>
                 {% endfor %}
             </fieldset>

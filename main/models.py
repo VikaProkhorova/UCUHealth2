@@ -61,5 +61,3 @@ class Dish(db.Model):
 
     def __repr__(self):
         return f"Dish('{self.dishes}', '{self.satis}', '{self.calories}')"
-
-

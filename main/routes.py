@@ -89,13 +89,15 @@ def view_dishes(meal_id):
         abort(404)
     choices = []
     for dish in dishes:
-        choices.append((dish.id, dish.dishes))
+        choices.append((dish.id, dish))
     form.dish_var.choices = choices
+    test_form = list(zip(form.dish_var.choices, form.dish_var))
+    print(test_form)
     if form.validate_on_submit():
         meal.choicen = form.dish_var.data
         db.session.commit()
         return redirect(url_for('main'))
-    return render_template('view_dishes.html', form = form)
+    return render_template('view_dishes.html', dishes = dict(choices), test = test_form, form = form)
 
 def stringer(input_str: str) -> str:
     "Converts str into normal look"
@@ -234,6 +236,11 @@ def save_picture(form_picture):
 @app.route('/account', methods=["GET", 'POST'])
 @login_required
 def account():
+    return render_template('account_buttons.html')
+
+@app.route('/account_update', methods=["GET", 'POST'])
+@login_required
+def account_update():
     "Account page"
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -257,18 +264,16 @@ def account():
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
-    elif request.method == 'GET':
-        form.username.data = current_user.username
-        form.email.data = current_user.email
-        form.sex.data = current_user.sex
-        form.age.data = current_user.age
-        form.height.data = current_user.height
-        form.weight.data = current_user.weight
-        form.goal.data = current_user.goal
-        form.activity.default = str(current_user.activity)
+    form.username.data = current_user.username
+    form.email.data = current_user.email
+    form.sex.data = current_user.sex
+    form.age.data = current_user.age
+    form.height.data = current_user.height
+    form.weight.data = current_user.weight
+    form.goal.data = current_user.goal
+    form.activity.default = 'Active lifestyle with more than 6 workouts a week'
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account.html', title = "Account", image_file=image_file, form=form)
-
 
 @app.route('/logout')
 def logout():

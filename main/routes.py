@@ -2,8 +2,8 @@
 
 import secrets
 import os
-from PIL import Image
 from datetime import datetime
+from PIL import Image
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
@@ -49,7 +49,7 @@ def add_meal():
         db.session.add(meal)
         db.session.commit()
         return redirect(url_for('main'))
-    return render_template('add_meal.html', form = form)
+    return render_template('add_meal.html', form = form, title = 'Add Meal')
 
 @login_required
 @app.route('/choose_dishes/<int:meal_id>', methods=['GET', 'POST'])
@@ -72,7 +72,7 @@ def choose_dishes(meal_id):
             db.session.add(new_dish)
             db.session.commit()
         return redirect(url_for('view_dishes', meal_id = meal.id))
-    return render_template('meals.html', form = form)
+    return render_template('meals.html', form = form, title = 'Meals')
 
 @app.route("/view_dishes/<int:meal_id>", methods=['GET', 'POST'])
 def view_dishes(meal_id):
@@ -97,7 +97,8 @@ def view_dishes(meal_id):
         meal.choicen = form.dish_var.data
         db.session.commit()
         return redirect(url_for('main'))
-    return render_template('view_dishes.html', dishes = dict(choices), test = test_form, form = form)
+    return render_template('view_dishes.html', dishes = dict(choices),
+            test = test_form, form = form, title = 'View Dishes')
 
 def stringer(input_str: str) -> str:
     "Converts str into normal look"
@@ -118,7 +119,7 @@ def show_dish(meal_id):
     if request.method == 'POST':
         if request.form['submit_button'] == "Back":
             return redirect(url_for('main'))
-    return render_template('show_dish.html', dish = dish)
+    return render_template('show_dish.html', dish = dish, title = 'Show dish')
 
 @app.route("/results/<int:meal_id>", methods=['GET', 'POST'])
 def results(meal_id):
@@ -236,7 +237,16 @@ def save_picture(form_picture):
 @app.route('/account', methods=["GET", 'POST'])
 @login_required
 def account():
-    return render_template('account_buttons.html')
+    "Account page"
+    if request.method == 'POST':
+        if request.form['submit_button'] == "Personal Info":
+            return redirect(url_for('account_update'))
+        elif request.form['submit_button'] == "Personal Plan":
+            pass
+        else:
+            return redirect(url_for('logout'))
+    image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
+    return render_template('account.html', image_file = image_file)
 
 @app.route('/account_update', methods=["GET", 'POST'])
 @login_required
@@ -273,7 +283,8 @@ def account_update():
     form.goal.data = current_user.goal
     form.activity.default = 'Active lifestyle with more than 6 workouts a week'
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
-    return render_template('account.html', title = "Account", image_file=image_file, form=form)
+    return render_template('account_update.html', title = "Account Update",
+        image_file=image_file, form=form)
 
 @app.route('/logout')
 def logout():

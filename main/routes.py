@@ -292,10 +292,8 @@ def account_plan():
     "Account plan page"
     choice_form = CustomPlan()
     nutrients_form = CalculatorForm()
-    choice_form.plan_choice.data = current_user.custom_plan
     if choice_form.validate_on_submit():
         user_choice = choice_form.plan_choice.data
-        print(user_choice)
         if user_choice == 1:
             current_user.custom_plan = user_choice
             proteins = float(nutrients_form.proteins.data)
@@ -306,7 +304,6 @@ def account_plan():
             current_user.carbs = carbs
             current_user.fats = fats
         else:
-            print('x')
             current_user.custom_plan = user_choice
             nutrients = calcalories(current_user.sex, current_user.height, current_user.age,
             current_user.weight, current_user.activity, current_user.goal)
@@ -316,6 +313,7 @@ def account_plan():
             current_user.fats = nutrients[3]
         db.session.commit()
         return redirect(url_for('account'))
+    choice_form.plan_choice.data = current_user.custom_plan
     nutrients_form.proteins.data = int(round(current_user.proteins, -1))
     nutrients_form.carbs.data = int(round(current_user.carbs, -1))
     nutrients_form.fats.data = int(round(current_user.fats, -1))

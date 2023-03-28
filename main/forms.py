@@ -141,6 +141,6 @@ class UpdateAccountForm(FlaskForm):
 class CustomPlan(FlaskForm):
     'Custom Plan class'
     plan_choice = RadioField("Choose Plan",
-        choices=[(False, "Use auto-generated"), (True, "Mannual")],
-        validate_choice=[DataRequired()], coerce=bool)
+        choices=[(0, "Use auto-generated"), (1, "Mannual")],
+        validate_choice=[DataRequired()], coerce=int)
     submit = SubmitField("Update")

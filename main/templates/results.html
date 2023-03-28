@@ -1,16 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>Results Page</h1>
-<p>Choose one from the list:</p>
-<form>
-{% for res in results %}
-   <div class='form-group'>
-      {% for dish in res %}
-         {{ dish }}
-         <br>
-      {% endfor %}
-   </div>
-   <p>---------</p>
-{% endfor %}
-</form>
+<div class="content-section">
+    <form method="POST" action="">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Available Options</legend>
+            {% for meal in results %}
+                <div class="form-check">
+                    {{ meal }}
+                </div>
+            {% endfor %}
+        </fieldset>
+        <div class="form-group">
+            <a class="form-control" href="{{ url_for("main") }}">Exit</a>
+        </div>
+    </form>
+</div>
 {% endblock content %}

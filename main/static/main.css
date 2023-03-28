@@ -1,38 +1,74 @@
 body {
-    background: #f5eee7;
+    background: #fff9f5;
     color: #333333;
     margin-top: 5rem;
   }
-
-h1, h2, h3, h4, h5, h6 {
+.panel-body {
+  background: #fff9f5;
+  color: #333333;
+  margin-top: 5rem;
+}
+/* h1, h2, h3, h4, h5, h6 {
   color: #444444;
+  margin-bottom: 50px;
+} */
+
+button#daily_distribution {
+  margin-top: 200px;
+  margin-bottom: 30px;
+  background-color: #a4cfbc;
+  color: #fff9f5;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: #ffce59;
+  border-radius: 3px;
+}
+button#one-time {
+  background-color: #a4cfbc;
+  color: #fff9f5;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+}
+
+button#daily_distribution:hover {
+  background-color: #57817f;
+  color: #f5eee7;
+}
+button#one-time:hover {
+  background-color: #57817f;
+  color: #f5eee7;
 }
 .button-container {
+  background-color: #4b791c;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  flex-direction: column;
 }
 .row {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 button {
-  background-color: #e6c23e;
-  color: #e6c23e;
+  background-color: #ffce59;
+  color: #ffce59;
   border: none;
   padding: 10px 20px;
   margin: 0 10px;
 }
 
 button:hover {
-  background-color: #ffdf91;
+  background-color: #a4cfbc;
   cursor: pointer;
-/* верхня панель */
 }
+
 .bg-steel {
-  background-color: #4b791c;
+  background-color: #57817f;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -40,15 +76,16 @@ button:hover {
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color: #e6c23e;
+  color: #ffce59;
 }
 
 .site-header .navbar-nav .nav-link.active {
   font-weight: 500;
+  color: #ffce59;
 }
 
 .content-section {
-  background: #ffffff;
+  background: #fff9f5;;
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
@@ -60,7 +97,7 @@ button:hover {
 }
 
 a.article-title:hover {
-  color: #e6c23e;
+  color: #ffce59;
   text-decoration: none;
 }
 
@@ -81,7 +118,7 @@ a.article-title:hover {
 }
 
 .article-metadata a:hover {
-  color: #e6c23e;
+  color: #ffce59;
   text-decoration: none;
 }
 

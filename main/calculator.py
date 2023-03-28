@@ -22,14 +22,16 @@ def portioner(meals: List[tuple]) -> List[tuple]:
     """Adds portion variations
     >>> portioner([('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salads', \
 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, 12.61])])
-    [('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), \
-('salads', 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, \
-12.61]), ('second meals', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))]
+    [('second meals', 'Котлета куряча: порція - 1', (222.0, 21.0, 13.8, 12.0)), \
+('second meals', 'Котлета куряча: порція - 2', (444.0, 42.0, 27.6, 24.0)), \
+('salads', 'Салат з домашнього сиру з редискою: порція - 1', (166.0, 8.97, 3.69, 12.61))]
     """
-    new_meals = deepcopy(meals)
-    portions = [0.5, 1.5, 2]
+    new_meals = []
+    portions = [0.5, 1, 1.5, 2]
     for meal in meals:
-        if meal[0] in ('soups', 'salads'):
+        if meal[0] in ('salads'):
+            new_meal = multiplier(meal, 1)
+            new_meals.append(new_meal)
             continue
         for portion in portions:
             if meal[0] in ('second meals', "breakfasts") and str(portion) in ("0.5", "1.5"):
@@ -41,16 +43,16 @@ def portioner(meals: List[tuple]) -> List[tuple]:
 def multiplier(meal: tuple, portion: float) -> tuple:
     """Multiplies by amount of portion
     >>> multiplier(('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), 2)
-    ('second meals', 'Котлета куряча, порція - 2', (444.0, 42.0, 27.6, 24.0))
+    ('second meals', 'Котлета куряча: порція - 2', (444.0, 42.0, 27.6, 24.0))
     """
     new_values = []
     for value in meal[2]:
         new_values.append(value*portion)
-    return meal[0], meal[1]+f", порція - {portion}", tuple(new_values)
+    return meal[0], meal[1]+f': порція - {portion}', tuple(new_values)
 
 def variator(meals: List[tuple], nutrition: tuple[float]) -> List[tuple]:
     """Generates variants"""
-    j = 2
+    j = 1
     result = []
     while j < 5:
         variants = combinations(meals, j)
@@ -70,10 +72,10 @@ def variator(meals: List[tuple], nutrition: tuple[float]) -> List[tuple]:
 def checker(variant: List[tuple]) -> bool:
     """Prevents from two soups appearing in one selection
     or reaping meals with different portion
-    >>> checker((('garnirs', 'Овочевий рататуй, порція - 2', \
-(222.0, 5.5, 36.4, 5.74)), ('garnirs', 'Банош, порція - 0.5', \
-(137.0, 4.0, 12.0, 7.0)), ('garnirs', 'Банош, порція - 1.5', \
-(411.0, 12.0, 36.0, 21.0)), ('garnirs', 'Банош, порція - 2', \
+    >>> checker((('garnirs', 'Овочевий рататуй: порція - 2', \
+(222.0, 5.5, 36.4, 5.74)), ('garnirs', 'Банош: порція - 0.5', \
+(137.0, 4.0, 12.0, 7.0)), ('garnirs', 'Банош: порція - 1.5', \
+(411.0, 12.0, 36.0, 21.0)), ('garnirs', 'Банош: порція - 2', \
 (548.0, 16.0, 48.0, 28.0))))
     False
     >>> checker((('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]),\
@@ -88,8 +90,8 @@ def checker(variant: List[tuple]) -> bool:
         name = meal[1]
         if meal[0] == 'soups':
             count += 1
-        if ", " in name:
-            name = name[:name.index(", ")]
+        if ": " in name:
+            name = name[:name.index(": ")]
         meal_names.append(name)
     for name in meal_names:
         if meal_names.count(name) > 1:
@@ -123,7 +125,6 @@ def meal_getter(choicen_meals: List[str]) -> dict:
     selection = deepcopy(choicen_meals)
     with open("main/data/meals.json", "r", encoding='utf-8') as file:
         meals = json.load(file)
-    print(dict(meals).keys())
     for section in meals:
         for meal in meals[section]:
             if meal in selection:
@@ -166,18 +167,21 @@ def calculator_func(choicen_meals: List[str], nutrition: tuple[float]) -> List[t
 if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
-    test_lst = ['Суп квасолевий', 'Крем-суп з гарбуза', 'Суп-пюре морквяний',
-       'Макарони з томатним соусом', 'Овочевий рататуй', 'Банош',
-       'Салат з домашнього сиру з редискою', 'Салат з черемші і огірків',
-       'Салат зі шпинату з ягодами', 'Котлета куряча', 'Котлета рибна','Курка відварна',
-       "Баклажани тушковані з грибами", "Капуста тушкована з грибами",
-       "Картопля фрі"]
+    test_lst = ['Яєчня з овочами']
+    # test_lst = ['Суп квасолевий', 'Крем-суп з гарбуза', 'Суп-пюре морквяний',
+    #    'Макарони з томатним соусом', 'Овочевий рататуй', 'Банош',
+    #    'Салат з домашнього сиру з редискою', 'Салат з черемші і огірків',
+    #    'Салат зі шпинату з ягодами', 'Котлета куряча', 'Котлета рибна','Курка відварна',
+    #    "Баклажани тушковані з грибами", "Капуста тушкована з грибами",
+    #    "Картопля фрі"]
     GOAL = 1000
     PROTEINS = (GOAL*0.3)//4
     CARBS = (GOAL*0.4)//4
     FATS = (GOAL*0.3)//9
     GOAL_SAMPLE = (GOAL, PROTEINS, CARBS, FATS)
     results = calculator_func(test_lst, GOAL_SAMPLE)
+    res = calculator_func(['Яєчня з овочами'], (930.0, 69.48, 115.80000000000001, 20.6))
+    print(res)
     print(f"""Goal was:
 Calories: {GOAL}
 Proteins: {PROTEINS}

@@ -1,96 +1,102 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Personal Info</legend>
-                <div class="form-group">
-                    {{ form.sex.label(class="form-control-label") }}
-                    {% if form.sex.errors %}
-                        {{ form.sex(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.sex.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.sex(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.age.label(class="form-control-label") }}
-                    {% if form.age.errors %}
-                        {{ form.age(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.age.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.age(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.height.label(class="form-control-label") }}
-                    {% if form.height.errors %}
-                        {{ form.height(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.height.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.height(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.weight.label(class="form-control-label") }}
-                    {% if form.weight.errors %}
-                        {{ form.weight(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.weight.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.weight(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.goal.label(class="form-control-label") }}
-                    {% if form.goal.errors %}
-                        {{ form.goal(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.goal.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.goal(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
+<link href="{{ url_for('static', filename='personal_info.css') }}" rel="stylesheet">
+<div class="wrapper">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form">
+            <!-- <legend class="border-bottom mb-4">Personal Info</legend> -->
+            <div class = "title">
+                Personal Info
+            </div>
+            <div class="input_field">
+                {{ form.sex.label(class="form-control-label") }}
+                {% if form.sex.errors %}
+                    {{ form.sex(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.sex.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.sex(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field">
+                {{ form.age.label(class="form-control-label") }}
+                {% if form.age.errors %}
+                    {{ form.age(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.age.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.age(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field">
+                {{ form.height.label(class="form-control-label") }}
+                {% if form.height.errors %}
+                    {{ form.height(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.height.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.height(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field">
+                {{ form.weight.label(class="form-control-label") }}
+                {% if form.weight.errors %}
+                    {{ form.weight(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.weight.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.weight(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field">
+                {{ form.goal.label(class="form-control-label") }}
+                {% if form.goal.errors %}
+                    {{ form.goal(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.goal.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.goal(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+                <div class="input_field">
                     {{ form.activity.label(class="form-control-label") }}
                     {% if form.activity.errors %}
-                        {{ form.activity(class="form-control form-control-lg is-invalid") }}
+                        {{ form.activity(class="form-control form-control-xxl is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.activity.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.activity(class="form-control form-control-lg") }}
+                        {{ form.activity(class="form-control form-control-xxl") }}
                     {% endif %}
                 </div>
-                <div class="form-check">
-                    {{ form.agree(class="form-check-input") }}
-                    {{ form.agree.label(class="form-check-label") }}
+                <div class="input_field terms">
+                    <label class="check">
+                      {{ form.agree(class="checkmark") }}
+                    </label>
+                    <p>Agree to the processing of my data</p>
                 </div>
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-            </div>
-        </form>
-    </div>
+        </fieldset>
+        <div class="input_field">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
 {% endblock content %}

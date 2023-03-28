@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block content %}
+<link href="{{ url_for('static', filename='calculator.css') }}" rel="stylesheet">
+<div class="wrapper">
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class = "form">
+            <div class = "title">
+            Calculator
+            </div>
+            <div, id = 'result'>Total Calories: 0</div>
+            <div class="input_field">
+                {{ form.meal_name.label(class="form-control-label")}}
+                {% if form.meal_name.errors %}
+                    {{ form.meal_name(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.meal_name.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.meal_name(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
+            <div class="input_field">
+                {{ form.proteins.label(class="form-control-label")}}
+                {% if form.proteins.errors %}
+                    {{ form.proteins(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.proteins.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.proteins(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
+            <div class="input_field">
+                {{ form.carbs.label(class="form-control-label")}}
+                {% if form.carbs.errors %}
+                    {{ form.carbs(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.carbs.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.carbs(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
+            <div class="input_field">
+            {{ form.fats.label(class="form-control-label")}}
+            {% if form.fats.errors %}
+                {{ form.fats(class="form-control form-control-xxl is-invalid")}}
+                <div class='invalid-feedback'>
+                    {% for error in form.fats.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
+            {% endif%}
+        </div>
+        </fieldset>
+        <div class="input_field">
+            {{ form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+<script>
+    function updateValues() {
+      // Get the values of the input fields
+      const protein = parseInt(document.getElementById("proteins").value) || 0;
+      const carbs = parseInt(document.getElementById("carbs").value) || 0;
+      const fats = parseInt(document.getElementById("fats").value) || 0;
+  
+      // Calculate the result
+      const result = protein * 4 + carbs * 4 + fats * 9;
+  
+      // Update the text of the result box
+      document.getElementById("result").innerText = "Total Calories: " + result;
+    }
+  </script>
+{% endblock content %}

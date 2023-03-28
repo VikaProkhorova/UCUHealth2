@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Choosen Dish</legend>
+                {{ dish.dishes }}
+                {{ dish.satis}}
+        </fieldset>
+        <div class="form-group">
+            <input type="submit", name="submit_button", value="Back", class="form-control", id="back">
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="">
+            <fieldset class="form-group">
+                {{ form.hidden_tag() }}
+                <legend class="border-bottom mb-4">Choose Dish</legend>
+                {% for choice, radio in test %}
+                    <div class="form-check">
+                        {{ radio() }}
+                        {{ dishes[choice[0]].dishes }} 
+                    </div>
+                {% endfor %}
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}

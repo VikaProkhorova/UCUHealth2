@@ -76,17 +76,28 @@ class PersonalInfoForm(FlaskForm):
         validate_choice=[DataRequired()], coerce=int)
     agree = BooleanField('Agree to the processing of my data',
         validators=[DataRequired()])
-    activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'), 
+    activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'),
     (1.4, 'Active lifestyle with 2-3 workouts a week'),
-    (1.46, 'Active lifestyle with 4-5 workouts a week'), 
+    (1.46, 'Active lifestyle with 4-5 workouts a week'),
     (1.55, 'Active lifestyle with 5-6 workouts a week'),
     (1.8, 'Active lifestyle with more than 6 workouts a week')],
         validate_choice=[DataRequired()], coerce=float)
     submit = SubmitField("Submit")
-    
+
+class AddMeal(FlaskForm):
+    "Adds meal to user"
+    meal_name = StringField('Meal name', validators=[DataRequired()])
+    proteins = IntegerField('Proteins',
+                validators=[DataRequired(), NumberRange(min=0)])
+    carbs = IntegerField("Carbohydrates",
+                validators=[DataRequired(), NumberRange(min=0)])
+    fats = IntegerField("Fats",
+                validators=[DataRequired(), NumberRange(min=0)])
+    submit = SubmitField("Add Meal")
+
 class PossibleMeals(FlaskForm):
     "Possible Meals form"
-    meal_var = RadioField('Choose one from the list:', 
-                choices=['second', 'third'], validate_choice=[DataRequired()], coerce=int)
+    dish_var = RadioField('Choose one from the list:',
+                choices=[], validate_choice=[DataRequired()], coerce=int)
     submit = SubmitField("Submit")
     

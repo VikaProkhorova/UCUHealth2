@@ -1,11 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<form method="POST">
-  <div class="form-group">
-    <input type="submit", name="submit_button", value="Daily Distribution", class="form-control", id="daily_distribution">
-  </div>
-  <div class="form-group">
-    <input type="submit", name="submit_button", value="Add Meal", class="form-control", id="all_meal">
-  </div>
+<form method="POST" action="">
+  {% for meal in meals %}
+  <article class="media content-section">
+    <div class="media-body">
+    <div class="article-metadata">
+        <a class="mr-2" href="#">{{ meal.name }}</a>
+        <small class="text-muted">{{ meal.calories }}</small>
+        <div>
+            {% if meal.choicen == False %}
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('choose_dishes', meal_id = meal.id)}}">Choose Dishes</a>
+            {% else %}
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('show_dish', meal_id = meal.id)}}">Show Dish</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{url_for('view_dishes', meal_id = meal.id)}}">Change Dish</a>
+            {% endif %}
+            <a class="btn btn-danger btn-sm m-1" href="{{url_for('delete_meal', meal_id = meal.id)}}">Delete Dish</a>
+        </div>
+  </article>
+  {% endfor %}
+  <form method="POST" action="">
+    {% if not meals %} 
+    <div class="form-group">
+      <input type="submit", name="submit_button", value="Daily Distribution", class="form-control", id="daily_distribution">
+    </div>
+    {% endif %}
+    <div class="form-group">
+      <input type="submit", name="submit_button", value="Add Meal", class="form-control", id="all_meal">
+    </div>
+  </form>
 </form>
 {% endblock content %}

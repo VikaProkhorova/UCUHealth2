@@ -46,7 +46,7 @@ def multiplier(meal: tuple, portion: float) -> tuple:
     new_values = []
     for value in meal[2]:
         new_values.append(value*portion)
-    return meal[0], meal[1]+f", порція - {portion}", tuple(new_values)
+    return meal[0], meal[1]+f', порція - {portion}', tuple(new_values)
 
 def variator(meals: List[tuple], nutrition: tuple[float]) -> List[tuple]:
     """Generates variants"""
@@ -123,7 +123,6 @@ def meal_getter(choicen_meals: List[str]) -> dict:
     selection = deepcopy(choicen_meals)
     with open("main/data/meals.json", "r", encoding='utf-8') as file:
         meals = json.load(file)
-    print(dict(meals).keys())
     for section in meals:
         for meal in meals[section]:
             if meal in selection:

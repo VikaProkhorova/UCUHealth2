@@ -1,11 +1,14 @@
 "Routes module"
 
+import secrets
+import os
+from PIL import Image
 from datetime import datetime
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
 from main.forms import CalculatorForm, ExampleForm, PossibleMeals,\
-    RegistrationForm, LoginForm, PersonalInfoForm, AddMeal
+    RegistrationForm, LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -214,11 +217,58 @@ def login():
         flash('Login Unsuccessful. Please check username and password', "danger")
     return render_template('login.html', title='Login', form=form)
 
+def save_picture(form_picture):
+    "Trim and saves picture"
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
 @app.route('/account', methods=["GET", 'POST'])
 @login_required
 def account():
     "Account page"
-    return render_template('account.html', title = "Account")
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.sex = form.sex.data
+        current_user.age = form.age.data
+        current_user.height = form.height.data
+        current_user.weight = form.weight.data
+        current_user.goal = form.goal.data
+        current_user.activity = form.activity.data
+        nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data),
+            float(form.weight.data), float(form.activity.data), int(form.goal.data))
+        current_user.calories = nutrients[0]
+        current_user.proteins = nutrients[1]
+        current_user.carbs = nutrients[2]
+        current_user.fats = nutrients[3]
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.sex.data = current_user.sex
+        form.age.data = current_user.age
+        form.height.data = current_user.height
+        form.weight.data = current_user.weight
+        form.goal.data = current_user.goal
+        form.activity.default = str(current_user.activity)
+    image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
+    return render_template('account.html', title = "Account", image_file=image_file, form=form)
+
 
 @app.route('/logout')
 def logout():

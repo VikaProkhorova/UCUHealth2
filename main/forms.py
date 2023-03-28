@@ -1,13 +1,13 @@
 "Models module"
 
 import json
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, file
+from PIL import Image, UnidentifiedImageError
 from flask_login import current_user
-from flask_wtf.file import FileField, FileAllowed
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
-            StringField, PasswordField, BooleanField, SelectField, RadioField
+    StringField, PasswordField, BooleanField, SelectField, RadioField, FileField
 from wtforms.validators import DataRequired, EqualTo, Email, \
-            Length, NumberRange, ValidationError
+    Length, NumberRange, ValidationError
 from main.models import User
 
 class CalculatorForm(FlaskForm):
@@ -109,7 +109,6 @@ class UpdateAccountForm(FlaskForm):
                     validators=[DataRequired(), Length(min=2, max = 20)])
     email = StringField("Email",
                     validators=[DataRequired(), Email()])
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     sex = SelectField('Sex', choices=['Male', 'Female'],
         validate_choice=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
@@ -123,6 +122,7 @@ class UpdateAccountForm(FlaskForm):
     (1.55, 'Active lifestyle with 5-6 workouts a week'),
     (1.8, 'Active lifestyle with more than 6 workouts a week')], coerce=float)
     submit = SubmitField("Update")
+    picture = FileField('Update Profile Picture', validators=[file.FileAllowed(['jpg', 'png'])])
 
     def validate_username(self, username: str) -> None:
         "Validates username"
@@ -137,6 +137,13 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email = email.data).first()
             if user:
                 raise ValidationError('That email is taken. Please choose different one')
+
+    def validate_picture(self, picture) -> None:
+        "Validates picture"
+        try:
+            _ = Image.open(picture.data)
+        except UnidentifiedImageError as exc:
+            raise ValidationError("Imported file seems to be corrupted") from exc
 
 class CustomPlan(FlaskForm):
     'Custom Plan class'

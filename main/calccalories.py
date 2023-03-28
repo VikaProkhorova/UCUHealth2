@@ -17,7 +17,7 @@ def calcalories(state: str, hight: int, age: int, wase: int, activity: float, wa
         kilokalories*=0.8
     elif wants==2:
         kilokalories*=1.2
-    bilku = round((kilokalories* 0.3)/4, 1)
-    fats = round((kilokalories*0.2)/9, 1)
-    vuglevodu = round((kilokalories* 0.5)/4, 1)
-    return (kilokalories, bilku, vuglevodu, fats)
+    bilku = int(round((kilokalories* 0.3)/4, -1))
+    fats = int(round((kilokalories*0.2)/9, -1))
+    vuglevodu = int(round((kilokalories* 0.5)/4, -1))
+    return (int(round(kilokalories, -1)), bilku, vuglevodu, fats)

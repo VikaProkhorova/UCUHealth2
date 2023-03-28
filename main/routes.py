@@ -39,9 +39,9 @@ def add_meal():
     "Adds meal"
     form = AddMeal()
     if form.validate_on_submit():
-        proteins = float(form.proteins.data)
-        carbs = float(form.carbs.data)
-        fats = float(form.fats.data)
+        proteins = int(form.proteins.data)
+        carbs = int(form.carbs.data)
+        fats = int(form.fats.data)
         meal = Meal(name = form.meal_name.data,
             calories = round(((proteins+carbs)*4 + fats*9), -1),
             proteins = proteins, carbs = carbs,
@@ -161,11 +161,11 @@ def calculator():
     "Calculator page"
     form = CalculatorForm()
     if form.validate_on_submit():
-        proteins = float(form.proteins.data)
-        carbs = float(form.carbs.data)
-        fats = float(form.fats.data)
+        proteins = int(form.proteins.data)
+        carbs = int(form.carbs.data)
+        fats = int(form.fats.data)
         meal = Meal(name = 'Guest_Meal',
-            calories = ((proteins+carbs)*4 + fats*9),
+            calories = int(round(((proteins+carbs)*4 + fats*9), -1)),
             proteins = proteins, carbs = carbs,
             fats = fats)
         db.session.add(meal)
@@ -225,12 +225,10 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
-
     return picture_fn
 
 @app.route('/account', methods=["GET", 'POST'])
@@ -265,8 +263,8 @@ def account_update():
         current_user.goal = form.goal.data
         current_user.activity = form.activity.data
         if current_user.custom_plan is False:
-            nutrients = calcalories(form.sex.data, float(form.height.data), float(form.age.data),
-                float(form.weight.data), float(form.activity.data), int(form.goal.data))
+            nutrients = calcalories(form.sex.data, int(form.height.data), int(form.age.data),
+                int(form.weight.data), float(form.activity.data), int(form.goal.data))
             current_user.calories = nutrients[0]
             current_user.proteins = nutrients[1]
             current_user.carbs = nutrients[2]
@@ -296,10 +294,10 @@ def account_plan():
         user_choice = choice_form.plan_choice.data
         if user_choice == 1:
             current_user.custom_plan = user_choice
-            proteins = float(nutrients_form.proteins.data)
-            carbs = float(nutrients_form.carbs.data)
-            fats = float(nutrients_form.fats.data)
-            current_user.calories = (proteins+carbs)*4 + fats*9
+            proteins = int(nutrients_form.proteins.data)
+            carbs = int(nutrients_form.carbs.data)
+            fats = int(nutrients_form.fats.data)
+            current_user.calories = int(round((proteins+carbs)*4 + fats*9, -2))
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats

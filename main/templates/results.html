@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST" action="">
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Available Options</legend>
-                {% for meal in results %}
-                    <div class="form-check">
-                        {{ meal }}
-                    </div>
-                {% endfor %}
-            </fieldset>
-            <div class="form-group">
-               <input type="submit", name="submit_button", value="Exit", class="form-control", id="exit">
-            </div>
-        </form>
-    </div>
+<div class="content-section">
+    <form method="POST" action="">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Available Options</legend>
+            {% for meal in results %}
+                <div class="form-check">
+                    {{ meal }}
+                </div>
+            {% endfor %}
+        </fieldset>
+        <div class="form-group">
+            <a class="form-control" href="{{ url_for("main") }}">Exit</a>
+        </div>
+    </form>
+</div>
 {% endblock content %}

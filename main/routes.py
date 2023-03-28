@@ -10,7 +10,7 @@ from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 @app.route("/main", methods=['GET', 'POST'])
 def main():
     "Main page"
@@ -54,13 +54,16 @@ def choose_dishes(meal_id):
     "Chooses dish"
     form = ExampleForm()
     meal = Meal.query.get_or_404(meal_id)
-    if meal.author != current_user:
+    if meal.author != current_user or meal.choicen != 0:
         abort(403)
     if form.validate_on_submit():
         dishes = calculator_func(form.choices.data,
             nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
         for dish in dishes:
-            new_dish = Dish(dishes = stringer(str(dish[0])[1:-1]), satis = dish[1],
+            processed = str(dish[0])[1:-1]
+            if processed[-1] == ",":
+                processed = processed[:-1]
+            new_dish = Dish(dishes = stringer(processed), satis = dish[1],
             calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
             fats = dish[2][3], meal = meal)
             db.session.add(new_dish)
@@ -76,6 +79,9 @@ def view_dishes(meal_id):
     if meal.author != current_user:
         abort(403)
     dishes = Dish.query.filter_by(meal = meal).all()
+    default_dish = Dish.query.filter_by(meal = meal).first()
+    meal.choicen = default_dish.id
+    db.session.commit()
     if not dishes:
         abort(404)
     choices = []
@@ -90,11 +96,11 @@ def view_dishes(meal_id):
 
 def stringer(input_str: str) -> str:
     "Converts str into normal look"
-    input_str = input_str[1:-1].split("', '")
+    input_str = input_str.split(", ")
     new_str = ''
     for value in input_str:
-        new_str += value + ', '
-    return new_str.rstrip()
+        new_str += value[1:-1] + ', '
+    return new_str[:-2]
 
 @login_required
 @app.route('/show_dish/<int:meal_id>', methods=['GET', 'POST'])
@@ -121,11 +127,8 @@ def results(meal_id):
         choices.append(dish.dishes)
         db.session.delete(dish)
         db.session.commit()
-    if request.method == 'POST':
-        if request.form['submit_button'] == "Exit":
-            db.session.delete(meal)
-            db.session.commit()
-            return redirect(url_for('main'))
+    db.session.delete(meal)
+    db.session.commit()
     return render_template('results.html', results=choices, title = 'Results')
 
 @app.route('/available_meals/<int:meal_id>', methods=['GET', 'POST'])
@@ -137,7 +140,10 @@ def available_meals(meal_id):
         dishes = calculator_func(form.choices.data,
             nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
         for dish in dishes:
-            new_dish = Dish(dishes = stringer(str(dish[0])[1:-1]), satis = dish[1],
+            processed = str(dish[0])[1:-1]
+            if processed[-1] == ",":
+                processed = processed[:-1]
+            new_dish = Dish(dishes = stringer(processed), satis = dish[1],
             calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
             fats = dish[2][3], meal = meal)
             db.session.add(new_dish)

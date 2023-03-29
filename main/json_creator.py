@@ -18,5 +18,5 @@ def opener(path_lst: List[str]) -> json:
         json.dump(total, file, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
-    lst = ["breakfasts", "second", "salats", "garnirs", "soups"]
+    lst = ["breakfasts", "second meals", "salads", "garnirs", "soups"]
     opener(lst)

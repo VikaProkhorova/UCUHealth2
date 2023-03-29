@@ -31,7 +31,7 @@ def main():
                 db.session.commit()
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
-    meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()), 
+    meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()),
             user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
@@ -151,8 +151,8 @@ def results(dishes_id):
     "Result page"
     ids = list(map(int, dishes_id[1:-1].split(', ')))
     dishes = []
-    for id in ids:
-        dish = Dish.query.filter_by(id = id).first()
+    for someid in ids:
+        dish = Dish.query.filter_by(id = someid).first()
         dishes.append(dish)
     if not dishes:
         abort(404)
@@ -197,7 +197,7 @@ def calculator():
         proteins = int(form.proteins.data)
         carbs = int(form.carbs.data)
         fats = int(form.fats.data)
-        return redirect(url_for('available_meals', 
+        return redirect(url_for('available_meals',
             nutrients = ((int(round(((proteins+carbs)*4 + fats*9), -1))), proteins, carbs, fats)))
     return render_template('calculator.html', form=form, title = 'Calculator')
 

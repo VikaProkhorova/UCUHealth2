@@ -88,16 +88,20 @@ def view_dishes(meal_id):
     if not dishes:
         abort(404)
     choices = []
+    dct = {}
     for dish in dishes:
         choices.append((dish.id, dish))
+        dct[dish.id] = dish.dishes.split(', ') 
     form.dish_var.choices = choices
     test_form = list(zip(form.dish_var.choices, form.dish_var))
     if form.validate_on_submit():
         meal.choicen = form.dish_var.data
+        dish = Dish.query.get_or_404(meal.choicen)
+        meal.calories = dish.calories
         db.session.commit()
         return redirect(url_for('main'))
     return render_template('view_dishes.html', dishes = dict(choices),
-            test = test_form, form = form, title = 'View Dishes')
+            test = test_form, form = form, title = 'View Dishes', dct = dct)
 
 def stringer(input_str: str) -> str:
     "Converts str into normal look"
@@ -118,7 +122,8 @@ def show_dish(meal_id):
     if request.method == 'POST':
         if request.form['submit_button'] == "Back":
             return redirect(url_for('main'))
-    return render_template('show_dish.html', dish = dish, title = 'Show dish')
+    lst = dish.dishes.split(', ')
+    return render_template('show_dish.html', dish = dish, title = 'Show dish', dish_lst = lst)
 
 @app.route("/results/<int:meal_id>", methods=['GET', 'POST'])
 def results(meal_id):

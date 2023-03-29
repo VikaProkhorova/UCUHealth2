@@ -4,8 +4,17 @@
     <form method="POST" action="">
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Choosen Dish</legend>
-                {{ dish.dishes }}
-                {{ dish.satis}}
+            {% for meal in dish_lst %}
+            <div>
+                {{ meal}}
+            </div>
+            {% endfor %}
+                <p></p>
+                <div>Satisfactory: {{ dish.satis }}</div>
+                <div>Calories: {{ dish.calories }}</div>
+                <div>Proteins: {{ dish.proteins }}</div>
+                <div>Carbs: {{ dish.carbs }}</div>
+                <div>Fats: {{ dish.fats }}</div>
         </fieldset>
         <div class="form-group">
             <input type="submit", name="submit_button", value="Back", class="form-control", id="back">

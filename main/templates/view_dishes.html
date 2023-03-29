@@ -8,7 +8,11 @@
                 {% for choice, radio in test %}
                     <div class="form-check">
                         {{ radio() }}
-                        {{ dishes[choice[0]].dishes }} 
+                        {% for dish in dct[choice[0]] %}
+                            {{ dish }}<br>
+                        {% endfor %}
+                        {{ dishes[choice[0]].dishes }}
+                        {{ dishes[choice[0]].calories }}
                     </div>
                 {% endfor %}
             </fieldset>

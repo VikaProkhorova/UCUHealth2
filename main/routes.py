@@ -2,13 +2,15 @@
 
 import secrets
 import os
+import json
 from datetime import datetime
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
-from main.forms import CalculatorForm, ExampleForm, PossibleMeals, RegistrationForm, \
-    LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan
+from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
+    LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
+    MultiCheckboxForm
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -29,8 +31,8 @@ def main():
                 db.session.commit()
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
-    meals = Meal.query.filter_by(date_added = datetime(*tuple(map(int,
-            datetime.utcnow().strftime('%Y-%m-%d').split('-')))), user_id = current_user.id).all()
+    meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()), 
+            user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
 @login_required
@@ -55,26 +57,30 @@ def add_meal():
 @app.route('/choose_dishes/<int:meal_id>', methods=['GET', 'POST'])
 def choose_dishes(meal_id):
     "Chooses dish"
-    form = ExampleForm()
+    form = MealForm()
+    form.meals = meal_getter()
     meal = Meal.query.get_or_404(meal_id)
     if meal.author != current_user or meal.choicen != 0:
         abort(403)
     if form.validate_on_submit():
-        dishes = calculator_func(form.choices.data,
-            nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
-        for dish in dishes:
-            processed = str(dish[0])[1:-1]
-            if processed[-1] == ",":
-                processed = processed[:-1]
-            new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-            calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
-            fats = dish[2][3], meal = meal)
-            db.session.add(new_dish)
-            db.session.commit()
-            if meal.choicen == 0:
-                meal.choicen = new_dish.id   
+        if form.meals[0].data['choices'] == []:
+            flash('Choose at least one option', 'danger')
+        else:
+            dishes = calculator_func(form.meals[0].data['choices'],
+                nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
+            for dish in dishes:
+                processed = str(dish[0])[1:-1]
+                if processed[-1] == ",":
+                    processed = processed[:-1]
+                new_dish = Dish(dishes = stringer(processed), satis = dish[1],
+                calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
+                fats = dish[2][3], meal = meal)
+                db.session.add(new_dish)
                 db.session.commit()
-        return redirect(url_for('main'))
+                if meal.choicen == 0:
+                    meal.choicen = new_dish.id
+                    db.session.commit()
+            return redirect(url_for('main'))
     return render_template('meals.html', form = form, title = 'Meals')
 
 @app.route("/view_dishes/<int:meal_id>", methods=['GET', 'POST'])
@@ -106,6 +112,18 @@ def view_dishes(meal_id):
     return render_template('view_dishes.html', dishes = dict(choices),
             test = test_form, form = form, title = 'View Dishes', dct = dct)
 
+def meal_getter():
+    "Gets meal from json and creates form"
+    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
+        info = json.load(file)
+    lst = []
+    for i, j in info.items():
+        field = MultiCheckboxForm()
+        field.choices.label = i
+        field.choices.choices = sorted(list(j.keys()))
+        lst.append(field)
+    return lst
+
 def stringer(input_str: str) -> str:
     "Converts str into normal look"
     input_str = input_str.split(", ")
@@ -128,11 +146,14 @@ def show_dish(meal_id):
     lst = dish.dishes.split(', ')
     return render_template('show_dish.html', dish = dish, title = 'Show dish', dish_lst = lst)
 
-@app.route("/results/<int:meal_id>", methods=['GET', 'POST'])
-def results(meal_id):
+@app.route("/results/<dishes_id>", methods=['GET', 'POST'])
+def results(dishes_id):
     "Result page"
-    meal = Meal.query.get_or_404(meal_id)
-    dishes = Dish.query.filter_by(meal = meal).all()
+    ids = list(map(int, dishes_id[1:-1].split(', ')))
+    dishes = []
+    for id in ids:
+        dish = Dish.query.filter_by(id = id).first()
+        dishes.append(dish)
     if not dishes:
         abort(404)
     choices = []
@@ -140,28 +161,32 @@ def results(meal_id):
         choices.append(dish.dishes)
         db.session.delete(dish)
         db.session.commit()
-    db.session.delete(meal)
-    db.session.commit()
     return render_template('results.html', results=choices, title = 'Results')
 
-@app.route('/available_meals/<int:meal_id>', methods=['GET', 'POST'])
-def available_meals(meal_id):
+@app.route('/available_meals/<nutrients>', methods=['GET', 'POST'])
+def available_meals(nutrients):
     'Test page'
-    form = ExampleForm()
-    meal = Meal.query.get_or_404(meal_id)
+    form = MealForm()
+    form.meals = meal_getter()
+    meal = list(map(int, nutrients[1:-1].split(", ")))
     if form.validate_on_submit():
-        dishes = calculator_func(form.choices.data,
-            nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
-        for dish in dishes:
-            processed = str(dish[0])[1:-1]
-            if processed[-1] == ",":
-                processed = processed[:-1]
-            new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-            calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
-            fats = dish[2][3], meal = meal)
-            db.session.add(new_dish)
-            db.session.commit()
-        return redirect(url_for('results', meal_id = meal.id))
+        if form.meals[0].data['choices'] == []:
+            flash('Choose at least one option', 'danger')
+        else:
+            dishes = calculator_func(form.meals[0].data['choices'],
+                nutrition=(meal[0], meal[1], meal[2], meal[3]))
+            id_lst = []
+            for dish in dishes:
+                processed = str(dish[0])[1:-1]
+                if processed[-1] == ",":
+                    processed = processed[:-1]
+                new_dish = Dish(dishes = stringer(processed), satis = dish[1],
+                calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
+                fats = dish[2][3])
+                db.session.add(new_dish)
+                db.session.commit()
+                id_lst.append(new_dish.id)
+            return redirect(url_for('results', dishes_id = tuple(id_lst)))
     return render_template('meals.html', form = form, title = 'Available Meals')
 
 @app.route('/calculator', methods=['GET','POST'])
@@ -172,13 +197,8 @@ def calculator():
         proteins = int(form.proteins.data)
         carbs = int(form.carbs.data)
         fats = int(form.fats.data)
-        meal = Meal(name = 'Guest_Meal',
-            calories = int(round(((proteins+carbs)*4 + fats*9), -1)),
-            proteins = proteins, carbs = carbs,
-            fats = fats)
-        db.session.add(meal)
-        db.session.commit()
-        return redirect(url_for('available_meals', meal_id = meal.id))
+        return redirect(url_for('available_meals', 
+            nutrients = ((int(round(((proteins+carbs)*4 + fats*9), -1))), proteins, carbs, fats)))
     return render_template('calculator.html', form=form, title = 'Calculator')
 
 @app.route("/register", methods=['GET', 'POST'])

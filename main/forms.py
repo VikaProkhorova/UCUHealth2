@@ -1,11 +1,11 @@
 "Models module"
 
-import json
 from flask_wtf import FlaskForm, file
 from PIL import Image, UnidentifiedImageError
 from flask_login import current_user
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
-    StringField, PasswordField, BooleanField, SelectField, RadioField, FileField
+    StringField, PasswordField, BooleanField, SelectField, RadioField, FileField,\
+        FieldList, FormField, SearchField
 from wtforms.validators import DataRequired, EqualTo, Email, \
     Length, NumberRange, ValidationError
 from main.models import User
@@ -22,18 +22,17 @@ class CalculatorForm(FlaskForm):
 
 class MultiCheckboxField(SelectMultipleField):
     "Multi check box field"
-    widget = widgets.ListWidget(prefix_label=False)
+    widget = widgets.ListWidget(prefix_label=True)
     option_widget = widgets.CheckboxInput()
 
-class ExampleForm(FlaskForm):
-    "Example form"
-    data = []
-    with open('main/data/meals.json', "r", encoding='utf-8') as file:
-        info = json.load(file)
-        for meal_category in info:
-            for meal in info[meal_category]:
-                data.append(meal)
-    choices = MultiCheckboxField('Available dishes', choices=sorted(data))
+class MultiCheckboxForm(FlaskForm):
+    "MultiCheckBox Form"
+    choices = MultiCheckboxField('', choices=[])
+
+class MealForm(FlaskForm):
+    "Test Form"
+    search = SearchField()
+    meals = FieldList(FormField(MultiCheckboxField))
     submit = SubmitField("Submit")
 
 class LoginForm(FlaskForm):
@@ -140,10 +139,11 @@ class UpdateAccountForm(FlaskForm):
 
     def validate_picture(self, picture) -> None:
         "Validates picture"
-        try:
-            _ = Image.open(picture.data)
-        except UnidentifiedImageError as exc:
-            raise ValidationError("Imported file seems to be corrupted") from exc
+        if not picture.data is None:
+            try:
+                Image.open(picture.data)
+            except UnidentifiedImageError as exc:
+                raise ValidationError("Imported file seems to be corrupted") from exc
 
 class CustomPlan(FlaskForm):
     'Custom Plan class'

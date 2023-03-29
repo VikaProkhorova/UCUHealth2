@@ -41,9 +41,9 @@ class Meal(db.Model):
     carbs = db.Column(db.Float, nullable = False)
     fats = db.Column(db.Float, nullable = False)
     choicen = db.Column(db.Integer, default = 0)
-    date_added = db.Column(db.DateTime, nullable = False,
+    date_added = db.Column(db.Date, nullable = False,
         default = datetime.date(datetime.utcnow()))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), default = 0)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable = False)
     dishes = db.relationship('Dish', backref = 'meal', lazy=True)
 
     def __repr__(self):
@@ -58,7 +58,7 @@ class Dish(db.Model):
     proteins = db.Column(db.Float, nullable = False)
     carbs = db.Column(db.Float, nullable = False)
     fats = db.Column(db.Float, nullable = False)
-    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'), nullable = False)
+    meal_id = db.Column(db.Integer, db.ForeignKey('meal.id'), default = 0)
 
     def __repr__(self):
         return f"Dish('{self.dishes}', '{self.satis}', '{self.calories}')"

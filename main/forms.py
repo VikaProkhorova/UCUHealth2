@@ -100,7 +100,7 @@ class AddMeal(FlaskForm):
 class PossibleMeals(FlaskForm):
     "Possible Meals form"
     dish_var = RadioField('Choose one from the list:',
-            choices=[], validate_choice=[DataRequired()])
+            choices=[], validate_choice=[DataRequired()], coerce=int)
     submit = SubmitField("Submit")
 
 class UpdateAccountForm(FlaskForm):

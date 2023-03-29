@@ -40,7 +40,7 @@ class Meal(db.Model):
     proteins = db.Column(db.Float, nullable = False)
     carbs = db.Column(db.Float, nullable = False)
     fats = db.Column(db.Float, nullable = False)
-    choicen = db.Column(db.Integer, nullable = False, default = 0)
+    choicen = db.Column(db.Integer, default = 0)
     date_added = db.Column(db.DateTime, nullable = False,
         default = datetime.date(datetime.utcnow()))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), default = 0)

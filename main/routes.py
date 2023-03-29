@@ -71,7 +71,10 @@ def choose_dishes(meal_id):
             fats = dish[2][3], meal = meal)
             db.session.add(new_dish)
             db.session.commit()
-        return redirect(url_for('view_dishes', meal_id = meal.id))
+            if meal.choicen == 0:
+                meal.choicen = new_dish.id   
+                db.session.commit()
+        return redirect(url_for('main'))
     return render_template('meals.html', form = form, title = 'Meals')
 
 @app.route("/view_dishes/<int:meal_id>", methods=['GET', 'POST'])
@@ -82,20 +85,20 @@ def view_dishes(meal_id):
     if meal.author != current_user:
         abort(403)
     dishes = Dish.query.filter_by(meal = meal).all()
-    default_dish = Dish.query.filter_by(meal = meal).first()
-    meal.choicen = default_dish.id
-    db.session.commit()
     if not dishes:
         abort(404)
     choices = []
     dct = {}
     for dish in dishes:
         choices.append((dish.id, dish))
-        dct[dish.id] = dish.dishes.split(', ') 
+        dct[dish.id] = dish.dishes.split(', ')
     form.dish_var.choices = choices
+    if request.method == 'GET':
+        form.dish_var.data = meal.choicen
     test_form = list(zip(form.dish_var.choices, form.dish_var))
     if form.validate_on_submit():
         meal.choicen = form.dish_var.data
+        db.session.commit()
         dish = Dish.query.get_or_404(meal.choicen)
         meal.calories = dish.calories
         db.session.commit()

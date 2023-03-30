@@ -76,6 +76,7 @@ color: #757575;
 } */
 
 .wrapper .form .input_field.terms p{
+    margin-top: 8px;
     margin-left: -175px;
     font-size: 14px;
     color: #757575;

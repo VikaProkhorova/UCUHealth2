@@ -1,136 +1,72 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap");
 
 *{
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
 }
 body {
-margin-top: 300px;
-background: #fff9f5;
-padding: 0 10px;
+    margin-top: 375px;
+    background: #fff9f5;
+    padding: 0 10px;
 }
 
 .wrapper {
-max-width: 500px;
-width: 100%;
-background: #fff;
-margin: 20px auto;
-padding: 30px;
-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.125);
-border: 2.5px solid #a4cfbc;
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
+    max-width: 500px;
+    width: 100%;
+    background: #fff;
+    margin: 20px auto;
+    padding: 30px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.125);
+    border: 2.5px solid #a4cfbc;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
-/* .border-top {
-    margin-top: 500px;
-} */
 
 .wrapper .title {
-font-size: 22px;
-font-weight: 700;
-margin-bottom: 25px;
-color: #ffce59;
-text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #ffce59;
+    text-align: center;
+    background: #fff;
 }
-
 .wrapper .form {
-width: 100%;
-}
-.wrapper .input_field {
-    margin-top: 15px;
-}
-.wrapper .form .input_field {
-margin-top: 20px;
-margin-bottom: 15px;
-display: flex;
-align-items: center;
+    width: 100%;
+    background: #fff;
 }
 
-.wrapper .form .input_field label {
-width: 200px;
-color: #757575;
-margin-right: 10px;
-font-size: 14.2px;
+.wrapper .input_field {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.wrapper .input_field label {
+    width: 200px;
+    color: #757575;
+    margin-right: 10px;
+    font-size: 14.2px;
 }
 
 .wrapper .form .input_field .input {
-width: 100%;
-outline: none;
-border: 1px solid #d5dbd9;
-font-size: 15px;
-padding: 8px 10px;
-border-radius: 3px;
-transition: all 0.3s ease;
+    width: 100%;
+    outline: none;
+    border: 1px solid #d5dbd9;
+    font-size: 15px;
+    padding: 8px 10px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
 }
 
-.wrapper .form .input_field .input:focus,
-.wrapper .form .input_field .textarea:focus {
-border: 1px solid #ffce59;
-}
-
-.wrapper .form .input_field .p {
-font-size: 14px;
-color: #757575;
-}
-
-.wrapper .form .input_field.terms p {
-font-size: 14px;
-color: #757575;
-font-weight: 400;
-font-family: 'Montserrat', sans-serif;
-}
-
-.wrapper .form .input_field .check {
-width: 15px;
-height: 15px;
-position: relative;
-display: block;
-cursor: pointer;
-}
-
-.wrapper .form .input_field .check input[type="checkbox"] {
-position: absolute;
-top: 0;
-left: 0;
-opacity: 0;
-}
-
-.wrapper .form .input_field .check .checkmark {
-width: 15px;
-height: 15px;
-border: 1px solid #ffce59;
-display: block;
-position: relative;
-}
-
-.wrapper .form .input_field .check .checkmark:before {
-content: "";
-position: absolute;
-top: 1px;
-left: 2px;
-width: 5px;
-height: 2px;
-border: 2px solid;
-border-color: transparent transparent #fff #fff;
-transform: rotate(-45deg);
-display: none;
-}
-
-.wrapper .form .input_field .check input[type="checkbox"]:checked ~ .checkmark {
-background: #ffce59;
-}
-
-.wrapper .form .input_field .check input[type="checkbox"]:checked ~ .checkmark:before {
-display: block;
-}
 
 .wrapper .form .input_field:last-child {
-display: flex;
-justify-content: flex-end;
+    display: flex;
+    justify-content: flex-end;
 }
 .wrapper .btn {
     margin-left: 10px;
@@ -158,4 +94,12 @@ justify-content: flex-end;
 }
 .wrapper .input_field .btn:hover{
     background: #ffd658;
+}
+#result{
+    background: #fff;
+    margin-top: 20px;
+    width: 200px;
+    color: #757575;
+    margin-right: 10px;
+    font-size: 14.2px;
 }

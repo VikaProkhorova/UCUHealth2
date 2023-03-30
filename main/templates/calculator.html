@@ -9,8 +9,7 @@
             <div class = "title">
             Calculator
             </div>
-            <div, id = 'result'>Total Calories: 0</div>
-            <div class="input_field", id = 'result'>
+            <div class="input_field">
                 {{ form.proteins.label(class="form-control-label")}}
                 {% if form.proteins.errors %}
                     {{ form.proteins(class="form-control form-control-xxl is-invalid")}}
@@ -50,6 +49,7 @@
             {% endif%}
         </div>
         </fieldset>
+        <div id='result'>Total Calories: {{ result }}</div>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info")}}
         </div>
@@ -61,13 +61,10 @@
       const protein = parseInt(document.getElementById("proteins").value) || 0;
       const carbs = parseInt(document.getElementById("carbs").value) || 0;
       const fats = parseInt(document.getElementById("fats").value) || 0;
-  
       // Calculate the result
       const result = protein * 4 + carbs * 4 + fats * 9;
-  
       // Update the text of the result box
       document.getElementById("result").innerText = "Total Calories: " + result;
     }
   </script>
 {% endblock content %}
-    

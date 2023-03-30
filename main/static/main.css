@@ -34,11 +34,11 @@ button#one-time {
 
 button#daily_distribution:hover {
   background-color: #57817f;
-  color: #f5eee7;
+  color: #fff;
 }
 button#one-time:hover {
   background-color: #57817f;
-  color: #f5eee7;
+  color: #fff;
 }
 .button-container {
   background-color: #4b791c;

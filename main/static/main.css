@@ -8,38 +8,7 @@ body {
   color: #333333;
   margin-top: 5rem;
 }
-/* h1, h2, h3, h4, h5, h6 {
-  color: #444444;
-  margin-bottom: 50px;
-} */
 
-button#daily_distribution {
-  margin-top: 200px;
-  margin-bottom: 30px;
-  background-color: #a4cfbc;
-  color: #fff9f5;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: #ffce59;
-  border-radius: 3px;
-}
-button#one-time {
-  background-color: #a4cfbc;
-  color: #fff9f5;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 3px;
-}
-
-button#daily_distribution:hover {
-  background-color: #57817f;
-  color: #fff;
-}
-button#one-time:hover {
-  background-color: #57817f;
-  color: #fff;
-}
 .button-container {
   background-color: #4b791c;
   display: flex;
@@ -142,4 +111,34 @@ a.article-title:hover {
 .panel-img {
   height: 40px;
   width: 40px;
+}
+/*
+.input_field {
+  margin-bottom: 15px;
+  background-color: #a4cfbc;
+  color: #757575;
+}
+
+ .input_field:hover {
+  background-color: #57817f;
+  color: #fff;
+}
+button#daily_distribution {
+  background-color: #fff9f5;
+  color: #333333;
+  margin-top: 200px;
+  margin-bottom: 30px;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: #ffce59;
+  border-radius: 3px;
+}
+
+button#all_meal {
+  background-color: #fff9f5;
+  color: #333333;
+  font-size: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px; */
 }

@@ -97,3 +97,12 @@ body {
     color: #fff;
 }
 
+#settings{
+    background-color: #a4cfbc;
+    color: #757575;
+}
+#settings:hover {
+    background-color: #57817f;
+    color: #fff;
+}
+

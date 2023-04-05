@@ -4,13 +4,14 @@ import secrets
 import os
 import json
 from datetime import datetime
+from typing import List
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
-    MultiCheckboxForm, PersonalPlan
+    MultiCheckboxFormMeals, PersonalPlan, SettingsForm, MultiCheckboxFormSettings
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -120,7 +121,7 @@ def meal_getter():
         info = json.load(file)
     lst = []
     for i, j in info.items():
-        field = MultiCheckboxForm()
+        field = MultiCheckboxFormMeals()
         field.choices.label = i.title()
         field.choices.choices = sorted(list(j.keys()))
         lst.append(field)
@@ -270,11 +271,21 @@ def account():
             return redirect(url_for('account_update'))
         elif request.form['submit_button'] == "Personal Plan":
             return redirect(url_for('account_plan'))
+        elif request.form['submit_button'] == "Settings":
+            return redirect(url_for('settings'))
+        elif request.form['submit_button'] == "Calendar":
+            return redirect(url_for('calendar'))
         else:
             return redirect(url_for('logout'))
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account.html', image_file = image_file)
 
+@app.route('/calendar', methods=["GET", 'POST'])
+@login_required
+def calendar():
+    'Calendar route'
+    return render_template('calendar.html', title = 'Calendar')
+    
 @app.route('/account_update', methods=["GET", 'POST'])
 @login_required
 def account_update():
@@ -335,12 +346,11 @@ def account_plan():
             proteins = int(nutrients_form.proteins.data)
             carbs = int(nutrients_form.carbs.data)
             fats = int(nutrients_form.fats.data)
-            current_user.calories = int(round((proteins+carbs)*4 + fats*9, -2))
+            current_user.calories = int(round((proteins+carbs)*4 + fats*9, -1))
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats
             current_user.servings = nutrients_form.servings.data
-            
         else:
             current_user.custom_plan = user_choice
             nutrients = calcalories(current_user.sex, current_user.height, current_user.age,
@@ -358,6 +368,39 @@ def account_plan():
     nutrients_form.servings.data = current_user.servings
     return render_template('account_plan.html', form = nutrients_form,
         choice_form = choice_form, title = "Personal Plan")
+
+@app.route('/settings', methods=["GET", 'POST'])
+@login_required
+def settings():
+    'Settings route'
+    form = SettingsForm()
+    with open('main/data/meals.json', 'r', encoding='utf-8') as file, \
+        open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file_sec:
+        info = list(json.load(file).keys())
+        default = json.load(file_sec)['unrepeatable meals']
+    form_lst = form_creator(info)
+    form.unrepeatable.choices = [(cat, cat) for cat in info]
+    form.portions = form_lst
+    if form.validate_on_submit():
+        print(form.portions[0].data)
+    form.unrepeatable.data = default
+    with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
+        user_data = json.load(file)['portions']
+        for portion_form in form.portions:
+            portion_form.choices.data = user_data[portion_form.choices.label.lower()]
+    return render_template('settings.html', title = 'Settings', form = form)
+
+def form_creator(keys: List):
+    "Gets settings info to create form"
+    with open('main/settings/portions.json', 'r', encoding='utf-8') as file:
+        info = json.load(file)['max_portions']
+    lst = []
+    for i in keys:
+        field = MultiCheckboxFormSettings()
+        field.choices.label = i.title()
+        field.choices.choices = info
+        lst.append(field)
+    return lst
 
 @app.route('/logout')
 def logout():

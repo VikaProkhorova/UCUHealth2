@@ -25,15 +25,32 @@ class MultiCheckboxField(SelectMultipleField):
     widget = widgets.ListWidget(prefix_label=True)
     option_widget = widgets.CheckboxInput()
 
-class MultiCheckboxForm(FlaskForm):
+class MultiCheckboxFormMeals(FlaskForm):
     "MultiCheckBox Form"
     choices = MultiCheckboxField('', choices=[])
 
+class MultiCheckboxFormSettings(FlaskForm):
+    "MultiCheckBox Form"
+    choices = MultiCheckboxField('', choices=[], coerce=float)
+
+
 class MealForm(FlaskForm):
-    "Test Form"
+    "Meal Form"
     search = SearchField()
     meals = FieldList(FormField(MultiCheckboxField))
     submit = SubmitField("Submit")
+
+class SettingsForm(FlaskForm):
+    'Settings Form'
+    unrepeatable = MultiCheckboxField('Unrepeatable meals', choices=[], coerce=str)
+    portions = FieldList(FormField(MultiCheckboxField))
+    submit = SubmitField("Save")
+
+    # def validate_unrepeatable(self, form):
+    #     'Validator for unrepeatable meals'
+    #     print(form.data)
+    #     if not form.data:
+    #         raise ValidationError("Choose at least one option")
 
 class LoginForm(FlaskForm):
     "Login form"

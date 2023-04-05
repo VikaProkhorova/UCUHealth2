@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <legend class="border-bottom mb-4">Settings</legend>
+        {{ form.unrepeatable.label }}
+        {% if form.unrepeatable.errors %}
+            <div class="invalid-feedback">
+                {% for error in form.unrepeatable.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <fieldset class="form-group">
+            <div class="form-check">
+                {% for choice in form.unrepeatable %}
+                    {{ choice.label }}
+                    {{ choice() }}<br>
+                {% endfor %}
+            </div>
+        </fieldset>
+        {% for category in form.portions %}
+            {{ category.choices.label }}
+                <fieldset class="form-group">
+                    <div class="form-check">
+                        {% if category.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in category.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% for choice in category %}
+                            {{ choice() }}
+                        {% endfor %}
+                    </div>
+                </fieldset>
+        {% endfor %}
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -120,6 +120,7 @@ class UpdateAccountForm(FlaskForm):
     (1.46, 'Active lifestyle with 4-5 workouts a week'),
     (1.55, 'Active lifestyle with 5-6 workouts a week'),
     (1.8, 'Active lifestyle with more than 6 workouts a week')], coerce=float)
+    servings = SelectField('Servings', choices = [], coerce=int)
     submit = SubmitField("Update")
     picture = FileField('Update Profile Picture', validators=[file.FileAllowed(['jpg', 'png'])])
 
@@ -139,8 +140,7 @@ class UpdateAccountForm(FlaskForm):
 
     def validate_picture(self, picture) -> None:
         "Validates picture"
-        print(picture.data)
-        if not picture.data is None:
+        if picture.data.filename != '':
             try:
                 Image.open(picture.data)
             except UnidentifiedImageError as exc:
@@ -152,3 +152,13 @@ class CustomPlan(FlaskForm):
         choices=[(0, "Use auto-generated"), (1, "Mannual")],
         validate_choice=[DataRequired()], coerce=int)
     submit = SubmitField("Update")
+
+class PersonalPlan(FlaskForm):
+    'Personal Plan class'
+    proteins = IntegerField('Proteins',
+                validators=[DataRequired(), NumberRange(min=0)])
+    carbs = IntegerField("Carbohydrates",
+                validators=[DataRequired(), NumberRange(min=0)])
+    fats = IntegerField("Fats",
+                validators=[DataRequired(), NumberRange(min=0)])
+    servings = SelectField('Servings', choices = [], coerce=int)

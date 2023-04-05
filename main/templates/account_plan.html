@@ -54,7 +54,20 @@
             {% else %}
                 {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
             {% endif%}
-        </div>
+            </div>
+            <div class="input_field">
+                {{ form.servings.label(class="form-control-label")}}
+                {% if form.servings.errors %}
+                    {{ form.servings(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.servings.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.servings(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
         </fieldset>
         <div class="input_field">
             {{ choice_form.submit(class="btn btn-outline-info")}}

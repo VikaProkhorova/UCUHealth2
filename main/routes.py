@@ -280,12 +280,6 @@ def account():
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account.html', image_file = image_file)
 
-@app.route('/calendar', methods=["GET", 'POST'])
-@login_required
-def calendar():
-    'Calendar route'
-    return render_template('calendar.html', title = 'Calendar')
-    
 @app.route('/account_update', methods=["GET", 'POST'])
 @login_required
 def account_update():

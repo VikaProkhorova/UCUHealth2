@@ -10,7 +10,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from main import app, db, bcrypt
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
-    MultiCheckboxForm
+    MultiCheckboxForm, PersonalPlan
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -23,7 +23,9 @@ def main():
         return render_template('home.html', title = 'Home')
     if request.method == 'POST':
         if request.form['submit_button'] == "Daily Distribution":
-            for i, j in [(0.3, 'Breakfast'), (0.4, 'Lunch'), (0.3, 'Dinner')]:
+            with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            for i, j in data[str(current_user.servings)]:
                 meal = Meal(name = j, calories = round(current_user.calories*i, -1),
                     proteins = current_user.proteins*i, carbs = current_user.carbs*i,
                     fats = current_user.fats*i, author = current_user)
@@ -35,12 +37,12 @@ def main():
             user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
-@app.route('/menu', methods = ['GET'])
+@app.route('/menu', methods=['GET'])
 def menu():
     'Menu route'
     with open('main/data/meals.json', 'r', encoding='utf-8') as file:
-        meals = json.load(file)
-    return render_template('menu.html', title = 'menu', meals = meals)
+        info = json.load(file)
+    return render_template('menu.html', meals = info, title = menu)
 
 @login_required
 @app.route('/add_meal', methods=['GET', 'POST'])
@@ -126,7 +128,7 @@ def meal_getter():
     lst = []
     for i, j in info.items():
         field = MultiCheckboxForm()
-        field.choices.label = i
+        field.choices.label = i.title()
         field.choices.choices = sorted(list(j.keys()))
         lst.append(field)
     return lst
@@ -285,6 +287,9 @@ def account():
 def account_update():
     "Account page"
     form = UpdateAccountForm()
+    with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
+        choices = list(json.load(file).keys())
+    form.servings.choices = choices
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
@@ -304,6 +309,7 @@ def account_update():
             current_user.proteins = nutrients[1]
             current_user.carbs = nutrients[2]
             current_user.fats = nutrients[3]
+            current_user.servings = form.servings.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account_update'))
@@ -315,6 +321,7 @@ def account_update():
     form.weight.data = current_user.weight
     form.goal.data = current_user.goal
     form.activity.data = current_user.activity
+    form.servings.data = current_user.servings
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account_update.html', title = "Account Update",
         image_file=image_file, form=form)
@@ -324,7 +331,10 @@ def account_update():
 def account_plan():
     "Account plan page"
     choice_form = CustomPlan()
-    nutrients_form = CalculatorForm()
+    nutrients_form = PersonalPlan()
+    with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
+        choices = list(json.load(file).keys())
+    nutrients_form.servings.choices = choices
     if choice_form.validate_on_submit():
         user_choice = choice_form.plan_choice.data
         if user_choice == 1:
@@ -336,6 +346,8 @@ def account_plan():
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats
+            current_user.servings = nutrients_form.servings.data
+            
         else:
             current_user.custom_plan = user_choice
             nutrients = calcalories(current_user.sex, current_user.height, current_user.age,
@@ -350,6 +362,7 @@ def account_plan():
     nutrients_form.proteins.data = int(round(current_user.proteins, -1))
     nutrients_form.carbs.data = int(round(current_user.carbs, -1))
     nutrients_form.fats.data = int(round(current_user.fats, -1))
+    nutrients_form.servings.data = current_user.servings
     return render_template('account_plan.html', form = nutrients_form,
         choice_form = choice_form, title = "Personal Plan")
 

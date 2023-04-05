@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-<link href="{{ url_for('static', filename='personal_info.css') }}" rel="stylesheet">
-<div class="wrapper">
+    <link href="{{ url_for('static', filename='personal_info.css') }}" rel="stylesheet">
+    <div class="wrapper">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form">

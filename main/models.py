@@ -27,6 +27,7 @@ class User(db.Model, UserMixin):
     proteins = db.Column(db.Float, nullable=False)
     carbs = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
+    servings = db.Column(db.Integer, nullable = False, default = 3)
     meals = db.relationship('Meal', backref="author", lazy = True)
 
     def __repr__(self):

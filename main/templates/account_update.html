@@ -111,6 +111,19 @@
                 {% endif %}
             </div>
             <div class="input_field">
+                {{ form.servings.label(class="form-control-label") }}
+                {% if form.servings.errors %}
+                    {{ form.servings(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.servings.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.servings(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field">
                 {{ form.activity.label(class="form-control-label") }}
                 {% if form.activity.errors %}
                     {{ form.activity(class="form-control form-control-xxl is-invalid") }}
@@ -133,10 +146,10 @@
                 {% endif %}
             </div>
         </fieldset>
-        </form>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
+    </form>
     </div>
 
 {% endblock content %}

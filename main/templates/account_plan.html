@@ -41,18 +41,31 @@
                 {% endif%}
             </div>
             <div class="input_field">
-            {{ form.fats.label(class="form-control-label")}}
-            {% if form.fats.errors %}
-                {{ form.fats(class="form-control form-control-xxl is-invalid")}}
-                <div class='invalid-feedback'>
-                    {% for error in form.fats.errors %}
-                        <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
-            {% endif%}
-        </div>
+                {{ form.fats.label(class="form-control-label")}}
+                {% if form.fats.errors %}
+                    {{ form.fats(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.fats.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
+            <div class="input_field">
+                {{ form.servings.label(class="form-control-label")}}
+                {% if form.servings.errors %}
+                    {{ form.servings(class="form-control form-control-xxl is-invalid")}}
+                    <div class='invalid-feedback'>
+                        {% for error in form.servings.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.servings(class="form-control form-control-xxl", onchange="updateValues()")}}
+                {% endif%}
+            </div>
         </fieldset>
         <div id = 'result'>Total Calories: {{ current_user.calories }}</div>
         <div class="input_field">

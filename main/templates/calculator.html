@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-<link href="{{ url_for('static', filename='calculator.css') }}" rel="stylesheet">
-<div class="wrapper">
-<div class="content-section">
+    <link href="{{ url_for('static', filename='calculator.css') }}" rel="stylesheet">
+    <div class="wrapper">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class = "form">

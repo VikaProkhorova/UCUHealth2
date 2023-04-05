@@ -119,7 +119,7 @@ def meal_getter():
     lst = []
     for i, j in info.items():
         field = MultiCheckboxForm()
-        field.choices.label = i
+        field.choices.label = i.title()
         field.choices.choices = sorted(list(j.keys()))
         lst.append(field)
     return lst

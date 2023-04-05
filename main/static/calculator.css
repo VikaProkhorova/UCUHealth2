@@ -7,7 +7,7 @@
     font-family: 'Montserrat', sans-serif;
 }
 body {
-    margin-top: 375px;
+    margin-top: 350px;
     background: #fff9f5;
     padding: 0 10px;
 }
@@ -32,14 +32,15 @@ body {
     margin-bottom: 25px;
     color: #ffce59;
     text-align: center;
-    background: #fff;
+    /* background: #fff; */
 }
 .wrapper .form {
     width: 100%;
-    background: #fff;
+    /* background: #fff; */
 }
 
 .wrapper .input_field {
+    /* background-color: #fff; */
     margin-top: 20px;
     margin-bottom: 15px;
     display: flex;
@@ -61,6 +62,7 @@ body {
     padding: 8px 10px;
     border-radius: 3px;
     transition: all 0.3s ease;
+    background-color: #fff;
 }
 
 
@@ -96,7 +98,7 @@ body {
     background: #ffd658;
 }
 #result{
-    background: #fff;
+    /* background: #fff; */
     margin-top: 20px;
     width: 200px;
     color: #757575;

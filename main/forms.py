@@ -139,6 +139,7 @@ class UpdateAccountForm(FlaskForm):
 
     def validate_picture(self, picture) -> None:
         "Validates picture"
+        print(picture.data)
         if not picture.data is None:
             try:
                 Image.open(picture.data)

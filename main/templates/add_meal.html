@@ -1,14 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-    <link href="{{ url_for('static', filename='calculator.css') }}" rel="stylesheet">
-    <div class="wrapper">
-    <!-- <div class="content-section"> -->
+<link href="{{ url_for('static', filename='calculator.css') }}" rel="stylesheet">
+<div class="wrapper">
+<div class="content-section">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class = "form">
             <div class = "title">
             Add Meal
             </div>
+            <div, id = 'result'>Total Calories: 0</div>
             <div class="input_field">
                 {{ form.meal_name.label(class="form-control-label")}}
                 {% if form.meal_name.errors %}
@@ -62,22 +63,21 @@
             {% endif%}
         </div>
         </fieldset>
-        <div id = 'result'>Total Calories: 0</div>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info")}}
         </div>
     </form>
-    </div>
+</div>
 <script>
     function updateValues() {
       // Get the values of the input fields
       const protein = parseInt(document.getElementById("proteins").value) || 0;
       const carbs = parseInt(document.getElementById("carbs").value) || 0;
       const fats = parseInt(document.getElementById("fats").value) || 0;
-
+  
       // Calculate the result
       const result = protein * 4 + carbs * 4 + fats * 9;
-
+  
       // Update the text of the result box
       document.getElementById("result").innerText = "Total Calories: " + result;
     }

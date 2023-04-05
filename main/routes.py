@@ -35,6 +35,13 @@ def main():
             user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
+@app.route('/menu', methods = ['GET'])
+def menu():
+    'Menu route'
+    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
+        meals = json.load(file)
+    return render_template('menu.html', title = 'menu', meals = meals)
+
 @login_required
 @app.route('/add_meal', methods=['GET', 'POST'])
 def add_meal():

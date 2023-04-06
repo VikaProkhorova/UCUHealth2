@@ -31,7 +31,7 @@ class MultiCheckboxFormMeals(FlaskForm):
 
 class MultiCheckboxFormSettings(FlaskForm):
     "MultiCheckBox Form"
-    choices = MultiCheckboxField('', choices=[], coerce=float)
+    choices = MultiCheckboxField('', choices=[], coerce=str)
 
 
 class MealForm(FlaskForm):

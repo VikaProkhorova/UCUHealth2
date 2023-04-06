@@ -46,12 +46,6 @@ class SettingsForm(FlaskForm):
     portions = FieldList(FormField(MultiCheckboxField))
     submit = SubmitField("Save")
 
-    # def validate_unrepeatable(self, form):
-    #     'Validator for unrepeatable meals'
-    #     print(form.data)
-    #     if not form.data:
-    #         raise ValidationError("Choose at least one option")
-
 class LoginForm(FlaskForm):
     "Login form"
     email = StringField("Email",

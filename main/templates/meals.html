@@ -1,10 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
+<link href="{{ url_for('static', filename='meals.css') }}" rel="stylesheet">
+    <div class="wrapper">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
-        <legend class="border-bottom mb-4">Test Form</legend>
-        {{ form.search() }} <br>
+        <div class = "title">
+            Choose avaible dishes
+        </div>
+        <!-- <legend class="border-bottom mb-4">Choose avaible dishes</legend> -->
         {% if form.meals.errors %}
             <div class="invalid-feedback">
                 {% for error in form.meals.errors %}

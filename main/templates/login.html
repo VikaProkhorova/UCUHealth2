@@ -43,6 +43,9 @@
         </fieldset>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info") }}
+            <small class="text-muted ml-2">
+                <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
+            </small>
         </div>
     </form>
 </div>

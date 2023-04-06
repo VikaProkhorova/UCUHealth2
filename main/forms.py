@@ -173,3 +173,22 @@ class PersonalPlan(FlaskForm):
     fats = IntegerField("Fats",
                 validators=[DataRequired(), NumberRange(min=0)])
     servings = SelectField('Servings', choices = [], coerce=int)
+
+class RequestResetForm(FlaskForm):
+    'Request reset form'
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        'Validates email'
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with that email. You must register first.')
+
+class ResetPasswordForm(FlaskForm):
+    'Reset Password Form'
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')

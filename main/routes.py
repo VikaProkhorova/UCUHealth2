@@ -12,7 +12,8 @@ from flask_mail import Message
 from main import app, db, bcrypt, mail
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
-    MultiCheckboxFormMeals, PersonalPlan, RequestResetForm, ResetPasswordForm, SettingsForm, MultiCheckboxFormSettings
+    MultiCheckboxFormMeals, PersonalPlan, RequestResetForm, ResetPasswordForm, \
+    SettingsForm, MultiCheckboxFormSettings
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
@@ -223,7 +224,7 @@ def register():
         form.email.data, form.password.data)))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/personal_info/<pers_info>', methods=['GET', 'POST'])
+@app.route('/personal_info/<pers_info>/', methods=['GET', 'POST'])
 def personal_info(pers_info):
     "Personal info route"
     form = PersonalInfoForm()
@@ -232,11 +233,16 @@ def personal_info(pers_info):
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
         nutrients = calcalories(form.sex.data, form.height.data, form.age.data,
             form.weight.data, form.activity.data, form.goal.data)
+        json_name = secrets.token_hex(8) + '.json'
+        with open('main/settings/default.json', 'r', encoding='utf-8') as file, \
+        open(f'main/settings/{json_name}', 'w', encoding='utf-8') as user_file:
+            default_info = json.load(file)
+            json.dump(default_info, user_file, indent=2)
         user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
         sex = form.sex.data, age = form.age.data, height = form.height.data,\
             weight = form.weight.data, goal = form.goal.data, activity = form.activity.data,
             calories = nutrients[0], proteins = nutrients[1], carbs = nutrients[2],
-            fats = nutrients[3])
+            fats = nutrients[3], settings = json_name)
         db.session.add(user)
         db.session.commit()
         flash('Your account had been created', 'success')
@@ -277,14 +283,13 @@ def account():
     if request.method == 'POST':
         if request.form['submit_button'] == "Personal Info":
             return redirect(url_for('account_update'))
-        elif request.form['submit_button'] == "Personal Plan":
+        if request.form['submit_button'] == "Personal Plan":
             return redirect(url_for('account_plan'))
-        elif request.form['submit_button'] == "Settings":
+        if request.form['submit_button'] == "Settings":
             return redirect(url_for('settings'))
-        elif request.form['submit_button'] == "Calendar":
+        if request.form['submit_button'] == "Calendar":
             return redirect(url_for('calendar'))
-        else:
-            return redirect(url_for('logout'))
+        return redirect(url_for('logout'))
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
     return render_template('account.html', image_file = image_file)
 
@@ -376,25 +381,40 @@ def account_plan():
 def settings():
     'Settings route'
     form = SettingsForm()
-    with open('main/data/meals.json', 'r', encoding='utf-8') as file, \
-        open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file_sec:
+    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
         info = list(json.load(file).keys())
-        default = json.load(file_sec)['unrepeatable meals']
     form_lst = form_creator(info)
     form.unrepeatable.choices = [(cat, cat) for cat in info]
     form.portions = form_lst
     if form.validate_on_submit():
-        print(form.unrepeatable.data)
-        print(form.portions[0].data)
-    form.unrepeatable.data = default
+        save_json(form.unrepeatable.data, form.portions[0].data)
     with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
-        user_data = json.load(file)['portions']
+        data = json.load(file)
+        user_data = data['portions']
+        default = data['unrepeatable meals']
         for portion_form in form.portions:
             default_lst = []
             for i in user_data[portion_form.choices.label.lower()]:
-                default_lst.append(f'{portion_form.choices.label.lower()} {i}')
+                default_lst.append(f'{portion_form.choices.label.lower()}-{i}')
             portion_form.choices.data = default_lst
+        form.unrepeatable.data = default
     return render_template('settings.html', title = 'Settings', form = form)
+
+def save_json(info_unrepeatable, info_portions):
+    'Saves json'
+    dct = {"unrepeatable meals": info_unrepeatable, "portions": {}}
+    portions = info_portions['choices']
+    for i in portions:
+        key, value = i.split('-')
+        if key not in dct['portions']:
+            dct['portions'].update({key: []})
+        if len(value) == 1:
+            value = int(value)
+        else:
+            value = float(value)
+        dct['portions'][key].append(value)
+    with open(f'main/settings/{current_user.settings}', 'w', encoding='utf-8') as file:
+        json.dump(dct, file, indent=2)
 
 def form_creator(keys: List):
     "Gets settings info to create form"
@@ -404,7 +424,7 @@ def form_creator(keys: List):
     for i in keys:
         new_lst = []
         for inf in info:
-            new_lst.append(f'{i} {inf}')
+            new_lst.append(f'{i}-{inf}')
         field = MultiCheckboxFormSettings()
         field.choices.label = i.title()
         field.choices.choices = list(zip(new_lst, info))
@@ -439,7 +459,7 @@ def send_reset_email(user):
                   sender='noreply@demo.com',
                   recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
+{url_for('reset_token', token=token, _external=True, personal_info = 'test_string')}
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
     mail.send(msg)

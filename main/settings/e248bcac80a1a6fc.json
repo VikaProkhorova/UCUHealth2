@@ -1,0 +1,32 @@
+{
+  "unrepeatable meals": [
+    "salads",
+    "garnirs",
+    "soups"
+  ],
+  "portions": {
+    "breakfasts": [
+      1,
+      2
+    ],
+    "second meals": [
+      1,
+      2
+    ],
+    "salads": [
+      1
+    ],
+    "garnirs": [
+      0.5,
+      1,
+      1.5,
+      2
+    ],
+    "soups": [
+      0.5,
+      1,
+      1.5,
+      2
+    ]
+  }
+}

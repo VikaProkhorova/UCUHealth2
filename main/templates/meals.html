@@ -1,33 +1,97 @@
 {% extends "layout.html" %}
+
 {% block content %}
 <link href="{{ url_for('static', filename='meals.css') }}" rel="stylesheet">
-    <div class="wrapper">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <div class = "title">
-            Choose avaible dishes
+
+<div class="wrapper">
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="title">
+      <h1>Choose available dishes</h1>
+    </div>
+    {% if form.meals.errors %}
+    <div class="invalid-feedback">
+      {% for error in form.meals.errors %}
+      <span>{{ error }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="category-buttons">
+      {% for category in form.meals %}
+        <button class="category-btn" type="button">{{ category.choices.label }}</button>
+      {% endfor %}
+    </div>
+    {% for category in form.meals %}
+      <fieldset class="form-group category-choices">
+        <div class="form-check">
+          {% for choice in category %}
+          <div class="form-check">
+            {{ choice() }}
+          </div>
+          {% endfor %}
         </div>
-        <!-- <legend class="border-bottom mb-4">Choose avaible dishes</legend> -->
-        {% if form.meals.errors %}
-            <div class="invalid-feedback">
-                {% for error in form.meals.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% for category in form.meals %}
-            {{ category.choices.label }}
-                <fieldset class="form-group">
-                    <div class="form-check">
-                        {% for choice in category %}
-                            {{ choice() }}
-                        {% endfor %}
-                    </div>
-                </fieldset>
-        {% endfor %}
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
+      </fieldset>
+    {% endfor %}
+    <br>
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
 </div>
+
+<script>
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const categoryChoices = document.querySelectorAll('.category-choices');
+
+  // Hide all category choices initially
+  categoryChoices.forEach(choices => choices.style.display = 'none');
+
+  let displayedChoices = null;
+
+  // Show category choices when corresponding button is clicked
+  categoryBtns.forEach((btn, index) => {
+    btn.addEventListener('click', () => {
+      const choices = categoryChoices[index];
+
+      // Hide currently displayed choices (if any)
+      if (displayedChoices !== null) {
+        displayedChoices.style.display = 'none';
+      }
+
+      // Show the clicked category choices
+      choices.style.display = 'block';
+
+      // Update displayedChoices variable
+      displayedChoices = choices;
+    });
+  });
+
+  // Save checked items when user clicks on submit
+  const submitBtn = document.querySelector('input[type="submit"]');
+  submitBtn.addEventListener('click', () => {
+    categoryChoices.forEach(choices => {
+      const checkBoxes = choices.querySelectorAll('input[type="checkbox"]');
+      checkBoxes.forEach(cb => {
+        if (cb.checked) {
+          localStorage.setItem(cb.id, true);
+        } else {
+          localStorage.removeItem(cb.id);
+        }
+      });
+    });
+  });
+
+  // Load checked items from localStorage
+  window.addEventListener('load', () => {
+    categoryChoices.forEach(choices => {
+      const checkBoxes = choices.querySelectorAll('input[type="checkbox"]');
+      checkBoxes.forEach(cb => {
+        const checked = localStorage.getItem(cb.id) === 'true';
+        cb.checked = checked;
+      });
+    });
+  });
+</script>
+
+
 {% endblock content %}

@@ -390,7 +390,10 @@ def settings():
     with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
         user_data = json.load(file)['portions']
         for portion_form in form.portions:
-            portion_form.choices.data = user_data[portion_form.choices.label.lower()]
+            default_lst = []
+            for i in user_data[portion_form.choices.label.lower()]:
+                default_lst.append(f'{portion_form.choices.label.lower()} {i}')
+            portion_form.choices.data = default_lst
     return render_template('settings.html', title = 'Settings', form = form)
 
 def form_creator(keys: List):

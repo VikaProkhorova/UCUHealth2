@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     image_file = db.Column(db.String(20), nullable = False, default='default.jpg')
-    settings = db.Column(db.String(100), nullable = False, default = 'default.json')
+    settings = db.Column(db.String(100), nullable = False, default='default.json')
     custom_plan = db.Column(db.Boolean, default = False)
     sex = db.Column(db.String(10), nullable = False)
     age = db.Column(db.Integer, nullable = False)
@@ -30,6 +30,7 @@ class User(db.Model, UserMixin):
     carbs = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
     servings = db.Column(db.Integer, nullable = False, default = 3)
+    options = db.Column(db.Integer, nullable = False, default = 5)
     meals = db.relationship('Meal', backref="author", lazy = True)
 
     def get_reset_token(self, expires_sec=1800):

@@ -78,8 +78,11 @@ def choose_dishes(meal_id):
         if form.meals[0].data['choices'] == []:
             flash('Choose at least one option', 'danger')
         else:
+            with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
+                setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
+                nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats),
+                settings=setting, maxim = current_user.options)
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
                 if processed[-1] == ",":
@@ -185,8 +188,12 @@ def available_meals(nutrients):
         if form.meals[0].data['choices'] == []:
             flash('Choose at least one option', 'danger')
         else:
+            file_path = 'default.json' if not current_user.is_authenticated else current_user.settings
+            maxim = 5 if not current_user.is_authenticated else current_user.options
+            with open(f'main/settings/{file_path}', 'r', encoding='utf-8') as file:
+                setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal[0], meal[1], meal[2], meal[3]))
+                nutrition=(meal[0], meal[1], meal[2], meal[3]), settings = setting, maxim=maxim)
             id_lst = []
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
@@ -387,7 +394,15 @@ def settings():
     form.unrepeatable.choices = [(cat, cat) for cat in info]
     form.portions = form_lst
     if form.validate_on_submit():
-        save_json(form.unrepeatable.data, form.portions[0].data)
+        check_set = set()
+        for res in form.portions[0].data['choices']:
+            check_set.add(res[:res.index('-')])
+        if check_set == set(info):
+            current_user.options = form.option.data
+            save_json(form.unrepeatable.data, form.portions[0].data)
+            db.session.commit()
+            return redirect(url_for('account'))
+        flash('Choose at least one portion in every category', 'danger')
     with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
         data = json.load(file)
         user_data = data['portions']
@@ -398,6 +413,7 @@ def settings():
                 default_lst.append(f'{portion_form.choices.label.lower()}-{i}')
             portion_form.choices.data = default_lst
         form.unrepeatable.data = default
+        form.option.data = current_user.options
     return render_template('settings.html', title = 'Settings', form = form)
 
 def save_json(info_unrepeatable, info_portions):

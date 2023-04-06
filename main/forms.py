@@ -44,6 +44,7 @@ class SettingsForm(FlaskForm):
     'Settings Form'
     unrepeatable = MultiCheckboxField('Unrepeatable meals', choices=[], coerce=str)
     portions = FieldList(FormField(MultiCheckboxField))
+    option = SelectField('Options to show', choices = [(x, x) for x in range(1, 21)], coerce=int)
     submit = SubmitField("Save")
 
 class LoginForm(FlaskForm):

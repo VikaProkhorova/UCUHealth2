@@ -18,7 +18,7 @@ def rebuilder(meals: dict[dict]) -> List[tuple]:
             result.append((meal, meal_type, meals[meal][meal_type]))
     return result
 
-def portioner(meals: List[tuple]) -> List[tuple]:
+def portioner(meals: List[tuple], portion_info) -> List[tuple]:
     """Adds portion variations
     >>> portioner([('second meals', 'Котлета куряча', [222.0, 21.0, 13.8, 12.0]), ('salads', \
 'Салат з домашнього сиру з редискою', [166.0, 8.97, 3.69, 12.61])])
@@ -27,15 +27,8 @@ def portioner(meals: List[tuple]) -> List[tuple]:
 ('salads', 'Салат з домашнього сиру з редискою: порція - 1', (166.0, 8.97, 3.69, 12.61))]
     """
     new_meals = []
-    portions = [0.5, 1, 1.5, 2]
     for meal in meals:
-        if meal[0] in ('salads'):
-            new_meal = multiplier(meal, 1)
-            new_meals.append(new_meal)
-            continue
-        for portion in portions:
-            if meal[0] in ('second meals', "breakfasts") and str(portion) in ("0.5", "1.5"):
-                continue
+        for portion in portion_info[meal[0]]:
             new_meal = multiplier(meal, portion)
             new_meals.append(new_meal)
     return new_meals
@@ -50,7 +43,8 @@ def multiplier(meal: tuple, portion: float) -> tuple:
         new_values.append(value*portion)
     return meal[0], meal[1]+f': порція - {portion}', tuple(new_values)
 
-def variator(meals: List[tuple], nutrition: tuple[float]) -> List[tuple]:
+def variator(meals: List[tuple], nutrition: tuple[float], 
+        unrepeatable_info: List[str], maxim: int) -> List[tuple]:
     """Generates variants"""
     j = 1
     result = []
@@ -60,18 +54,18 @@ def variator(meals: List[tuple], nutrition: tuple[float]) -> List[tuple]:
         i = 0
         while i < variants_amount:
             variant = next(variants)
-            if checker(variant) is False:
+            if checker(variant, unrepeatable_info) is False:
                 i += 1
                 continue
             counted_var = satisfactor(variant, nutrition)
             result.append(counted_var)
             i += 1
         j += 1
-    return sorted(result, key = lambda x: x[1])[:5]
+    return sorted(result, key = lambda x: x[1])[:maxim]
 
-def checker(variant: List[tuple]) -> bool:
+def checker(variant: List[tuple], unrepeatable_info: List[str]) -> bool:
     """Prevents from two soups appearing in one selection
-    or reaping meals with different portion
+    or reapiting meals with different portion
     >>> checker((('garnirs', 'Овочевий рататуй: порція - 2', \
 (222.0, 5.5, 36.4, 5.74)), ('garnirs', 'Банош: порція - 0.5', \
 (137.0, 4.0, 12.0, 7.0)), ('garnirs', 'Банош: порція - 1.5', \
@@ -84,20 +78,23 @@ def checker(variant: List[tuple]) -> bool:
     [166.0, 8.97, 3.69, 12.61])))
     True
     """
-    count = 0
     meal_names = []
+    check_dct = {}
+    for meal in unrepeatable_info:
+        check_dct[meal] = 0
     for meal in variant:
         name = meal[1]
-        if meal[0] == 'soups':
-            count += 1
-        if ": " in name:
-            name = name[:name.index(": ")]
+        name = name[:name.index(": ")]
         meal_names.append(name)
+        category = meal[0]
+        if category in check_dct:
+            check_dct[category] += 1
     for name in meal_names:
         if meal_names.count(name) > 1:
             return False
-    if count > 1:
-        return False
+    for value in check_dct.items():
+        if value[1] > 1:
+            return False
     return True
 
 def satisfactor(meal_var: tuple[tuple], goal: tuple[float]) -> tuple[tuple]:
@@ -155,46 +152,12 @@ def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
         new_lst.append((variant[0], f"{round(100*numb/4, 2)}%", tuple(nutrients)))
     return new_lst
 
-def calculator_func(choicen_meals: List[str], nutrition: tuple[float]) -> List[tuple]:
+def calculator_func(choicen_meals: List[str], nutrition: tuple[float], 
+        settings, maxim) -> List[tuple]:
     "Main function"
     needed_meals = meal_getter(choicen_meals)
     worked_meals = rebuilder(needed_meals)
-    all_meals = portioner(worked_meals)
-    variants = variator(all_meals, nutrition)
+    all_meals = portioner(worked_meals, settings["portions"])
+    variants = variator(all_meals, nutrition, settings["unrepeatable meals"], maxim)
     final_vars = conclusioner(variants, nutrition)
     return sorted(final_vars, key = lambda x: x[1], reverse=True)
-
-if __name__ == "__main__":
-    import doctest
-    print(doctest.testmod())
-    test_lst = ['Яєчня з овочами']
-    # test_lst = ['Суп квасолевий', 'Крем-суп з гарбуза', 'Суп-пюре морквяний',
-    #    'Макарони з томатним соусом', 'Овочевий рататуй', 'Банош',
-    #    'Салат з домашнього сиру з редискою', 'Салат з черемші і огірків',
-    #    'Салат зі шпинату з ягодами', 'Котлета куряча', 'Котлета рибна','Курка відварна',
-    #    "Баклажани тушковані з грибами", "Капуста тушкована з грибами",
-    #    "Картопля фрі"]
-    GOAL = 1000
-    PROTEINS = (GOAL*0.3)//4
-    CARBS = (GOAL*0.4)//4
-    FATS = (GOAL*0.3)//9
-    GOAL_SAMPLE = (GOAL, PROTEINS, CARBS, FATS)
-    results = calculator_func(test_lst, GOAL_SAMPLE)
-    res = calculator_func(['Яєчня з овочами'], (930.0, 69.48, 115.80000000000001, 20.6))
-    print(res)
-    print(f"""Goal was:
-Calories: {GOAL}
-Proteins: {PROTEINS}
-Carbs: {CARBS}
-Fats: {FATS}
-""")
-    for k in results:
-        print("Meals")
-        for dish in k[0]:
-            print(dish)
-        print(f"""\nSatisfaction - {k[1]}
-Calories: {k[2][0]}
-Proteins: {k[2][1]}
-Carbs: {k[2][2]}
-Fats: {k[2][3]}
-              """)

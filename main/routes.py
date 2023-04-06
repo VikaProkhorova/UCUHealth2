@@ -7,6 +7,7 @@ from datetime import datetime
 from PIL import Image
 from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_mail import Message
 from main import app, db, bcrypt, mail
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
@@ -14,7 +15,6 @@ from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
 from main.calccalories import calcalories
-from flask_mail import Message
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/main", methods=['GET', 'POST'])
@@ -347,7 +347,7 @@ def account_plan():
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats
-            current_user.servings = nutrients_form.servings.data      
+            current_user.servings = nutrients_form.servings.data
         else:
             current_user.custom_plan = user_choice
             nutrients = calcalories(current_user.sex, current_user.height, current_user.age,

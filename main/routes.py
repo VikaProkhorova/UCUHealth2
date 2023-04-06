@@ -376,6 +376,7 @@ def settings():
     form.unrepeatable.choices = [(cat, cat) for cat in info]
     form.portions = form_lst
     if form.validate_on_submit():
+        print(form.unrepeatable.data)
         print(form.portions[0].data)
     form.unrepeatable.data = default
     with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
@@ -390,9 +391,12 @@ def form_creator(keys: List):
         info = json.load(file)['max_portions']
     lst = []
     for i in keys:
+        new_lst = []
+        for inf in info:
+            new_lst.append(f'{i} {inf}')
         field = MultiCheckboxFormSettings()
         field.choices.label = i.title()
-        field.choices.choices = info
+        field.choices.choices = list(zip(new_lst, info))
         lst.append(field)
     return lst
 

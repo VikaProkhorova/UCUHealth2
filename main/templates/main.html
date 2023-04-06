@@ -45,39 +45,41 @@
 </form>
 <script>
   class ProgressBar {
-    constructor(element, initialValue = 0) {
-      this.valueElem = element.querySelector('.progress-bar-value');
-      this.fillElem = element.querySelector('.progress-bar-fill');
+  constructor(element, initialValue = 0) {
+    this.valueElem = element.querySelector('.progress-bar-value');
+    this.fillElem = element.querySelector('.progress-bar-fill');
 
-      this.setValue(initialValue);
-      this.fillElem.style.width = initialValue + '%';
-    }
-
-    setValue(newValue) {
-      if (newValue < 0) {
-        newValue = 0;
-      }
-      if (newValue > 100) {
-        newValue = 100;
-      }
-
-      this.value = newValue;
-      this.update();
-    }
-
-    update() {
-      const percentage = this.value + '%';
-
-      this.fillElem.style.width = percentage; // set fill element's width to percentage with a '%' sign appended
-
-      this.valueElem.textContent = percentage;
-    }
+    this.setValue(initialValue);
+    this.fillElem.style.width = initialValue + '%';
   }
 
-  const meals = document.querySelectorAll('input[type="checkbox"]');
-const progressBar = new ProgressBar(document.querySelector('.progress-bar'));
+  setValue(newValue) {
+    if (newValue < 0) {
+      newValue = 0;
+    }
+    if (newValue > 100) {
+      newValue = 100;
+    }
+    this.value = newValue;
+    this.update();
+    localStorage.setItem('progress', newValue);
+  }
+
+  update() {
+    const percentage = this.value + '%';
+
+    this.fillElem.style.width = percentage; // set fill element's width to percentage with a '%' sign appended
+
+    this.valueElem.textContent = percentage;
+  }
+}
+
+const meals = document.querySelectorAll('input[type="checkbox"]');
+const progressBar = new ProgressBar(document.querySelector('.progress-bar'), parseInt(localStorage.getItem('progress')) || 0);
 
 meals.forEach((meal) => {
+  meal.checked = localStorage.getItem(meal.id) === 'true';
+
   meal.addEventListener('click', () => {
     let selectedCalories = 0;
     let totalCheckedCalories = 0;
@@ -85,6 +87,9 @@ meals.forEach((meal) => {
     meals.forEach((meal) => {
       if (meal.checked) {
         selectedCalories += parseInt(meal.parentElement.querySelector('small').innerText);
+        localStorage.setItem(meal.id, 'true');
+      } else {
+        localStorage.setItem(meal.id, 'false');
       }
     });
 
@@ -98,8 +103,9 @@ meals.forEach((meal) => {
     const percentage = Math.round(selectedCalories / totalCheckedCalories * 100);
     progressBar.setValue(percentage);
   });
-
 });
+
+
 </script>
 
 {% endblock content %}

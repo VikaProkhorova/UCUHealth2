@@ -222,19 +222,20 @@ def calculator():
 
 @app.route('/flash_message')
 def flash_message():
+    'Empty page'
     message = "The confirmation was sent to your email. Check it and follow the link"
     flash(message, 'info')
-    return render_template('flash_message.html')
+    return render_template('layout.html')
 
-def send_email(email, personal_info):
+def send_email(email, pers_info):
+    'Sends email'
     token = secrets.token_hex(20)
     msg = Message('Password Reset Request',
                   sender='noreply@demo.com',
                   recipients=[email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('personal_info', _=token, _external=True, pers_info = personal_info)}
-If you did not make this request then simply ignore this email and no changes will be made.
-'''
+    msg.html = f'<a class="button" \
+href="{url_for("personal_info", _=token, _external=True, pers_info = pers_info)}\
+">Confirm Email</a>'
     mail.send(msg)
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -247,8 +248,6 @@ def register():
         send_email(form.email.data, (form.username.data, \
         form.email.data, form.password.data))
         return redirect(url_for('flash_message'))
-        # return redirect(url_for("personal_info", pers_info = (form.username.data, \
-        # form.email.data, form.password.data)))
     return render_template('register.html', title='Register', form=form)
 
 @app.route('/personal_info/<pers_info>/<_>', methods=['GET', 'POST'])
@@ -494,10 +493,9 @@ def send_reset_email(user):
     msg = Message('Password Reset Request',
                   sender='noreply@demo.com',
                   recipients=[user.email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True, personal_info = 'test_string')}
-If you did not make this request then simply ignore this email and no changes will be made.
-'''
+    msg.html = f'<a class="button" \
+href="{url_for("reset_token", token=token, _external=True)}\
+">Reset Password</a>'
     mail.send(msg)
 
 @app.route("/reset_password", methods=['GET', 'POST'])

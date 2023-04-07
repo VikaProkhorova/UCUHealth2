@@ -1,5 +1,6 @@
 "Models module"
 
+import re
 from flask_wtf import FlaskForm, file
 from PIL import Image, UnidentifiedImageError
 from flask_login import current_user
@@ -61,7 +62,7 @@ class RegistrationForm(FlaskForm):
                     validators=[DataRequired(), Length(min=2, max = 20)])
     email = StringField("Email",
                     validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=100)])
     confirm_password = PasswordField('Confirm Password',
                     validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField("Continue")
@@ -78,13 +79,19 @@ class RegistrationForm(FlaskForm):
         if user:
             raise ValidationError('That email is taken. Please choose different one')
 
+    def validate_password(self, password):
+        'Password validation'
+        res = re.match('[A-z]', password.data)
+        if not res:
+            raise ValidationError('Password must contain letters')
+
 class PersonalInfoForm(FlaskForm):
     "Personal Info form"
     sex = SelectField('Sex', choices=['Male', 'Female'],
         validate_choice=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
-    height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
-    weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
+    height = IntegerField('Height (cm)', validators=[DataRequired(), NumberRange(min=120, max=250)])
+    weight = IntegerField('Weight (kg)', validators=[DataRequired(), NumberRange(min=1, max=700)])
     goal = SelectField('Goal', choices=[(2, 'Gain'),(3, 'Maintain'), (1, 'Loose')],
         validate_choice=[DataRequired()], coerce=int)
     agree = BooleanField('Agree to the processing of my data',
@@ -123,8 +130,8 @@ class UpdateAccountForm(FlaskForm):
     sex = SelectField('Sex', choices=['Male', 'Female'],
         validate_choice=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
-    height = IntegerField('Height', validators=[DataRequired(), NumberRange(min=120, max=250)])
-    weight = IntegerField('Weight', validators=[DataRequired(), NumberRange(min=1, max=700)])
+    height = IntegerField('Height (cm)', validators=[DataRequired(), NumberRange(min=120, max=250)])
+    weight = IntegerField('Weight (kg)', validators=[DataRequired(), NumberRange(min=1, max=700)])
     goal = SelectField('Goal', choices=[(2, 'Gain'),(3, 'Maintain'), (1, 'Loose')],
         validate_choice=[DataRequired()], coerce=int)
     activity = SelectField('Activity', choices=[(1.2, 'Passive lifestyle'),

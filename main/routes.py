@@ -88,9 +88,11 @@ def choose_dishes(meal_id):
                 processed = str(dish[0])[1:-1]
                 if processed[-1] == ",":
                     processed = processed[:-1]
+                print(dish[2][1])
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
-                fats = dish[2][3], meal = meal)
+                calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1), 
+                carbs = round(dish[2][2], -1),
+                fats = round(dish[2][3], -1), meal = meal)
                 db.session.add(new_dish)
                 db.session.commit()
                 if meal.choicen == 0:
@@ -257,6 +259,10 @@ def personal_info(pers_info, _):
     "Personal info route"
     form = PersonalInfoForm()
     pers_infos = [x[1:-1] for x in list(pers_info[1:-1].split(', '))]
+    user = User.query.filter_by(email=pers_infos[1]).first()
+    if user:
+        flash('Email is already confirmed', 'info')
+        return redirect(url_for('login'))
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
         nutrients = calcalories(form.sex.data, form.height.data, form.age.data,

@@ -34,6 +34,7 @@ def main():
                     fats = current_user.fats*i, author = current_user)
                 db.session.add(meal)
                 db.session.commit()
+            return redirect(url_for('main'))
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
     meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()),
@@ -188,7 +189,8 @@ def available_meals(nutrients):
         if form.meals[0].data['choices'] == []:
             flash('Choose at least one option', 'danger')
         else:
-            file_path = 'default.json' if not current_user.is_authenticated else current_user.settings
+            file_path = 'default.json' if not \
+                current_user.is_authenticated else current_user.settings
             maxim = 5 if not current_user.is_authenticated else current_user.options
             with open(f'main/settings/{file_path}', 'r', encoding='utf-8') as file:
                 setting = json.load(file)
@@ -230,7 +232,7 @@ def flash_message():
 def send_email(email, pers_info):
     'Sends email'
     token = secrets.token_hex(20)
-    msg = Message('Password Reset Request',
+    msg = Message('Email Confirmation',
                   sender='noreply@demo.com',
                   recipients=[email])
     msg.html = f'<a class="button" \
@@ -529,4 +531,3 @@ def reset_token(token):
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
-

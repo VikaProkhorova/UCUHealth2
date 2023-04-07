@@ -6,7 +6,9 @@
     <div class="progress-bar-value">0%</div>
     <div class="progress-bar-fill"></div>
 </div>
+
 <br>
+
 <form method="POST" action="">
   {% set total_calories = 0 %}
   {% for meal in meals %}
@@ -43,6 +45,7 @@
     </div>
   </form>
 </form>
+
 <script>
   class ProgressBar {
   constructor(element, initialValue = 0) {
@@ -68,7 +71,7 @@
   update() {
     const percentage = this.value + '%';
 
-    this.fillElem.style.width = percentage; // set fill element's width to percentage with a '%' sign appended
+    this.fillElem.style.width = percentage;
 
     this.valueElem.textContent = percentage;
   }
@@ -77,35 +80,44 @@
 const meals = document.querySelectorAll('input[type="checkbox"]');
 const progressBar = new ProgressBar(document.querySelector('.progress-bar'), parseInt(localStorage.getItem('progress')) || 0);
 
-meals.forEach((meal) => {
-  meal.checked = localStorage.getItem(meal.id) === 'true';
+function updateProgressBar() {
+  let selectedCalories = 0;
+  let totalCalories = 0;
+  let totalCheckedCalories = 0;
 
-  meal.addEventListener('click', () => {
-    let selectedCalories = 0;
-    let totalCheckedCalories = 0;
+  meals.forEach((meal) => {
+    const calories = parseInt(meal.parentElement.querySelector('small').innerText);
+    totalCalories += calories;
 
-    meals.forEach((meal) => {
-      if (meal.checked) {
-        selectedCalories += parseInt(meal.parentElement.querySelector('small').innerText);
-        localStorage.setItem(meal.id, 'true');
-      } else {
-        localStorage.setItem(meal.id, 'false');
-      }
-    });
+    if (meal.checked) {
+      selectedCalories += calories;
+      localStorage.setItem(meal.id, 'true');
+    } else {
+      localStorage.setItem(meal.id, 'false');
+    }
+  });
 
+  if (selectedCalories > 0) {
     totalCheckedCalories = selectedCalories;
     meals.forEach((meal) => {
       if (!meal.checked) {
         totalCheckedCalories += parseInt(meal.parentElement.querySelector('small').innerText);
       }
     });
+  } else {
+    totalCheckedCalories = totalCalories;
+  }
 
-    const percentage = Math.round(selectedCalories / totalCheckedCalories * 100);
-    progressBar.setValue(percentage);
-  });
+  const percentage = Math.round(selectedCalories / totalCheckedCalories * 100);
+  progressBar.setValue(percentage);
+}
+
+meals.forEach((meal) => {
+  meal.checked = localStorage.getItem(meal.id) === 'true';
+  meal.addEventListener('click', updateProgressBar);
 });
 
-
+updateProgressBar();
 </script>
 
 {% endblock content %}

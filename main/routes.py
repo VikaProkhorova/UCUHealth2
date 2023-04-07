@@ -220,6 +220,23 @@ def calculator():
             nutrients = ((int(round(((proteins+carbs)*4 + fats*9), -1))), proteins, carbs, fats)))
     return render_template('calculator.html', form=form, title = 'Calculator')
 
+@app.route('/flash_message')
+def flash_message():
+    message = "The confirmation was sent to your email. Check it and follow the link"
+    flash(message, 'info')
+    return render_template('flash_message.html')
+
+def send_email(email, personal_info):
+    token = secrets.token_hex(20)
+    msg = Message('Password Reset Request',
+                  sender='noreply@demo.com',
+                  recipients=[email])
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('personal_info', _=token, _external=True, pers_info = personal_info)}
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     "Register route"
@@ -227,12 +244,15 @@ def register():
         return redirect(url_for('main'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        return redirect(url_for("personal_info", pers_info = (form.username.data, \
-        form.email.data, form.password.data)))
+        send_email(form.email.data, (form.username.data, \
+        form.email.data, form.password.data))
+        return redirect(url_for('flash_message'))
+        # return redirect(url_for("personal_info", pers_info = (form.username.data, \
+        # form.email.data, form.password.data)))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/personal_info/<pers_info>/', methods=['GET', 'POST'])
-def personal_info(pers_info):
+@app.route('/personal_info/<pers_info>/<_>', methods=['GET', 'POST'])
+def personal_info(pers_info, _):
     "Personal info route"
     form = PersonalInfoForm()
     pers_infos = [x[1:-1] for x in list(pers_info[1:-1].split(', '))]
@@ -511,3 +531,4 @@ def reset_token(token):
         flash('Your password has been updated! You are now able to log in', 'success')
         return redirect(url_for('login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+

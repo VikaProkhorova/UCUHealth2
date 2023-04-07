@@ -373,6 +373,7 @@ def settings():
             db.session.commit()
             return redirect(url_for('account'))
         flash('Choose at least one portion in every category', 'danger')
+        return redirect(url_for('settings'))
     with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
         data = json.load(file)
         user_data = data['portions']

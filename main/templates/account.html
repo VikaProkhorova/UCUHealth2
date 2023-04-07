@@ -9,19 +9,9 @@
         <p class="text-secondary">{{ current_user.email }}</p>
       </div>
     </div>
-  <form method="POST">
-    <div class="input_field">
-      <input type="submit", name="submit_button", value="Personal Info", class="form-control", id="personal_info">
-    </div>
-    <div class="input_field">
-      <input type="submit", name="submit_button", value="Personal Plan", class="form-control", id="personal_plan">
-    </div>
-    <div class="input_field">
-      <input type="submit", name="submit_button", value="Settings", class="form-control", id="settings">
-    </div>
-    <div class="input_field">
-      <input type="submit", name="submit_button", value="Log Out", class="form-control", id="log_out">
-    </div>
-  </form>
+    <a class="form-control" id="personal_info" href="{{ url_for('account_update') }}">Personal Info</a>
+    <a class="form-control" id="personal_plan" href="{{ url_for('account_plan') }}">Personal Plan</a>
+    <a class="form-control" id="settings" href="{{ url_for('settings') }}">Settings</a>
+    <a class="form-control" id="log_out" href="{{ url_for('logout') }}">Logout</a>
   </div>
 {% endblock content %}

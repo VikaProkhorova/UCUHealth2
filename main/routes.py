@@ -1,22 +1,18 @@
 "Routes module"
 
 import secrets
-import os
 import json
 from datetime import datetime
-from typing import List
-from PIL import Image
-from flask import render_template, redirect, url_for, flash, request, abort
+from flask import render_template, redirect, url_for, flash, abort, request
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_mail import Message
-from main import app, db, bcrypt, mail
+from main import app, db, bcrypt
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
-    MultiCheckboxFormMeals, PersonalPlan, RequestResetForm, ResetPasswordForm, \
-    SettingsForm, MultiCheckboxFormSettings
+    PersonalPlan, RequestResetForm, ResetPasswordForm, SettingsForm
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
-from main.calccalories import calcalories
+from main.functions import calcalories, meal_getter, stringer, send_email, \
+    save_picture, save_json, form_creator, send_reset_email
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/main", methods=['GET', 'POST'])
@@ -46,7 +42,7 @@ def menu():
     'Menu route'
     with open('main/data/meals.json', 'r', encoding='utf-8') as file:
         info = json.load(file)
-    return render_template('menu.html', meals = info, title = menu)
+    return render_template('menu.html', meals = info, title = 'Menu')
 
 @login_required
 @app.route('/add_meal', methods=['GET', 'POST'])
@@ -90,7 +86,7 @@ def choose_dishes(meal_id):
                     processed = processed[:-1]
                 print(dish[2][1])
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1), 
+                calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1),
                 carbs = round(dish[2][2], -1),
                 fats = round(dish[2][3], -1), meal = meal)
                 db.session.add(new_dish)
@@ -129,26 +125,6 @@ def view_dishes(meal_id):
         return redirect(url_for('main'))
     return render_template('view_dishes.html', dishes = dict(choices),
             test = test_form, form = form, title = 'View Dishes', dct = dct)
-
-def meal_getter():
-    "Gets meal from json and creates form"
-    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
-        info = json.load(file)
-    lst = []
-    for i, j in info.items():
-        field = MultiCheckboxFormMeals()
-        field.choices.label = i.title()
-        field.choices.choices = sorted(list(j.keys()))
-        lst.append(field)
-    return lst
-
-def stringer(input_str: str) -> str:
-    "Converts str into normal look"
-    input_str = input_str.split(", ")
-    new_str = ''
-    for value in input_str:
-        new_str += value[1:-1] + ', '
-    return new_str[:-2]
 
 @login_required
 @app.route('/show_dish/<int:meal_id>', methods=['GET', 'POST'])
@@ -231,17 +207,6 @@ def flash_message():
     flash(message, 'info')
     return render_template('layout.html')
 
-def send_email(email, pers_info):
-    'Sends email'
-    token = secrets.token_hex(20)
-    msg = Message('Email Confirmation',
-                  sender='noreply@demo.com',
-                  recipients=[email])
-    msg.html = f'<a class="button" \
-href="{url_for("personal_info", _=token, _external=True, pers_info = pers_info)}\
-">Confirm Email</a>'
-    mail.send(msg)
-
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     "Register route"
@@ -298,34 +263,12 @@ def login():
         flash('Login Unsuccessful. Please check username and password', "danger")
     return render_template('login.html', title='Login', form=form)
 
-def save_picture(form_picture):
-    "Trim and saves picture"
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-    return picture_fn
-
 @app.route('/account', methods=["GET", 'POST'])
 @login_required
 def account():
     "Account page"
-    if request.method == 'POST':
-        if request.form['submit_button'] == "Personal Info":
-            return redirect(url_for('account_update'))
-        if request.form['submit_button'] == "Personal Plan":
-            return redirect(url_for('account_plan'))
-        if request.form['submit_button'] == "Settings":
-            return redirect(url_for('settings'))
-        if request.form['submit_button'] == "Calendar":
-            return redirect(url_for('calendar'))
-        return redirect(url_for('logout'))
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
-    return render_template('account.html', image_file = image_file)
+    return render_template('account.html', image_file = image_file, title = 'Account')
 
 @app.route('/account_update', methods=["GET", 'POST'])
 @login_required
@@ -443,37 +386,6 @@ def settings():
         form.option.data = current_user.options
     return render_template('settings.html', title = 'Settings', form = form)
 
-def save_json(info_unrepeatable, info_portions):
-    'Saves json'
-    dct = {"unrepeatable meals": info_unrepeatable, "portions": {}}
-    portions = info_portions['choices']
-    for i in portions:
-        key, value = i.split('-')
-        if key not in dct['portions']:
-            dct['portions'].update({key: []})
-        if len(value) == 1:
-            value = int(value)
-        else:
-            value = float(value)
-        dct['portions'][key].append(value)
-    with open(f'main/settings/{current_user.settings}', 'w', encoding='utf-8') as file:
-        json.dump(dct, file, indent=2)
-
-def form_creator(keys: List):
-    "Gets settings info to create form"
-    with open('main/settings/portions.json', 'r', encoding='utf-8') as file:
-        info = json.load(file)['max_portions']
-    lst = []
-    for i in keys:
-        new_lst = []
-        for inf in info:
-            new_lst.append(f'{i}-{inf}')
-        field = MultiCheckboxFormSettings()
-        field.choices.label = i.title()
-        field.choices.choices = list(zip(new_lst, info))
-        lst.append(field)
-    return lst
-
 @app.route('/logout')
 def logout():
     "Logout route"
@@ -494,17 +406,6 @@ def delete_meal(meal_id):
     db.session.delete(meal)
     db.session.commit()
     return redirect(url_for('main'))
-
-def send_reset_email(user):
-    'Sends reset mail'
-    token = user.get_reset_token()
-    msg = Message('Password Reset Request',
-                  sender='noreply@demo.com',
-                  recipients=[user.email])
-    msg.html = f'<a class="button" \
-href="{url_for("reset_token", token=token, _external=True)}\
-">Reset Password</a>'
-    mail.send(msg)
 
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():

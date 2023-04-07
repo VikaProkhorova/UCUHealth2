@@ -3,6 +3,7 @@
 from datetime import datetime
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature
 from main import db, login_manager, app
 
 @login_manager.user_loader
@@ -44,7 +45,13 @@ class User(db.Model, UserMixin):
         obj = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = obj.loads(token)['user_id']
-        except Exception as _:
+        except BadSignature:
+            return None
+        except ValueError:
+            return None
+        except TypeError:
+            return None
+        except KeyError:
             return None
         return User.query.get(user_id)
 

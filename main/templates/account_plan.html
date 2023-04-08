@@ -9,6 +9,7 @@
             Choose your plan
             </div>
             <div class="input_field_check_box">
+                <!-- only two options -->
                 {% for option in choice_form.plan_choice %}
                     {{ option() }}
                     {{ option.label }}
@@ -24,7 +25,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.proteins(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.proteins(class="form-control form-control-xxl", disabled=True, id="proteins", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -37,7 +38,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.carbs(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.carbs(class="form-control form-control-xxl", disabled=True, id="carbs", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -50,7 +51,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -74,6 +75,7 @@
     </form>
 </div>
 <script>
+    // document.querySelector('input[type="radio"]:first-of-type').checked = true;
     function updateValues() {
       // Get the values of the input fields
       const protein = parseInt(document.getElementById("proteins").value) || 0;
@@ -86,5 +88,44 @@
       // Update the text of the result box
       document.getElementById("result").innerText = "Total Calories: " + result;
     }
+
+    updateValues();
+
+    // Get the first radio button
+    const firstOption = document.querySelector('input[type="radio"]:first-of-type');
+    const lastOption = document.querySelector('input[type="radio"]:last-of-type');
+
+    const proteinsField = document.getElementById('proteins');
+    const carbsField = document.getElementById('carbs');
+    const fatsField = document.getElementById('fats');
+
+    // Add an event listener to the first radio button
+    firstOption.addEventListener('change', function() {
+        if (firstOption.checked) {
+        // Disable the fields
+        proteinsField.disabled = true;
+        carbsField.disabled = true;
+        fatsField.disabled = true;
+    } else {
+        // Enable the fields
+        proteinsField.disabled = false;
+        carbsField.disabled = false;
+        fatsField.disabled = false;
+    }
+    });
+
+    lastOption.addEventListener('change', function() {
+    if (lastOption.checked) {
+        // Enable the fields
+        proteinsField.disabled = false;
+        carbsField.disabled = false;
+        fatsField.disabled = false;
+    } else {
+        // Disable the fields
+        proteinsField.disabled = true;
+        carbsField.disabled = true;
+        fatsField.disabled = true;
+    }
+});
   </script>
 {% endblock content %}

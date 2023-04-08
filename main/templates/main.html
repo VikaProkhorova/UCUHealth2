@@ -55,28 +55,34 @@
 </div>
 <script>
   class ProgressBar {
-  constructor(element, initialValue = 0) {
+  constructor(element, initialValue = 0, initialTotal = 0) {
     this.valueElem = element.querySelector('.progress-bar-value');
     this.fillElem = element.querySelector('.progress-bar-fill');
-    this.setValue(initialValue);
+    this.total = initialTotal;
+    this.setValue(initialValue, initialTotal);
     this.fillElem.style.width = initialValue + '%';
   }
 
-  setValue(newValue) {
+  setValue(newValue, totalValue) {
     if (newValue <= 0) {
       newValue = 0;
     }
     if (newValue > 100) {
       newValue = 100;
     }
+    this.total = totalValue;
     this.value = newValue;
     this.update();
+    this.updateValue();
   }
 
   update() {
     const percentage = this.value + '%';
     this.fillElem.style.width = percentage;
-    this.valueElem.textContent = percentage;
+  }
+  updateValue() {
+    const total = this.total + ' kkal';
+    this.valueElem.textContent = total;
   }
 }
 
@@ -125,7 +131,7 @@ function updateProgressBar() {
 
 
   console.log(percentage);
-  progressBar.setValue(percentage);
+  progressBar.setValue(percentage, selectedCalories);
 }
 
 meals.forEach((meal) => {

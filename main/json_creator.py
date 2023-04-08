@@ -3,7 +3,7 @@
 import json
 from typing import List
 
-def opener(path_lst: List[str]):
+def opener(path_lst):
     'Creates json with specific category' 
     dct = {}
     total = {}

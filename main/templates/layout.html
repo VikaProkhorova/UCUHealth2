@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="shortcut icon" href="{{ url_for('static', filename = 'profile_pics/' + 'logo.jpg' ) }}" type="image/x-icon">
-    <!-- Required meta tags -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'profile_pics/logo.png' ) }}" type="image/x-icon">
     <meta charset="utf-8" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- Bootstrap and CSS -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -17,7 +15,6 @@
       rel="stylesheet"
       type="text/css"
       href="{{ url_for('static', filename='main.css') }}" />
-    <!-- Title -->
     {% if title %}
         <title>Ucu Health - {{ title }}</title>
     {% else %}
@@ -41,11 +38,9 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <!-- Navbar Left Side -->
               <a class="nav-item nav-link" href="{{ url_for('calculator') }}">Calculator</a>
               <a class="nav-item nav-link" href="{{ url_for('menu') }}">Menu</a>
             </div>
-            <!-- Navbar Right Side -->
             <div class="navbar-nav">
             {% if current_user.is_authenticated %}
               <a class="nav-item nav-link" href="{{ url_for("account") }}"><img class="rounded-circle panel-img" src="{{ url_for('static', filename = 'profile_pics/' + current_user.image_file ) }}"></a>
@@ -73,9 +68,6 @@
           {% block content %}{% endblock %}
         </div>
     </main>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

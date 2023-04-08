@@ -1,22 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
+    <link href="{{ url_for('static', filename='view_dishes.css') }}" rel="stylesheet">
+    <div class="wrapper">
+        <div class = "title">
+            Choose Dish
+        </div>
         <form method="POST" action="">
             <fieldset class="form-group">
-                {{ form.hidden_tag() }}
-                <legend class="border-bottom mb-4">Choose Dish</legend>
-                {% for choice, radio in test %}
-                    <div class="form-check">
-                        {{ radio() }}
-                        {% for dish in dct[choice[0]] %}
-                            {{ dish }}<br>
-                        {% endfor %}
-                        {{ dishes[choice[0]].calories }}
-                        {{ dishes[choice[0]].satis }}
-                    </div>
-                {% endfor %}
-            </fieldset>
-            <div class="form-group">
+                <div class = "input_field">
+                    {{ form.hidden_tag() }}
+                    {% for choice, radio in test %}
+                        <fieldset class="form-group">
+                            {% for dish in dct[choice[0]] %}
+                                <div class = "info">
+                                    {{ dish }}<br>
+                                </div>
+                            {% endfor %}
+                            {{ radio() }}
+                            <div class = "elem">
+                                Calories: {{ dishes[choice[0]].calories }}<br>
+                                Proteins: {{ dishes[choice[0]].calories }}<br>
+                                Carbohydrates: {{ dishes[choice[0]].calories }}<br>
+                                Fats: {{ dishes[choice[0]].calories }}<br>
+                            </div>
+                        </fieldset>
+                    {% endfor %}
+                </div>
+            <div class="input_field">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
         </form>

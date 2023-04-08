@@ -134,9 +134,6 @@ def show_dish(meal_id):
     if meal.author != current_user:
         abort(403)
     dish = Dish.query.get_or_404(meal.choicen)
-    if request.method == 'POST':
-        if request.form['submit_button'] == "Back":
-            return redirect(url_for('main'))
     lst = dish.dishes.split(', ')
     return render_template('show_dish.html', dish = dish, title = 'Show dish', dish_lst = lst)
 

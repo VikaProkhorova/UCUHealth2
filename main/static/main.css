@@ -1,4 +1,14 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap");
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+
 body {
+    margin-top: 62px;
     background: #fff9f5;
     color: #333333;
     margin-top: 5rem;
@@ -23,23 +33,16 @@ body {
   align-items: center;
 }
 
-button {
-  background-color: #ffce59;
-  color: #ffce59;
-  border: none;
-  padding: 10px 20px;
-  margin: 0 10px;
-}
-
-button:hover {
-  background-color: #a4cfbc;
-  cursor: pointer;
-}
 
 .bg-steel {
   background-color: #57817f;
 }
-
+.navbar{
+  height: 62px;
+}
+.header-container {
+  max-width: 1200px !important;
+}
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;
 }
@@ -54,11 +57,12 @@ button:hover {
 }
 
 .content-section {
+  margin: 40px auto;
   background: #fff9f5;;
   padding: 10px 20px;
   border: 1px solid #dddddd;
   border-radius: 3px;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
 }
 
 .article-title {
@@ -112,33 +116,4 @@ a.article-title:hover {
   height: 40px;
   width: 40px;
 }
-/*
-.input_field {
-  margin-bottom: 15px;
-  background-color: #a4cfbc;
-  color: #757575;
-}
 
- .input_field:hover {
-  background-color: #57817f;
-  color: #fff;
-}
-button#daily_distribution {
-  background-color: #fff9f5;
-  color: #333333;
-  margin-top: 200px;
-  margin-bottom: 30px;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: #ffce59;
-  border-radius: 3px;
-}
-
-button#all_meal {
-  background-color: #fff9f5;
-  color: #333333;
-  font-size: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 3px; */
-}

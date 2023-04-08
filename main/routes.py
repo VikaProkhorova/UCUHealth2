@@ -204,6 +204,7 @@ def flash_message():
     'Empty page'
     message = "The confirmation was sent to your email. Check it and follow the link"
     flash(message, 'info')
+    flash('If you did not receive an email, check your spam folder.', 'info')
     return render_template('layout.html')
 
 @app.route("/register", methods=['GET', 'POST'])

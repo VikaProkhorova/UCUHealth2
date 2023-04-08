@@ -20,8 +20,12 @@ def main():
     "Main page"
     if not current_user.is_authenticated:
         return render_template('home.html', title = 'Home')
+    meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()),
+        user_id = current_user.id).all()
     if request.method == 'POST':
         if request.form['submit_button'] == "Daily Distribution":
+            if meals:
+                return redirect(url_for('main'))   
             with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
             for i, j in data[str(current_user.servings)]:
@@ -33,8 +37,6 @@ def main():
             return redirect(url_for('main'))
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
-    meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()),
-            user_id = current_user.id).all()
     return render_template('main.html', title = 'Main', meals = meals)
 
 @app.route('/menu', methods=['GET'])

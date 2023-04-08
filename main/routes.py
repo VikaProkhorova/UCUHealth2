@@ -1,20 +1,18 @@
 "Routes module"
 
 import secrets
-import os
 import json
 from datetime import datetime
-from PIL import Image
-from flask import render_template, redirect, url_for, flash, request, abort
+from flask import render_template, redirect, url_for, flash, abort, request
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_mail import Message
-from main import app, db, bcrypt, mail
+from main import app, db, bcrypt
 from main.forms import CalculatorForm, PossibleMeals, RegistrationForm, \
     LoginForm, PersonalInfoForm, AddMeal, UpdateAccountForm, CustomPlan, MealForm, \
-    MultiCheckboxForm, PersonalPlan, RequestResetForm, ResetPasswordForm
+    PersonalPlan, RequestResetForm, ResetPasswordForm, SettingsForm
 from main.calculator import calculator_func
 from main.models import User, Meal, Dish
-from main.calccalories import calcalories
+from main.functions import calcalories, meal_getter, stringer, send_email, \
+    save_picture, save_json, form_creator, send_reset_email
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/main", methods=['GET', 'POST'])
@@ -32,6 +30,7 @@ def main():
                     fats = current_user.fats*i, author = current_user)
                 db.session.add(meal)
                 db.session.commit()
+            return redirect(url_for('main'))
         if request.form['submit_button'] == "Add Meal":
             return redirect(url_for('add_meal', user_id = current_user))
     meals = Meal.query.filter_by(date_added = datetime.date(datetime.utcnow()),
@@ -43,7 +42,7 @@ def menu():
     'Menu route'
     with open('main/data/meals.json', 'r', encoding='utf-8') as file:
         info = json.load(file)
-    return render_template('menu.html', meals = info, title = menu)
+    return render_template('menu.html', meals = info, title = 'Menu')
 
 @login_required
 @app.route('/add_meal', methods=['GET', 'POST'])
@@ -76,15 +75,20 @@ def choose_dishes(meal_id):
         if form.meals[0].data['choices'] == []:
             flash('Choose at least one option', 'danger')
         else:
+            with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
+                setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats))
+                nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats),
+                settings=setting, maxim = current_user.options)
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
                 if processed[-1] == ",":
                     processed = processed[:-1]
+                print(dish[2][1])
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
-                fats = dish[2][3], meal = meal)
+                calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1),
+                carbs = round(dish[2][2], -1),
+                fats = round(dish[2][3], -1), meal = meal)
                 db.session.add(new_dish)
                 db.session.commit()
                 if meal.choicen == 0:
@@ -122,26 +126,6 @@ def view_dishes(meal_id):
     return render_template('view_dishes.html', dishes = dict(choices),
             test = test_form, form = form, title = 'View Dishes', dct = dct)
 
-def meal_getter():
-    "Gets meal from json and creates form"
-    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
-        info = json.load(file)
-    lst = []
-    for i, j in info.items():
-        field = MultiCheckboxForm()
-        field.choices.label = i.title()
-        field.choices.choices = sorted(list(j.keys()))
-        lst.append(field)
-    return lst
-
-def stringer(input_str: str) -> str:
-    "Converts str into normal look"
-    input_str = input_str.split(", ")
-    new_str = ''
-    for value in input_str:
-        new_str += value[1:-1] + ', '
-    return new_str[:-2]
-
 @login_required
 @app.route('/show_dish/<int:meal_id>', methods=['GET', 'POST'])
 def show_dish(meal_id):
@@ -150,9 +134,6 @@ def show_dish(meal_id):
     if meal.author != current_user:
         abort(403)
     dish = Dish.query.get_or_404(meal.choicen)
-    if request.method == 'POST':
-        if request.form['submit_button'] == "Back":
-            return redirect(url_for('main'))
     lst = dish.dishes.split(', ')
     return render_template('show_dish.html', dish = dish, title = 'Show dish', dish_lst = lst)
 
@@ -183,8 +164,13 @@ def available_meals(nutrients):
         if form.meals[0].data['choices'] == []:
             flash('Choose at least one option', 'danger')
         else:
+            file_path = 'default.json' if not \
+                current_user.is_authenticated else current_user.settings
+            maxim = 5 if not current_user.is_authenticated else current_user.options
+            with open(f'main/settings/{file_path}', 'r', encoding='utf-8') as file:
+                setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal[0], meal[1], meal[2], meal[3]))
+                nutrition=(meal[0], meal[1], meal[2], meal[3]), settings = setting, maxim=maxim)
             id_lst = []
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
@@ -211,6 +197,13 @@ def calculator():
             nutrients = ((int(round(((proteins+carbs)*4 + fats*9), -1))), proteins, carbs, fats)))
     return render_template('calculator.html', form=form, title = 'Calculator')
 
+@app.route('/flash_message')
+def flash_message():
+    'Empty page'
+    message = "The confirmation was sent to your email. Check it and follow the link"
+    flash(message, 'info')
+    return render_template('layout.html')
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     "Register route"
@@ -218,24 +211,34 @@ def register():
         return redirect(url_for('main'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        return redirect(url_for("personal_info", pers_info = (form.username.data, \
-        form.email.data, form.password.data)))
+        send_email(form.email.data, (form.username.data, \
+        form.email.data, form.password.data))
+        return redirect(url_for('flash_message'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/personal_info/<pers_info>', methods=['GET', 'POST'])
-def personal_info(pers_info):
+@app.route('/personal_info/<pers_info>/<_>', methods=['GET', 'POST'])
+def personal_info(pers_info, _):
     "Personal info route"
     form = PersonalInfoForm()
     pers_infos = [x[1:-1] for x in list(pers_info[1:-1].split(', '))]
+    user = User.query.filter_by(email=pers_infos[1]).first()
+    if user:
+        flash('Email is already confirmed', 'info')
+        return redirect(url_for('login'))
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
         nutrients = calcalories(form.sex.data, form.height.data, form.age.data,
             form.weight.data, form.activity.data, form.goal.data)
+        json_name = secrets.token_hex(8) + '.json'
+        with open('main/settings/default.json', 'r', encoding='utf-8') as file, \
+        open(f'main/settings/{json_name}', 'w', encoding='utf-8') as user_file:
+            default_info = json.load(file)
+            json.dump(default_info, user_file, indent=2)
         user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
         sex = form.sex.data, age = form.age.data, height = form.height.data,\
             weight = form.weight.data, goal = form.goal.data, activity = form.activity.data,
             calories = nutrients[0], proteins = nutrients[1], carbs = nutrients[2],
-            fats = nutrients[3])
+            fats = nutrients[3], settings = json_name)
         db.session.add(user)
         db.session.commit()
         flash('Your account had been created', 'success')
@@ -257,31 +260,12 @@ def login():
         flash('Login Unsuccessful. Please check username and password', "danger")
     return render_template('login.html', title='Login', form=form)
 
-def save_picture(form_picture):
-    "Trim and saves picture"
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-    return picture_fn
-
 @app.route('/account', methods=["GET", 'POST'])
 @login_required
 def account():
     "Account page"
-    if request.method == 'POST':
-        if request.form['submit_button'] == "Personal Info":
-            return redirect(url_for('account_update'))
-        elif request.form['submit_button'] == "Personal Plan":
-            return redirect(url_for('account_plan'))
-        else:
-            return redirect(url_for('logout'))
     image_file = url_for('static', filename = 'profile_pics/' + current_user.image_file)
-    return render_template('account.html', image_file = image_file)
+    return render_template('account.html', image_file = image_file, title = 'Account')
 
 @app.route('/account_update', methods=["GET", 'POST'])
 @login_required
@@ -343,7 +327,7 @@ def account_plan():
             proteins = int(nutrients_form.proteins.data)
             carbs = int(nutrients_form.carbs.data)
             fats = int(nutrients_form.fats.data)
-            current_user.calories = int(round((proteins+carbs)*4 + fats*9, -2))
+            current_user.calories = int(round((proteins+carbs)*4 + fats*9, -1))
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats
@@ -366,6 +350,40 @@ def account_plan():
     return render_template('account_plan.html', form = nutrients_form,
         choice_form = choice_form, title = "Personal Plan")
 
+@app.route('/settings', methods=["GET", 'POST'])
+@login_required
+def settings():
+    'Settings route'
+    form = SettingsForm()
+    with open('main/data/meals.json', 'r', encoding='utf-8') as file:
+        info = list(json.load(file).keys())
+    form_lst = form_creator(info)
+    form.unrepeatable.choices = [(cat, cat) for cat in info]
+    form.portions = form_lst
+    if form.validate_on_submit():
+        check_set = set()
+        for res in form.portions[0].data['choices']:
+            check_set.add(res[:res.index('-')])
+        if check_set == set(info):
+            current_user.options = form.option.data
+            save_json(form.unrepeatable.data, form.portions[0].data)
+            db.session.commit()
+            return redirect(url_for('account'))
+        flash('Choose at least one portion in every category', 'danger')
+        return redirect(url_for('settings'))
+    with open(f'main/settings/{current_user.settings}', 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        user_data = data['portions']
+        default = data['unrepeatable meals']
+        for portion_form in form.portions:
+            default_lst = []
+            for i in user_data[portion_form.choices.label.lower()]:
+                default_lst.append(f'{portion_form.choices.label.lower()}-{i}')
+            portion_form.choices.data = default_lst
+        form.unrepeatable.data = default
+        form.option.data = current_user.options
+    return render_template('settings.html', title = 'Settings', form = form)
+
 @app.route('/logout')
 def logout():
     "Logout route"
@@ -386,18 +404,6 @@ def delete_meal(meal_id):
     db.session.delete(meal)
     db.session.commit()
     return redirect(url_for('main'))
-
-def send_reset_email(user):
-    'Sends reset mail'
-    token = user.get_reset_token()
-    msg = Message('Password Reset Request',
-                  sender='noreply@demo.com',
-                  recipients=[user.email])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-If you did not make this request then simply ignore this email and no changes will be made.
-'''
-    mail.send(msg)
 
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():

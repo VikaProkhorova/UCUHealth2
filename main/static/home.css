@@ -8,13 +8,13 @@
 }
 body{
     /* margin-left: -300px; */
-    margin-top: 150px;
+    margin-top: 62px;
     background: #fff9f5;
     padding: 0 10px;
 }
 .container {
     max-width: 2000px;
-    margin: 0 auto;
+    margin: 80px auto;
     padding: 0 20px;
   }
  .container.text {

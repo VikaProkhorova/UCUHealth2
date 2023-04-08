@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+    <link href="{{ url_for('static', filename='settings.css') }}" rel="stylesheet">
+    <div class="wrapper">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form">
+            <div class="title">
+                Settings
+            </div>
+            <!-- <legend class="border-bottom mb-4">Settings</legend> -->
+            <div class="name">
+                {{ form.unrepeatable.label }}
+                {% if form.unrepeatable.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.unrepeatable.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <fieldset class="form-group">
+                <div class="form-check">
+                    <div class="choices">
+                        {% for choice in form.unrepeatable %}
+                            {{ choice.label }}
+                            {{ choice() }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </fieldset>
+            {% for category in form.portions %}
+                <div class="name">
+                {{ category.choices.label }}
+                    <fieldset class="form-group">
+                        <div class="form-check">
+                            {% if category.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in category.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="choices">
+                                {% for choice in category %}
+                                    {{ choice() }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            {% endfor %}
+                <div class="input_field">
+                    {{ form.option.label(class="form-control-label") }}
+                    {% if form.option.errors %}
+                        {{ form.option(class="form-control form-control-xxl is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.option.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.option(class="form-control form-control-xxl") }}
+                    {% endif %}
+                </div>
+        
+        <div class="input_field">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

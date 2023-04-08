@@ -1,24 +1,27 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
-    <form method="POST" action="">
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Choosen Dish</legend>
-            {% for meal in dish_lst %}
-            <div>
-                {{ meal}}
-            </div>
-            {% endfor %}
-                <p></p>
-                <div>Satisfactory: {{ dish.satis }}</div>
-                <div>Calories: {{ dish.calories }}</div>
-                <div>Proteins: {{ dish.proteins }}</div>
-                <div>Carbs: {{ dish.carbs }}</div>
-                <div>Fats: {{ dish.fats }}</div>
-        </fieldset>
-        <div class="form-group">
-            <input type="submit", name="submit_button", value="Back", class="form-control", id="back">
+    <link href="{{ url_for('static', filename='show_dish.css') }}" rel="stylesheet">
+    <div class="wrapper">
+        <div class = "title">
+            Choosen Dish
         </div>
-    </form>
-</div>
+        <div class = "input_field">
+        {% for meal in dish_lst %}
+            <fieldset class="form-group">
+                <div class = "info">
+                    {{ meal}}:<br>
+        {% endfor %}
+                    <div class = "elem">
+                        Calories: {{ dish.calories }}<br>
+                        Proteins: {{ dish.proteins }}<br>
+                        Carbs: {{ dish.carbs }}<br>
+                        Fats: {{ dish.fats }}<br>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="input_field_">
+            <a class="form-control" id="back" href="{{ url_for('main') }}">Back</a>
+        </div>
+    </div>
 {% endblock content %}

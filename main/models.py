@@ -2,8 +2,9 @@
 
 from datetime import datetime
 from flask_login import UserMixin
-from main import db, login_manager, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import BadSignature
+from main import db, login_manager, app
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -17,6 +18,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     image_file = db.Column(db.String(20), nullable = False, default='default.jpg')
+    settings = db.Column(db.String(100), nullable = False, default='default.json')
     custom_plan = db.Column(db.Boolean, default = False)
     sex = db.Column(db.String(10), nullable = False)
     age = db.Column(db.Integer, nullable = False)
@@ -29,6 +31,7 @@ class User(db.Model, UserMixin):
     carbs = db.Column(db.Float, nullable=False)
     fats = db.Column(db.Float, nullable=False)
     servings = db.Column(db.Integer, nullable = False, default = 3)
+    options = db.Column(db.Integer, nullable = False, default = 5)
     meals = db.relationship('Meal', backref="author", lazy = True)
 
     def get_reset_token(self, expires_sec=1800):
@@ -42,7 +45,13 @@ class User(db.Model, UserMixin):
         obj = Serializer(app.config['SECRET_KEY'])
         try:
             user_id = obj.loads(token)['user_id']
-        except:
+        except BadSignature:
+            return None
+        except ValueError:
+            return None
+        except TypeError:
+            return None
+        except KeyError:
             return None
         return User.query.get(user_id)
 

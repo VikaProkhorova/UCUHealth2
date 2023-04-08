@@ -5,7 +5,7 @@ from copy import deepcopy
 from itertools import combinations
 import json
 
-def rebuilder(meals: dict[dict]) -> List[tuple]:
+def rebuilder(meals):
     "Rebuilds dict in conveniet form"
     result = []
     for meal in meals:

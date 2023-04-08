@@ -81,7 +81,7 @@ class RegistrationForm(FlaskForm):
 
     def validate_password(self, password):
         'Password validation'
-        res = re.match('[A-z]', password.data)
+        res = re.findall('[A-z]', password.data)
         if not res:
             raise ValidationError('Password must contain letters')
 

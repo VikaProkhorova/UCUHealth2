@@ -29,8 +29,8 @@ def multiplier(meal: tuple, portion: float) -> tuple:
         new_values.append(value*portion)
     return meal[0], meal[1]+f': порція - {portion}', tuple(new_values)
 
-def variator(meals: List[tuple], nutrition: tuple[float],
-        unrepeatable_info: List[str], maxim: int) -> List[tuple]:
+def variator(meals, nutrition,
+        unrepeatable_info, maxim):
     "Generates variants"
     j = 1
     result = []
@@ -49,7 +49,7 @@ def variator(meals: List[tuple], nutrition: tuple[float],
         j += 1
     return sorted(result, key = lambda x: x[1])[:maxim]
 
-def checker(variant: List[tuple], unrepeatable_info: List[str]) -> bool:
+def checker(variant, unrepeatable_info):
     "Checks for valid meals"
     meal_names = []
     check_dct = {}
@@ -70,7 +70,7 @@ def checker(variant: List[tuple], unrepeatable_info: List[str]) -> bool:
             return False
     return True
 
-def satisfactor(meal_var: tuple[tuple], goal: tuple[float]) -> tuple[tuple]:
+def satisfactor(meal_var, goal):
     "Counts how meal variation satisfies need"
     satis = list(goal)
     meal_lst = []
@@ -83,7 +83,7 @@ def satisfactor(meal_var: tuple[tuple], goal: tuple[float]) -> tuple[tuple]:
         satis_point += abs(point)
     return (tuple(meal_lst), satis_point, tuple(satis))
 
-def meal_getter(choicen_meals: List[str]) -> dict:
+def meal_getter(choicen_meals):
     "Reads json file"
     result = {}
     selection = deepcopy(choicen_meals)
@@ -100,7 +100,7 @@ def meal_getter(choicen_meals: List[str]) -> dict:
                     break
     return result
 
-def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
+def conclusioner(variants, goal):
     "Converts result into normal form"
     new_lst = []
     for variant in variants:
@@ -113,8 +113,8 @@ def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
         new_lst.append((variant[0], f"{round(100*numb/4, 2)}%", tuple(nutrients)))
     return new_lst
 
-def calculator_func(choicen_meals: List[str], nutrition: tuple[float],
-        settings: dict, maxim: int) -> List[tuple]:
+def calculator_func(choicen_meals, nutrition,
+        settings, maxim):
     "Main function"
     needed_meals = meal_getter(choicen_meals)
     worked_meals = rebuilder(needed_meals)

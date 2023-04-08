@@ -91,20 +91,15 @@ body {
   display: inline-block;
 }
 .calories{
-  /* margin-left: 20px; */
-  /* margin-top: 50px;
-  margin-bottom: 25px; */
   font-size: 15px;
   color: #757575;
   font-weight: 300
 }
 
 .button{
-  /* margin-top: 10px; */
   margin-bottom: 30px;
 }
 #show{
-  /* margin-top: 15px; */
   color: #fff;
   background-color: #a4cfbc;
   border: none;
@@ -122,26 +117,14 @@ body {
 }
 .btn-danger{
   color: #fff;
-  /* margin-top: 50px;
-  margin-bottom: 50px; */
   background-color: #ffce59;
-  /* font-weight: 700; */
   border: none;
 }
-/* .form-control {
-  text-align: center;
-  margin-bottom: 10px;
-  width: 300px;
-  height: 40px;
+.btn-danger.hover{
+  color: #fff;
+  background-color: #ffce59;
   border: none;
-  border-radius: 5px;
-  background-color: #f5f5f5;
-  font-size: 16px;
-  font-weight: bold;
-  color: #757575;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-} */
+}
 
 #daily_distribution{
   font-weight: 700;
@@ -168,4 +151,3 @@ body {
   color: #757575;
   background-color: #a4cfbc;
 }
-

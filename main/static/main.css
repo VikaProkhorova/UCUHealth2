@@ -40,9 +40,16 @@ body {
 /* .container-but{
   position:fixed;
 } */
-
-.bg-steel {
+.nav-link{
+  color: #fff;
   background-color: #57817f;
+  font-weight: 500;
+}
+.bg-steel {
+  color: #fff;
+  background-color: #57817f;
+  text-align: center;
+  /* font-weight: 700; */
 }
 .navbar{
   height: 62px;

@@ -12,13 +12,9 @@
   <br>
   {% if meals %}
   <div class="wrapper">
-    <!-- <div class="meals"> -->
-    <!-- <form method="POST" action=""> -->
       {% set total_calories = 0 %}
       {% for meal in meals %}
       {% set total_calories = total_calories + meal.calories %}
-      <!-- <article class="media content-section">
-        <div class="media-body"> -->
           <div class="name">
             {{ meal.name }}
           </div>
@@ -42,8 +38,6 @@
               {% endif %}
               <a class="btn btn-danger btn-sm m-1" id = "delete" href="{{url_for('delete_meal', meal_id = meal.id)}}">Delete Dish</a>
           </div>
-        <!-- </div>
-      </article> -->
       {% endfor %}
   {% endif %}
   </div>
@@ -71,7 +65,7 @@
   }
 
   setValue(newValue) {
-    if (newValue <= 0) {
+    if (newValue < 0) {
       newValue = 0;
     }
     if (newValue > 100) {

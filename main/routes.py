@@ -86,7 +86,6 @@ def choose_dishes(meal_id):
                 processed = str(dish[0])[1:-1]
                 if processed[-1] == ",":
                     processed = processed[:-1]
-                print(dish[2][1])
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
                 calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1),
                 carbs = round(dish[2][2], -1),

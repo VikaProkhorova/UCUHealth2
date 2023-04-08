@@ -9,7 +9,7 @@ from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
         FieldList, FormField, SearchField
 from wtforms.validators import DataRequired, EqualTo, Email, \
     Length, NumberRange, ValidationError
-from main.models import User
+from main.models import User, Meal
 
 class CalculatorForm(FlaskForm):
     "Form for calculator page"
@@ -115,6 +115,12 @@ class AddMeal(FlaskForm):
                 validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField("Add Meal")
 
+    def validate_meal_name(self, meal_name):
+        'Validates meal name'
+        meal = Meal.query.filter_by(name = meal_name.data).first()
+        if meal:
+            raise ValidationError('Meal with such name already exists, please choose another one')
+        
 class PossibleMeals(FlaskForm):
     "Possible Meals form"
     dish_var = RadioField('Choose one from the list:',

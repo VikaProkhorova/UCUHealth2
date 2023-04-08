@@ -117,7 +117,7 @@ class AddMeal(FlaskForm):
 
     def validate_meal_name(self, meal_name):
         'Validates meal name'
-        meal = Meal.query.filter_by(name = meal_name.data).first()
+        meal = Meal.query.filter_by(name = meal_name.data, user_id = current_user.id).first()
         if meal:
             raise ValidationError('Meal with such name already exists, please choose another one')
         

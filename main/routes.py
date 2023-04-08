@@ -94,6 +94,7 @@ def choose_dishes(meal_id):
                 db.session.commit()
                 if meal.choicen == 0:
                     meal.choicen = new_dish.id
+                    meal.calories = new_dish.calories
                     db.session.commit()
             return redirect(url_for('main'))
     return render_template('meals.html', form = form, title = 'Meals')

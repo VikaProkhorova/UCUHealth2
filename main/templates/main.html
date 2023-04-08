@@ -6,7 +6,7 @@
     Calories consumed today
   </div>
   <div class="progress-bar" role="progressbar">
-      <div class="progress-bar-value">0%</div>
+      <div class="progress-bar-value"></div>
       <div class="progress-bar-fill"></div>
   </div>
   <br>
@@ -58,7 +58,6 @@
   constructor(element, initialValue = 0) {
     this.valueElem = element.querySelector('.progress-bar-value');
     this.fillElem = element.querySelector('.progress-bar-fill');
-
     this.setValue(initialValue);
     this.fillElem.style.width = initialValue + '%';
   }
@@ -72,21 +71,18 @@
     }
     this.value = newValue;
     this.update();
-    localStorage.setItem('progress', newValue);
   }
 
   update() {
     const percentage = this.value + '%';
-
     this.fillElem.style.width = percentage;
-
     this.valueElem.textContent = percentage;
   }
 }
 
 const meals = document.querySelectorAll('input[type="checkbox"]');
 const deleteBtn = document.querySelectorAll('a.btn.btn-danger.btn-sm.m-1');
-const progressBar = new ProgressBar(document.querySelector('.progress-bar'), parseInt(localStorage.getItem('progress')) || 0);
+const progressBar = new ProgressBar(document.querySelector('.progress-bar'));
 
 function updateProgressBar() {
   let selectedCalories = 0;
@@ -122,7 +118,13 @@ function updateProgressBar() {
     totalCheckedCalories = totalCalories;
   }
 
-  const percentage = Math.round(selectedCalories / totalCheckedCalories * 100);
+  percentage = 0
+  if (totalCheckedCalories !== 0){
+    percentage = Math.round(selectedCalories / totalCheckedCalories * 100);
+  }
+
+
+  console.log(percentage);
   progressBar.setValue(percentage);
 }
 

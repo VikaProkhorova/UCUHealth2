@@ -35,7 +35,7 @@ def calcalories(state: str, hight: int, age: int,
     vuglevodu = int(round((kilokalories* 0.5)/4, -1))
     return (int(round(kilokalories, -1)), bilku, vuglevodu, fats)
 
-def meal_getter() -> List[object]:
+def meal_getter():
     "Gets meal from json and creates form"
     with open('main/data/meals.json', 'r', encoding='utf-8') as file:
         info = json.load(file)
@@ -55,7 +55,7 @@ def stringer(input_str: str) -> str:
         new_str += value[1:-1] + ', '
     return new_str[:-2]
 
-def send_email(email: str, pers_info: tuple[str]) -> None:
+def send_email(email: str, pers_info) -> None:
     'Sends email'
     token = secrets.token_hex(20)
     msg = Message('Email Confirmation',
@@ -78,7 +78,7 @@ def save_picture(form_picture: str) -> str:
     i.save(picture_path)
     return picture_fn
 
-def save_json(info_unrepeatable: List[float], info_portions: dict) -> None:
+def save_json(info_unrepeatable, info_portions: dict) -> None:
     'Saves json'
     dct = {"unrepeatable meals": info_unrepeatable, "portions": {}}
     portions = info_portions['choices']
@@ -94,7 +94,7 @@ def save_json(info_unrepeatable: List[float], info_portions: dict) -> None:
     with open(f'main/settings/{current_user.settings}', 'w', encoding='utf-8') as file:
         json.dump(dct, file, indent=2)
 
-def form_creator(keys: List[str]) -> List[object]:
+def form_creator(keys):
     "Gets settings info to create form"
     with open('main/settings/default.json', 'r', encoding='utf-8') as file:
         info = json.load(file)['max_portions']
@@ -120,7 +120,7 @@ href="{url_for("reset_token", token=token, _external=True)}\
 ">Reset Password</a>'
     mail.send(msg)
 
-def opener(path_lst: List[str]) -> None:
+def opener(path_lst) -> None:
     'Creates json with specific category' 
     dct = {}
     total = {}

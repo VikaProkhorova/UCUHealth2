@@ -24,7 +24,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.proteins(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.proteins(class="form-control form-control-xxl", disabled=True, id="proteins", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -37,7 +37,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.carbs(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.carbs(class="form-control form-control-xxl", disabled=True, id="carbs", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -50,7 +50,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
+                    {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">

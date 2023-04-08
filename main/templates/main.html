@@ -6,7 +6,7 @@
     Calories consumed today
   </div>
   <div class="progress-bar" role="progressbar">
-      <div class="progress-bar-value"></div>
+      <div class="progress-bar-value">0%</div>
       <div class="progress-bar-fill"></div>
   </div>
   <br>
@@ -23,11 +23,11 @@
           {{ meal.calories }}(kcals)
         </div>
         {% if meal.choicen == False %}
-          <input type='checkbox'  id = {{ meal.id }} style='display:none' value = {{ meal.calories }}></input>
+          <input type='checkbox' id = {{ meal.id }} style='display:none' value = {{ meal.calories }}></input>
         {% else %}
-          <input type='checkbox' value = {{ meal.calories }} id = {{ meal.id }}>Consumed</input>
+          <input type='checkbox' value = {{ meal.calories }} id = {{ meal.id }}> Consumed</input>
         {% endif %}
-        <div class = "buttons">
+        <div class = "button">
           {% if meal.choicen == False %}
             <a class="btn btn-secondary btn-sm mt-1 mb-1" id="choose" href="{{url_for('choose_dishes', meal_id = meal.id)}}">Choose Dishes</a>
           {% else %}

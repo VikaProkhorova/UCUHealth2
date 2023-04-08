@@ -45,7 +45,7 @@ body {
     color: #57817f;
 }
 .wrapper .btn {
-    margin-left: 575px;
+    margin: 0 auto;
     background-color: #a4cfbc;
     color: #fff;
     margin-bottom: 15px;

@@ -9,7 +9,6 @@
             Choose your plan
             </div>
             <div class="input_field_check_box">
-                <!-- only two options -->
                 {% for option in choice_form.plan_choice %}
                     {{ option() }}
                     {{ option.label }}
@@ -25,7 +24,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.proteins(class="form-control form-control-xxl", disabled=True, id="proteins", onchange="updateValues()")}}
+                    {{ form.proteins(class="form-control form-control-xxl", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -38,7 +37,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.carbs(class="form-control form-control-xxl", disabled=True, id="carbs", onchange="updateValues()")}}
+                    {{ form.carbs(class="form-control form-control-xxl", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">
@@ -51,7 +50,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
+                    {{ form.fats(class="form-control form-control-xxl", onchange="updateValues()")}}
                 {% endif%}
             </div>
             <div class="input_field">

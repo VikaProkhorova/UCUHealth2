@@ -30,15 +30,15 @@ body {
 
 
 .account-heading {
-    margin: 0 auto;
-    margin-left: 90px;
-    margin-top: 50px;
+    margin: 40px 10px;
+    /* margin-left: 90px;
+    margin-top: 50px; */
     font-size: 28px;
   }
 .text-secondary{
-    margin: 0 auto;
-    margin-left: 150px;
-    font-size: 15px;
+    margin: auto auto;
+    /* margin-left: 150px;
+    font-size: 15px; */
     margin-bottom: 50px;
 }
 

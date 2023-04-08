@@ -12,33 +12,32 @@
   <br>
   {% if meals %}
   <div class="wrapper">
+    <div class='meals'>
       {% set total_calories = 0 %}
       {% for meal in meals %}
       {% set total_calories = total_calories + meal.calories %}
-          <div class="name">
-            {{ meal.name }}
-          </div>
-          <div class="calories">
-            {{ meal.calories }}(kcals)
-          </div>
-            <!-- <small class="text-muted">{{ meal.calories }}</small> -->
-          <div class="consumed">
-            {% if meal.choicen == False%}
-              <input type="checkbox" id="{{ meal.name }}" style="display:none"></input>
-            {% else %}
-              <input type="checkbox" id="{{ meal.name }}">Consumed</input>
-            {% endif %}
-          </div>
-          <div class = "buttons">
-              {% if meal.choicen == False %}
-                <a class="btn btn-secondary btn-sm mt-1 mb-1" id="choose" href="{{url_for('choose_dishes', meal_id = meal.id)}}">Choose Dishes</a>
-              {% else %}
-                <a class="btn btn-secondary btn-sm mt-1 mb-1" id="show" href="{{url_for('show_dish', meal_id = meal.id)}}">Show Dish</a>
-                <a class="btn btn-secondary btn-sm mt-1 mb-1" id="change" href="{{url_for('view_dishes', meal_id = meal.id)}}">Change Dish</a>
-              {% endif %}
-              <a class="btn btn-danger btn-sm m-1" id = "delete" href="{{url_for('delete_meal', meal_id = meal.id)}}">Delete Dish</a>
-          </div>
+        <div class="name">
+          {{ meal.name }}
+        </div>
+        <div class="calories">
+          {{ meal.calories }}(kcals)
+        </div>
+        {% if meal.choicen == False %}
+          <input type='checkbox'  id = {{ meal.id }} style='display:none' value = {{ meal.calories }}></input>
+        {% else %}
+          <input type='checkbox' value = {{ meal.calories }} id = {{ meal.id }}>Consumed</input>
+        {% endif %}
+        <div class = "buttons">
+          {% if meal.choicen == False %}
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" id="choose" href="{{url_for('choose_dishes', meal_id = meal.id)}}">Choose Dishes</a>
+          {% else %}
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" id="show" href="{{url_for('show_dish', meal_id = meal.id)}}">Show Dish</a>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" id="change" href="{{url_for('view_dishes', meal_id = meal.id)}}">Change Dish</a>
+          {% endif %}
+          <a class="btn btn-danger btn-sm m-1" id = {{ meal.id }} href="{{url_for('delete_meal', meal_id = meal.id)}}">Delete Dish</a>
+        </div>
       {% endfor %}
+    </div>
   {% endif %}
   </div>
   <div class="buttons">
@@ -65,7 +64,7 @@
   }
 
   setValue(newValue) {
-    if (newValue < 0) {
+    if (newValue <= 0) {
       newValue = 0;
     }
     if (newValue > 100) {
@@ -86,6 +85,7 @@
 }
 
 const meals = document.querySelectorAll('input[type="checkbox"]');
+const deleteBtn = document.querySelectorAll('a.btn.btn-danger.btn-sm.m-1');
 const progressBar = new ProgressBar(document.querySelector('.progress-bar'), parseInt(localStorage.getItem('progress')) || 0);
 
 function updateProgressBar() {
@@ -93,8 +93,14 @@ function updateProgressBar() {
   let totalCalories = 0;
   let totalCheckedCalories = 0;
 
+  deleteBtn.forEach((btn) => {
+    btn.onclick = function(){
+    localStorage.removeItem(btn.id);
+    }
+  })
+
   meals.forEach((meal) => {
-    const calories = parseInt(meal.parentElement.querySelector('small').innerText);
+    const calories = parseInt(meal.value);
     totalCalories += calories;
 
     if (meal.checked) {
@@ -109,7 +115,7 @@ function updateProgressBar() {
     totalCheckedCalories = selectedCalories;
     meals.forEach((meal) => {
       if (!meal.checked) {
-        totalCheckedCalories += parseInt(meal.parentElement.querySelector('small').innerText);
+        totalCheckedCalories += parseInt(meal.value);
       }
     });
   } else {

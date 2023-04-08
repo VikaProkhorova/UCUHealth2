@@ -62,31 +62,5 @@
       displayedChoices = choices;
     });
   });
-
-  // Save checked items when user clicks on submit
-  const submitBtn = document.querySelector('input[type="submit"]');
-  submitBtn.addEventListener('click', () => {
-    categoryChoices.forEach(choices => {
-      const checkBoxes = choices.querySelectorAll('input[type="checkbox"]');
-      checkBoxes.forEach(cb => {
-        if (cb.checked) {
-          localStorage.setItem(cb.id, true);
-        } else {
-          localStorage.removeItem(cb.id);
-        }
-      });
-    });
-  });
-
-  // Load checked items from localStorage
-  window.addEventListener('load', () => {
-    categoryChoices.forEach(choices => {
-      const checkBoxes = choices.querySelectorAll('input[type="checkbox"]');
-      checkBoxes.forEach(cb => {
-        const checked = localStorage.getItem(cb.id) === 'true';
-        cb.checked = checked;
-      });
-    });
-  });
 </script>
 {% endblock content %}

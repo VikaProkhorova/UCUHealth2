@@ -38,6 +38,7 @@ body {
   flex-direction: column;
 }
 .wrapper{
+  /* margin-top: 40px; */
   color: #757575;
   background: #fff;
   margin: 10px auto;
@@ -87,12 +88,12 @@ body {
 }
 .name, .calories, .consumed {
   display: inline-block;
-  /* margin: auto 5px; */
 }
 .calories{
-  margin-left: 20px;
+  /* margin-left: 20px; */
   /* margin-top: 50px;
   margin-bottom: 25px; */
+  font-size: 15px;
   color: #757575;
   font-weight: 300
 }
@@ -104,11 +105,12 @@ body {
   color: #757575;
   font-weight: 300
 }
-.buttons{
-  margin-top: 5px;
+.button{
+  margin-top: 10px;
   margin-bottom: 40px;
 }
 #show{
+  /* margin-top: 15px; */
   color: #fff;
   background-color: #a4cfbc;
   border: none;

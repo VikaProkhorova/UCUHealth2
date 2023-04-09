@@ -14,15 +14,11 @@
                             <div class="checkmark">
                                 {{ radio() }}
                             </div>
-                            <!-- {{ dct[choice[0][0]] }} -->
                             {% for dish in dct[choice[0]] %}
-                                <!-- {{ radio() }} -->
                                 <div class = "info">
-
                                     {{ dish }}
                                 </div>
                             {% endfor %}
-                            <!-- {{ radio() }} -->
                             <div class = "elem">
                                 Calories: {{ dishes[choice[0]].calories }}<br>
                                 Proteins: {{ dishes[choice[0]].proteins }}<br>

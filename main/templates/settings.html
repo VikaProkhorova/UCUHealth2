@@ -8,7 +8,6 @@
             <div class="title">
                 Settings
             </div>
-            <!-- <legend class="border-bottom mb-4">Settings</legend> -->
             <div class="name">
                 {{ form.unrepeatable.label }}
                 {% if form.unrepeatable.errors %}
@@ -63,7 +62,19 @@
                         {{ form.option(class="form-control form-control-xxl") }}
                     {% endif %}
                 </div>
-        
+                <div class="input_field">
+                    {{ form.amount.label(class="form-control-label") }}
+                    {% if form.amount.errors %}
+                        {{ form.amount(class="form-control form-control-xxl is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.amount.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.amount(class="form-control form-control-xxl") }}
+                    {% endif %}
+                </div>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>

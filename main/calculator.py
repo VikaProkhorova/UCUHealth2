@@ -30,11 +30,11 @@ def multiplier(meal: tuple, portion: float) -> tuple:
     return meal[0], meal[1]+f': порція - {portion}', tuple(new_values)
 
 def variator(meals: List[tuple], nutrition: tuple[float],
-        unrepeatable_info: List[str], maxim: int) -> List[tuple]:
+        unrepeatable_info: List[str], maxim: int, amount: int) -> List[tuple]:
     "Generates variants"
     j = 1
     result = []
-    while j < 5:
+    while j < amount + 1:
         variants = combinations(meals, j)
         variants_amount = len(list(combinations(meals, j)))
         i = 0
@@ -114,11 +114,11 @@ def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
     return new_lst
 
 def calculator_func(choicen_meals: List[str], nutrition: tuple[float],
-        settings: dict, maxim: int) -> List[tuple]:
+        settings: dict, maxim: int, amount) -> List[tuple]:
     "Main function"
     needed_meals = meal_getter(choicen_meals)
     worked_meals = rebuilder(needed_meals)
     all_meals = portioner(worked_meals, settings["portions"])
-    variants = variator(all_meals, nutrition, settings["unrepeatable meals"], maxim)
+    variants = variator(all_meals, nutrition, settings["unrepeatable meals"], maxim, amount)
     final_vars = conclusioner(variants, nutrition)
     return sorted(final_vars, key = lambda x: x[1], reverse=True)

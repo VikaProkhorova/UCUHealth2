@@ -32,6 +32,7 @@ class User(db.Model, UserMixin):
     fats = db.Column(db.Float, nullable=False)
     servings = db.Column(db.Integer, nullable = False, default = 3)
     options = db.Column(db.Integer, nullable = False, default = 5)
+    meals_amount = db.Column(db.Integer, nullable = False, default = 4)
     meals = db.relationship('Meal', backref="author", lazy = True)
 
     def get_reset_token(self, expires_sec=1800):

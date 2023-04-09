@@ -46,6 +46,8 @@ class SettingsForm(FlaskForm):
     unrepeatable = MultiCheckboxField('Unrepeatable meals', choices=[], coerce=str)
     portions = FieldList(FormField(MultiCheckboxField))
     option = SelectField('Options to show', choices = [(x, x) for x in range(1, 21)], coerce=int)
+    amount = SelectField('Max amount of dishes in meal', 
+        choices=[(x, x) for x in range(1, 7)], coerce=int)
     submit = SubmitField("Save")
 
 class LoginForm(FlaskForm):
@@ -81,9 +83,12 @@ class RegistrationForm(FlaskForm):
 
     def validate_password(self, password):
         'Password validation'
-        res = re.findall('[A-z]', password.data)
-        if not res:
+        res_1 = re.findall('[A-z]', password.data)
+        if not res_1:
             raise ValidationError('Password must contain letters')
+        res_2 = re.findall(r'\d', password.data)
+        if not res_2:
+            raise ValidationError('Password must contain numbers')
 
 class PersonalInfoForm(FlaskForm):
     "Personal Info form"
@@ -120,7 +125,7 @@ class AddMeal(FlaskForm):
         meal = Meal.query.filter_by(name = meal_name.data, user_id = current_user.id).first()
         if meal:
             raise ValidationError('Meal with such name already exists, please choose another one')
-        
+
 class PossibleMeals(FlaskForm):
     "Possible Meals form"
     dish_var = RadioField('Choose one from the list:',
@@ -131,8 +136,6 @@ class UpdateAccountForm(FlaskForm):
     "Update user info Form"
     username = StringField('Username',
                     validators=[DataRequired(), Length(min=2, max = 20)])
-    email = StringField("Email",
-                    validators=[DataRequired(), Email()])
     sex = SelectField('Sex', choices=['Male', 'Female'],
         validate_choice=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired(), NumberRange(min=16, max=120)])
@@ -155,13 +158,6 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(username = username.data).first()
             if user:
                 raise ValidationError('That username is taken. Please choose different one')
-
-    def validate_email(self, email: str) -> None:
-        "Validates email"
-        if email.data != current_user.email:
-            user = User.query.filter_by(email = email.data).first()
-            if user:
-                raise ValidationError('That email is taken. Please choose different one')
 
     def validate_picture(self, picture) -> None:
         "Validates picture"
@@ -186,7 +182,6 @@ class PersonalPlan(FlaskForm):
                 validators=[DataRequired(), NumberRange(min=0)])
     fats = IntegerField("Fats",
                 validators=[DataRequired(), NumberRange(min=0)])
-    servings = SelectField('Servings', choices = [], coerce=int)
 
 class RequestResetForm(FlaskForm):
     'Request reset form'

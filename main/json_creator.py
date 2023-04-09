@@ -1,9 +1,8 @@
 "Creates nessasary json"
 
 import json
-from typing import List
 
-def opener(path_lst):
+def opener(path_lst: str) -> None:
     'Creates json with specific category' 
     dct = {}
     total = {}

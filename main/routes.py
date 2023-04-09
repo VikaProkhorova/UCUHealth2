@@ -25,7 +25,7 @@ def main():
     if request.method == 'POST':
         if request.form['submit_button'] == "Daily Distribution":
             if meals:
-                return redirect(url_for('main'))   
+                return redirect(url_for('main'))
             with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
                 data = json.load(file)
             for i, j in data[str(current_user.servings)]:
@@ -81,7 +81,7 @@ def choose_dishes(meal_id):
                 setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
                 nutrition=(meal.calories, meal.proteins, meal.carbs, meal.fats),
-                settings=setting, maxim = current_user.options)
+                settings=setting, maxim = current_user.options, amount=current_user.meals_amount)
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
                 if processed[-1] == ",":
@@ -169,10 +169,12 @@ def available_meals(nutrients):
             file_path = 'default.json' if not \
                 current_user.is_authenticated else current_user.settings
             maxim = 5 if not current_user.is_authenticated else current_user.options
+            amount = 4 if not current_user.is_authenticated else current_user.meals_amount
             with open(f'main/settings/{file_path}', 'r', encoding='utf-8') as file:
                 setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal[0], meal[1], meal[2], meal[3]), settings = setting, maxim=maxim)
+                nutrition=(meal[0], meal[1], meal[2], meal[3]), 
+                settings = setting, maxim=maxim, amount = amount)
             id_lst = []
             for dish in dishes:
                 processed = str(dish[0])[1:-1]
@@ -214,12 +216,13 @@ def register():
         return redirect(url_for('main'))
     form = RegistrationForm()
     if form.validate_on_submit():
+        hased_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         send_email(form.email.data, (form.username.data, \
-        form.email.data, form.password.data))
+        form.email.data, hased_password))
         return redirect(url_for('flash_message'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route('/personal_info/<pers_info>/<_>', methods=['GET', 'POST'])
+@app.route('/personal_info/<path:pers_info>/<_>', methods=['GET', 'POST'])
 def personal_info(pers_info, _):
     "Personal info route"
     form = PersonalInfoForm()
@@ -229,7 +232,6 @@ def personal_info(pers_info, _):
         flash('Email is already confirmed', 'info')
         return redirect(url_for('login'))
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(pers_infos[2]).decode('utf-8')
         nutrients = calcalories(form.sex.data, form.height.data, form.age.data,
             form.weight.data, form.activity.data, form.goal.data)
         json_name = secrets.token_hex(8) + '.json'
@@ -237,7 +239,7 @@ def personal_info(pers_info, _):
         open(f'main/settings/{json_name}', 'w', encoding='utf-8') as user_file:
             default_info = json.load(file)
             json.dump(default_info, user_file, indent=2)
-        user = User(username = pers_infos[0], email = pers_infos[1], password = hashed_password,\
+        user = User(username = pers_infos[0], email = pers_infos[1], password = pers_infos[2],\
         sex = form.sex.data, age = form.age.data, height = form.height.data,\
             weight = form.weight.data, goal = form.goal.data, activity = form.activity.data,
             calories = nutrients[0], proteins = nutrients[1], carbs = nutrients[2],
@@ -283,13 +285,13 @@ def account_update():
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
         current_user.username = form.username.data
-        current_user.email = form.email.data
         current_user.sex = form.sex.data
         current_user.age = form.age.data
         current_user.height = form.height.data
         current_user.weight = form.weight.data
         current_user.goal = form.goal.data
         current_user.activity = form.activity.data
+        current_user.servings = form.servings.data
         if current_user.custom_plan is False:
             nutrients = calcalories(form.sex.data, int(form.height.data), int(form.age.data),
                 int(form.weight.data), float(form.activity.data), int(form.goal.data))
@@ -297,12 +299,10 @@ def account_update():
             current_user.proteins = nutrients[1]
             current_user.carbs = nutrients[2]
             current_user.fats = nutrients[3]
-            current_user.servings = form.servings.data
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account_update'))
     form.username.data = current_user.username
-    form.email.data = current_user.email
     form.sex.data = current_user.sex
     form.age.data = current_user.age
     form.height.data = current_user.height
@@ -320,9 +320,6 @@ def account_plan():
     "Account plan page"
     choice_form = CustomPlan()
     nutrients_form = PersonalPlan()
-    with open('main/data/daily_distribution.json', 'r', encoding='utf-8') as file:
-        choices = list(json.load(file).keys())
-    nutrients_form.servings.choices = choices
     if choice_form.validate_on_submit():
         user_choice = choice_form.plan_choice.data
         if user_choice == 1:
@@ -334,7 +331,6 @@ def account_plan():
             current_user.proteins = proteins
             current_user.carbs = carbs
             current_user.fats = fats
-            current_user.servings = nutrients_form.servings.data
         else:
             current_user.custom_plan = user_choice
             nutrients = calcalories(current_user.sex, current_user.height, current_user.age,
@@ -349,7 +345,6 @@ def account_plan():
     nutrients_form.proteins.data = int(round(current_user.proteins, -1))
     nutrients_form.carbs.data = int(round(current_user.carbs, -1))
     nutrients_form.fats.data = int(round(current_user.fats, -1))
-    nutrients_form.servings.data = current_user.servings
     return render_template('account_plan.html', form = nutrients_form,
         choice_form = choice_form, title = "Personal Plan")
 
@@ -369,6 +364,7 @@ def settings():
             check_set.add(res[:res.index('-')])
         if check_set == set(info):
             current_user.options = form.option.data
+            current_user.meals_amount = form.amount.data
             save_json(form.unrepeatable.data, form.portions[0].data)
             db.session.commit()
             return redirect(url_for('account'))
@@ -385,6 +381,7 @@ def settings():
             portion_form.choices.data = default_lst
         form.unrepeatable.data = default
         form.option.data = current_user.options
+        form.amount.data = current_user.meals_amount
     return render_template('settings.html', title = 'Settings', form = form)
 
 @app.route('/logout')

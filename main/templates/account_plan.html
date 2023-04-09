@@ -53,19 +53,6 @@
                     {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
                 {% endif%}
             </div>
-            <div class="input_field">
-                {{ form.servings.label(class="form-control-label")}}
-                {% if form.servings.errors %}
-                    {{ form.servings(class="form-control form-control-xxl is-invalid")}}
-                    <div class='invalid-feedback'>
-                        {% for error in form.servings.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.servings(class="form-control form-control-xxl", disabled=True, id="servings", onchange="updateValues()")}}
-                {% endif%}
-            </div>
         </fieldset>
         <div id = 'result'>Total Calories: {{ current_user.calories }}</div>
         <div class="input_field">
@@ -97,7 +84,6 @@
     const proteinsField = document.getElementById('proteins');
     const carbsField = document.getElementById('carbs');
     const fatsField = document.getElementById('fats');
-    const servingsField = document.getElementById('servings');
 
     // Add an event listener to the first radio button
     firstOption.addEventListener('change', function() {
@@ -106,13 +92,11 @@
         proteinsField.disabled = true;
         carbsField.disabled = true;
         fatsField.disabled = true;
-        servingsField.disabled = true;
     } else {
         // Enable the fields
         proteinsField.disabled = false;
         carbsField.disabled = false;
         fatsField.disabled = false;
-        servingsField.disabled = false;
     }
     });
 
@@ -122,15 +106,26 @@
         proteinsField.disabled = false;
         carbsField.disabled = false;
         fatsField.disabled = false;
-        servingsField.disabled = false;
         
     } else {
         // Disable the fields
         proteinsField.disabled = true;
         carbsField.disabled = true;
         fatsField.disabled = true;
-        servingsField.disabled = true;
     }
 });
+    window.onload = function() {
+        if (firstOption.checked) {
+            // Disable the fields
+            proteinsField.disabled = true;
+            carbsField.disabled = true;
+            fatsField.disabled = true;
+        } else {
+            // Enable the fields
+            proteinsField.disabled = false;
+            carbsField.disabled = false;
+            fatsField.disabled = false;
+        };
+    };
   </script>
 {% endblock content %}

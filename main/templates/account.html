@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-  <link href="{{ url_for('static', filename='account.css') }}" rel="stylesheet">
-  <div class="content-section">
-    <div class="media">
-      <img class="rounded-circle account-img" src="{{ image_file }}">
-      <div class="media-body">
-        <h2 class="account-heading"> Welcome, {{ current_user.username }}!</h2>
-      </div>
+<link href="{{ url_for('static', filename='account.css') }}" rel="stylesheet">
+<div class="content-section">
+  <div class="media">
+    <img class="rounded-circle account-img" src="{{ image_file }}">
+    <div class="media-body">
+      <h2 class="account-heading"> Welcome, {{ current_user.username }}!</h2>
     </div>
-    <a class="form-control" id="personal_info" href="{{ url_for('account_update') }}">Personal Info</a>
-    <a class="form-control" id="personal_plan" href="{{ url_for('account_plan') }}">Personal Plan</a>
-    <a class="form-control" id="settings" href="{{ url_for('settings') }}">Settings</a>
-    <a class="form-control" id="log_out" href="{{ url_for('logout') }}">Logout</a>
   </div>
+  <a class="form-control" id="personal_info" href="{{ url_for('account_update') }}">Personal Info</a>
+  <a class="form-control" id="personal_plan" href="{{ url_for('account_plan') }}">Personal Plan</a>
+  <a class="form-control" id="settings" href="{{ url_for('settings') }}">Settings</a>
+  <a class="form-control" id="log_out" href="{{ url_for('logout') }}">Logout</a>
+</div>
 {% endblock content %}

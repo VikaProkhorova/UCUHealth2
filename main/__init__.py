@@ -1,6 +1,5 @@
 "Init module"
 
-import os
 from flask_bcrypt import Bcrypt
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy

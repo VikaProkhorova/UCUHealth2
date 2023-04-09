@@ -13,11 +13,11 @@ from main.models import User, Meal
 
 class CalculatorForm(FlaskForm):
     "Form for calculator page"
-    proteins = IntegerField('Proteins',
+    proteins = IntegerField('Proteins (g)',
                 validators=[DataRequired(), NumberRange(min=0)])
-    carbs = IntegerField("Carbohydrates",
+    carbs = IntegerField("Carbohydrates (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
-    fats = IntegerField("Fats",
+    fats = IntegerField("Fats (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField("Continue")
 
@@ -112,11 +112,11 @@ class PersonalInfoForm(FlaskForm):
 class AddMeal(FlaskForm):
     "Adds meal to user"
     meal_name = StringField('Meal name', validators=[DataRequired()])
-    proteins = IntegerField('Proteins',
+    proteins = IntegerField('Proteins (g)',
                 validators=[DataRequired(), NumberRange(min=0)])
-    carbs = IntegerField("Carbohydrates",
+    carbs = IntegerField("Carbohydrates (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
-    fats = IntegerField("Fats",
+    fats = IntegerField("Fats (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField("Add Meal")
 
@@ -176,11 +176,11 @@ class CustomPlan(FlaskForm):
 
 class PersonalPlan(FlaskForm):
     'Personal Plan class'
-    proteins = IntegerField('Proteins',
+    proteins = IntegerField('Proteins (g)',
                 validators=[DataRequired(), NumberRange(min=0)])
-    carbs = IntegerField("Carbohydrates",
+    carbs = IntegerField("Carbohydrates (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
-    fats = IntegerField("Fats",
+    fats = IntegerField("Fats (g)",
                 validators=[DataRequired(), NumberRange(min=0)])
 
 class RequestResetForm(FlaskForm):

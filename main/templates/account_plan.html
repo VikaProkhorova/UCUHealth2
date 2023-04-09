@@ -1,64 +1,64 @@
 {% extends "layout.html" %}
 {% block content %}
-    <link href="{{ url_for('static', filename='account_plan.css') }}" rel="stylesheet">
-    <div class="wrapper">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <fieldset class = "form">
-            <div class = "title">
+<link href="{{ url_for('static', filename='account_plan.css') }}" rel="stylesheet">
+<div class="wrapper">
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <fieldset class = "form">
+        <div class = "title">
             Choose your plan
-            </div>
-            <div class="input_field_check_box">
-                {% for option in choice_form.plan_choice %}
-                    {{ option() }}
-                    {{ option.label }}
-                {% endfor %}
-            </div>
-            <div class="input_field">
-                {{ form.proteins.label(class="form-control-label")}}
-                {% if form.proteins.errors %}
-                    {{ form.proteins(class="form-control form-control-xxl is-invalid")}}
-                    <div class='invalid-feedback'>
-                        {% for error in form.proteins.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.proteins(class="form-control form-control-xxl", disabled=True, id="proteins", onchange="updateValues()")}}
-                {% endif%}
-            </div>
-            <div class="input_field">
-                {{ form.carbs.label(class="form-control-label")}}
-                {% if form.carbs.errors %}
-                    {{ form.carbs(class="form-control form-control-xxl is-invalid")}}
-                    <div class='invalid-feedback'>
-                        {% for error in form.carbs.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.carbs(class="form-control form-control-xxl", disabled=True, id="carbs", onchange="updateValues()")}}
-                {% endif%}
-            </div>
-            <div class="input_field">
-                {{ form.fats.label(class="form-control-label")}}
-                {% if form.fats.errors %}
-                    {{ form.fats(class="form-control form-control-xxl is-invalid")}}
-                    <div class='invalid-feedback'>
-                        {% for error in form.fats.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
-                {% endif%}
-            </div>
-        </fieldset>
-        <div id = 'result'>Total Calories: {{ current_user.calories }}</div>
-        <div class="input_field">
-            {{ choice_form.submit(class="btn btn-outline-info")}}
         </div>
-    </form>
+        <div class="input_field_check_box">
+            {% for option in choice_form.plan_choice %}
+                {{ option() }}
+                {{ option.label }}
+            {% endfor %}
+        </div>
+        <div class="input_field">
+            {{ form.proteins.label(class="form-control-label")}}
+            {% if form.proteins.errors %}
+                {{ form.proteins(class="form-control form-control-xxl is-invalid")}}
+                <div class='invalid-feedback'>
+                    {% for error in form.proteins.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.proteins(class="form-control form-control-xxl", disabled=True, id="proteins", onchange="updateValues()")}}
+            {% endif%}
+        </div>
+        <div class="input_field">
+            {{ form.carbs.label(class="form-control-label")}}
+            {% if form.carbs.errors %}
+                {{ form.carbs(class="form-control form-control-xxl is-invalid")}}
+                <div class='invalid-feedback'>
+                    {% for error in form.carbs.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.carbs(class="form-control form-control-xxl", disabled=True, id="carbs", onchange="updateValues()")}}
+            {% endif%}
+        </div>
+        <div class="input_field">
+            {{ form.fats.label(class="form-control-label")}}
+            {% if form.fats.errors %}
+                {{ form.fats(class="form-control form-control-xxl is-invalid")}}
+                <div class='invalid-feedback'>
+                    {% for error in form.fats.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.fats(class="form-control form-control-xxl", disabled=True, id="fats", onchange="updateValues()")}}
+            {% endif%}
+        </div>
+    </fieldset>
+    <div id = 'result'>Total Calories: {{ current_user.calories }}</div>
+    <div class="input_field">
+        {{ choice_form.submit(class="btn btn-outline-info")}}
+    </div>
+</form>
 </div>
 <script>
     // document.querySelector('input[type="radio"]:first-of-type').checked = true;

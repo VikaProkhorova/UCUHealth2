@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
-    <link href="{{ url_for('static', filename='personal_info.css') }}" rel="stylesheet">
-    <div class="wrapper">
+<link href="{{ url_for('static', filename='personal_info.css') }}" rel="stylesheet">
+<div class="wrapper">
     <form method="POST" action="">
         {{ form.hidden_tag() }}
         <fieldset class="form">
@@ -73,25 +73,25 @@
                     {{ form.goal(class="form-control form-control-xxl") }}
                 {% endif %}
             </div>
-                <div class="input_field">
-                    {{ form.activity.label(class="form-control-label") }}
-                    {% if form.activity.errors %}
-                        {{ form.activity(class="form-control form-control-xxl is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.activity.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.activity(class="form-control form-control-xxl") }}
-                    {% endif %}
-                </div>
-                <div class="input_field terms">
-                    <label class="check">
-                      {{ form.agree(class="checkmark") }}
-                    </label>
-                    <p>Agree to the processing of my data</p>
-                </div>
+            <div class="input_field">
+                {{ form.activity.label(class="form-control-label") }}
+                {% if form.activity.errors %}
+                    {{ form.activity(class="form-control form-control-xxl is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.activity.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.activity(class="form-control form-control-xxl") }}
+                {% endif %}
+            </div>
+            <div class="input_field terms">
+                <label class="check">
+                    {{ form.agree(class="checkmark") }}
+                </label>
+                <p>Agree to the processing of my data</p>
+            </div>
         </fieldset>
         <div class="input_field">
             {{ form.submit(class="btn btn-outline-info") }}

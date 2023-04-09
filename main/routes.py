@@ -147,11 +147,11 @@ def results(dishes_id):
     for someid in ids:
         dish = Dish.query.filter_by(id = someid).first()
         dishes.append(dish)
-    if not dishes:
+    if dishes[0] is None:
         abort(404)
     choices = []
     for dish in dishes:
-        choices.append(dish.dishes)
+        choices.append((dish.dishes.split(', '), dish))
         db.session.delete(dish)
         db.session.commit()
     return render_template('results.html', results=choices, title = 'Results')

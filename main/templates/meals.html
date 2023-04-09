@@ -1,41 +1,41 @@
 {% extends "layout.html" %}
 {% block content %}
-    <link href="{{ url_for('static', filename='meals.css') }}" rel="stylesheet">
-    <div class="wrapper">
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <div class="title">
-            Choose available dishes
-            </div>
-            {% if form.meals.errors %}
-            <div class="invalid-feedback">
-            {% for error in form.meals.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-            </div>
-            {% endif %}
-            <div class="category-buttons">
-            {% for category in form.meals %}
-                <button class="category-btn" type="button">{{ category.choices.label }}</button>
-            {% endfor %}
-            </div>
-            {% for category in form.meals %}
-            <fieldset class="form-group category-choices">
-                <div class="form-check">
-                {% for choice in category %}
-                <div class="form-check">
-                    {{ choice() }}
-                </div>
-                {% endfor %}
-                </div>
-            </fieldset>
-            {% endfor %}
-            <br>
-      <div class="input_field">
-      {{ form.submit(class="btn btn-outline-info") }}
-      </div>
-    </form>
+<link href="{{ url_for('static', filename='meals.css') }}" rel="stylesheet">
+<div class="wrapper">
+  <form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="title">
+    Choose available dishes
     </div>
+    {% if form.meals.errors %}
+      <div class="invalid-feedback">
+      {% for error in form.meals.errors %}
+        <span>{{ error }}</span>
+      {% endfor %}
+      </div>
+    {% endif %}
+    <div class="category-buttons">
+      {% for category in form.meals %}
+        <button class="category-btn" type="button">{{ category.choices.label }}</button>
+      {% endfor %}
+    </div>
+    {% for category in form.meals %}
+    <fieldset class="form-group category-choices">
+        <div class="form-check">
+          {% for choice in category %}
+            <div class="form-check">
+              {{ choice() }}
+            </div>
+          {% endfor %}
+        </div>
+    </fieldset>
+    {% endfor %}
+    <br>
+      <div class="input_field">
+        {{ form.submit(class="btn btn-outline-info") }}
+      </div>
+  </form>
+</div>
 <script>
   const categoryBtns = document.querySelectorAll('.category-btn');
   const categoryChoices = document.querySelectorAll('.category-choices');

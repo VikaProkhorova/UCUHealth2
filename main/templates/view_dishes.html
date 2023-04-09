@@ -1,36 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
-    <link href="{{ url_for('static', filename='view_dishes.css') }}" rel="stylesheet">
-    <div class="wrapper">
-        <div class = "title">
-            Choose Dish
-        </div>
-        <form method="POST" action="">
-            <fieldset class="form-group">
-                <div class = "input_field">
-                    {{ form.hidden_tag() }}
-                    {% for choice, radio in test %}
-                        <fieldset class="form-group">
-                            <div class="checkmark">
-                                {{ radio() }}
-                            </div>
-                            {% for dish in dct[choice[0]] %}
-                                <div class = "info">
-                                    {{ dish }}
-                                </div>
-                            {% endfor %}
-                            <div class = "elem">
-                                Calories: {{ dishes[choice[0]].calories }}<br>
-                                Proteins: {{ dishes[choice[0]].proteins }}<br>
-                                Carbohydrates: {{ dishes[choice[0]].carbs }}<br>
-                                Fats: {{ dishes[choice[0]].fats }}<br>
-                            </div>
-                        </fieldset>
-                    {% endfor %}
-                </div>
-            <div class="input_field">
-                {{ form.submit(class="btn btn-outline-info") }}
-            </div>
-        </form>
+<link href="{{ url_for('static', filename='view_dishes.css') }}" rel="stylesheet">
+<div class="wrapper">
+    <div class = "title">
+        Choose Dish
     </div>
+    <form method="POST" action="">
+        <fieldset class="form-group">
+            <div class = "input_field">
+                {{ form.hidden_tag() }}
+                {% for choice, radio in test %}
+                    <fieldset class="form-group">
+                        <div class="checkmark">
+                            {{ radio() }}
+                        </div>
+                        {% for dish in dct[choice[0]] %}
+                            <div class = "info">
+                                {{ dish }}
+                            </div>
+                        {% endfor %}
+                        <div class = "elem">
+                            Calories: {{ dishes[choice[0]].calories }} kcals<br>
+                            Proteins: {{ dishes[choice[0]].proteins }} g<br>
+                            Carbohydrates: {{ dishes[choice[0]].carbs }} g<br>
+                            Fats: {{ dishes[choice[0]].fats }} g<br>
+                        </div>
+                    </fieldset>
+                {% endfor %}
+            </div>
+        <div class="input_field">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
 {% endblock content %}

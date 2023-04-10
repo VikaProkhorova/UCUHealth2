@@ -146,14 +146,12 @@ def results(dishes_id):
     dishes = []
     for someid in ids:
         dish = Dish.query.filter_by(id = someid).first()
+        if dish is None:
+            return redirect(url_for('main'))
         dishes.append(dish)
-    if dishes[0] is None:
-        return redirect(url_for('main'))
     choices = []
     for dish in dishes:
         choices.append((dish.dishes.split(', '), dish))
-        db.session.delete(dish)
-        db.session.commit()
     return render_template('results.html', results=choices, title = 'Results')
 
 @app.route('/available_meals/<nutrients>', methods=['GET', 'POST'])
@@ -173,7 +171,7 @@ def available_meals(nutrients):
             with open(f'main/settings/{file_path}', 'r', encoding='utf-8') as file:
                 setting = json.load(file)
             dishes = calculator_func(form.meals[0].data['choices'],
-                nutrition=(meal[0], meal[1], meal[2], meal[3]), 
+                nutrition=(meal[0], meal[1], meal[2], meal[3]),
                 settings = setting, maxim=maxim, amount = amount)
             id_lst = []
             for dish in dishes:
@@ -260,8 +258,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main'))
+            redirect(url_for('main'))
         flash('Login Unsuccessful. Please check username and password', "danger")
     return render_template('login.html', title='Login', form=form)
 

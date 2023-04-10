@@ -148,7 +148,7 @@ def results(dishes_id):
         dish = Dish.query.filter_by(id = someid).first()
         dishes.append(dish)
     if dishes[0] is None:
-        abort(404)
+        return redirect(url_for('main'))
     choices = []
     for dish in dishes:
         choices.append((dish.dishes.split(', '), dish))

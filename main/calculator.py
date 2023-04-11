@@ -47,7 +47,7 @@ def variator(meals: List[tuple], nutrition: tuple[float],
             result.append(counted_var)
             i += 1
         j += 1
-    return sorted(result, key = lambda x: x[1])[:maxim]
+    return result[:maxim]
 
 def checker(variant: List[tuple], unrepeatable_info: List[str]) -> bool:
     "Checks for valid meals"
@@ -119,4 +119,4 @@ def calculator_func(choicen_meals: List[str], nutrition: tuple[float],
     all_meals = portioner(worked_meals, settings["portions"])
     variants = variator(all_meals, nutrition, settings["unrepeatable meals"], maxim, amount)
     final_vars = conclusioner(variants, nutrition)
-    return sorted(final_vars, key = lambda x: x[1], reverse=True)
+    return sorted(final_vars, key = lambda x: x[1])

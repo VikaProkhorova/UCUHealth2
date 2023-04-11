@@ -43,8 +43,12 @@
   const categoryBtns = document.querySelectorAll('.category-btn');
   const categoryChoices = document.querySelectorAll('.category-choices');
 
-  // Hide all category choices initially
-  categoryChoices.forEach(choices => choices.style.display = 'none');
+  // Hide all category choices and enable all checkboxes initially
+  categoryChoices.forEach(choices => {
+    choices.style.display = 'none';
+    const checkboxes = choices.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => checkbox.disabled = false);
+  });
 
   let displayedChoices = null;
 
@@ -53,12 +57,16 @@
     btn.addEventListener('click', () => {
       const choices = categoryChoices[index];
 
-      // Hide currently displayed choices (if any)
+      // Hide checkboxes for previously displayed choices (if any)
       if (displayedChoices !== null) {
+        const checkboxes = displayedChoices.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.disabled = true);
         displayedChoices.style.display = 'none';
       }
 
-      // Show the clicked category choices
+      // Show the clicked category choices and enable checkboxes
+      const checkboxes = choices.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => checkbox.disabled = false);
       choices.style.display = 'block';
 
       // Update displayedChoices variable

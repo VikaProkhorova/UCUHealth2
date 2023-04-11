@@ -2,16 +2,15 @@
 {% block content %}
 <link href="{{ url_for('static', filename='main_bar.css') }}" rel="stylesheet">
 <div class = "main">
-  <div class = "title">
-    Calories consumed today
-  </div>
-  <div class="progress-bar" role="progressbar">
-    <div class="progress-bar-value">0%</div>
-    <div class="progress-bar-fill"></div>
-  </div>
-  <br>
-  {% if meals %}
   <div class="wrapper">
+    <div class = "title">
+      Calories consumed today
+    </div>
+    <div class="progress-bar" role="progressbar">
+      <div class="progress-bar-value">0%</div>
+      <div class="progress-bar-fill"></div>
+    </div>
+    <br>
     <div class='meals'>
       {% set total_calories = 0 %}
       {% for meal in meals %}
@@ -38,19 +37,18 @@
         </div>
       {% endfor %}
     </div>
-  {% endif %}
-  </div>
-  <div class="buttons">
-    <form method="POST" action="">
-      {% if not meals %}
-      <div class="input_field">
-        <input type="submit", name="submit_button", value="Daily Distribution", class="form-control", id="daily_distribution">
-      </div>
-      {% endif %}
-      <div class="input_field">
-        <input type="submit", name="submit_button", value="Add Meal", class="form-control", id="all_meal">
-      </div>
-    </form>
+    <div class="buttons">
+      <form method="POST" action="">
+        {% if not meals %}
+        <div class="input_field">
+          <input type="submit", name="submit_button", value="Daily Distribution", class="form-control", id="daily_distribution">
+        </div>
+        {% endif %}
+        <div class="input_field">
+          <input type="submit", name="submit_button", value="Add Meal", class="form-control", id="all_meal">
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 <script>

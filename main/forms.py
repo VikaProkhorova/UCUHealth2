@@ -123,7 +123,8 @@ class AddMeal(FlaskForm):
 
     def validate_meal_name(self, meal_name):
         'Validates meal name'
-        meal = Meal.query.filter_by(name = meal_name.data, user_id = current_user.id).first()
+        meal = Meal.query.filter_by(name = meal_name.data, user_id = current_user.id,
+            date_added = datetime.date(datetime.utcnow())).first()
         if meal:
             raise ValidationError('Meal with such name already exists, please choose another one')
 
@@ -153,13 +154,6 @@ class UpdateAccountForm(FlaskForm):
     submit = SubmitField("Update")
     picture = FileField('Update Profile Picture', 
             validators=[file.FileAllowed(['jpg', 'png', 'jpeg'])])
-
-    def validate_meal_name(self, meal_name):
-        'Validates meal name'
-        meal = Meal.query.filter_by(name = meal_name.data, 
-            user_id = current_user.id, date_added = datetime.date(datetime.utcnow())).first()
-        if meal:
-            raise ValidationError('Meal with such name already exists, please choose another one')
 
     def validate_picture(self, picture) -> None:
         "Validates picture"

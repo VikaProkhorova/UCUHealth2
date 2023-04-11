@@ -35,10 +35,9 @@ def variator(meals: List[tuple], nutrition: tuple[float],
     j = 1
     result = []
     while j < amount + 1:
-        variants = combinations(meals, j)
-        variants_amount = len(list(combinations(meals, j)))
+        variants = combinations(set(meals), j)
         i = 0
-        while i < variants_amount:
+        while i < 1000000:
             variant = next(variants)
             if checker(variant, unrepeatable_info) is False:
                 i += 1
@@ -46,8 +45,6 @@ def variator(meals: List[tuple], nutrition: tuple[float],
             counted_var = satisfactor(variant, nutrition)
             result.append(counted_var)
             i += 1
-            if i == 1000000:
-                break
         j += 1
     return sorted(result, key = lambda x: x[1])[:maxim]
 

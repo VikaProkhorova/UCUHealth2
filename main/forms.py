@@ -4,6 +4,7 @@ import re
 from flask_wtf import FlaskForm, file
 from PIL import Image, UnidentifiedImageError
 from flask_login import current_user
+from datetime import datetime
 from wtforms import SubmitField, IntegerField, SelectMultipleField, widgets, \
     StringField, PasswordField, BooleanField, SelectField, RadioField, FileField,\
         FieldList, FormField, SearchField
@@ -153,12 +154,12 @@ class UpdateAccountForm(FlaskForm):
     picture = FileField('Update Profile Picture', 
             validators=[file.FileAllowed(['jpg', 'png', 'jpeg'])])
 
-    def validate_username(self, username: str) -> None:
-        "Validates username"
-        if username.data != current_user.username:
-            user = User.query.filter_by(username = username.data).first()
-            if user:
-                raise ValidationError('That username is taken. Please choose different one')
+    def validate_meal_name(self, meal_name):
+        'Validates meal name'
+        meal = Meal.query.filter_by(name = meal_name.data, 
+            user_id = current_user.id, date_added = datetime.date(datetime.utcnow())).first()
+        if meal:
+            raise ValidationError('Meal with such name already exists, please choose another one')
 
     def validate_picture(self, picture) -> None:
         "Validates picture"

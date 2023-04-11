@@ -100,6 +100,17 @@ def meal_getter(choicen_meals: List[str]) -> dict:
                     break
     return result
 
+def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
+    "Converts result into normal form"
+    new_lst = []
+    for variant in variants:
+        nutrients = []
+        for inx, value in enumerate(variant[2]):
+            acc_val = goal[inx]-value
+            nutrients.append(acc_val)
+        new_lst.append((variant[0], variants[1], tuple(nutrients)))
+    return new_lst
+
 def calculator_func(choicen_meals: List[str], nutrition: tuple[float],
         settings: dict, maxim: int, amount: int) -> List[tuple]:
     "Main function"
@@ -107,4 +118,5 @@ def calculator_func(choicen_meals: List[str], nutrition: tuple[float],
     worked_meals = rebuilder(needed_meals)
     all_meals = portioner(worked_meals, settings["portions"])
     variants = variator(all_meals, nutrition, settings["unrepeatable meals"], maxim, amount)
-    return variants
+    final_vars = conclusioner(variants, nutrition)
+    return sorted(final_vars, key = lambda x: x[1], reverse=True)

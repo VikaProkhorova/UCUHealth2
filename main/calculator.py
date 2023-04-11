@@ -38,7 +38,10 @@ def variator(meals: List[tuple], nutrition: tuple[float],
         variants = combinations(set(meals), j)
         i = 0
         while i < 1000000:
-            variant = next(variants)
+            try:
+                variant = next(variants)
+            except StopIteration:
+                break
             if checker(variant, unrepeatable_info) is False:
                 i += 1
                 continue

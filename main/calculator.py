@@ -46,8 +46,10 @@ def variator(meals: List[tuple], nutrition: tuple[float],
             counted_var = satisfactor(variant, nutrition)
             result.append(counted_var)
             i += 1
+            if i == 1000000:
+                break
         j += 1
-    return result[:maxim]
+    return sorted(result, key = lambda x: x[1])[:maxim]
 
 def checker(variant: List[tuple], unrepeatable_info: List[str]) -> bool:
     "Checks for valid meals"

@@ -179,8 +179,8 @@ def available_meals(nutrients):
                 if processed[-1] == ",":
                     processed = processed[:-1]
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = dish[2][0], proteins = dish[2][1], carbs = dish[2][2],
-                fats = dish[2][3])
+                calories = round(dish[2][0]), proteins = round(dish[2][1]), 
+                carbs = round(dish[2][2]), fats = round(dish[2][3]))
                 db.session.add(new_dish)
                 db.session.commit()
                 id_lst.append(new_dish.id)

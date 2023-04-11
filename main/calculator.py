@@ -108,7 +108,7 @@ def conclusioner(variants: List[tuple], goal: tuple[float]) -> List[tuple]:
         for inx, value in enumerate(variant[2]):
             acc_val = goal[inx]-value
             nutrients.append(acc_val)
-        new_lst.append((variant[0], variants[1], tuple(nutrients)))
+        new_lst.append((variant[0], variant[1], tuple(nutrients)))
     return new_lst
 
 def calculator_func(choicen_meals: List[str], nutrition: tuple[float],

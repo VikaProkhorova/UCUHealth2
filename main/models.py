@@ -80,7 +80,7 @@ class Dish(db.Model):
     "Meal class"
     id = db.Column(db.Integer, primary_key = True)
     dishes = db.Column(db.String(200), nullable = False)
-    satis = db.Column(db.String(10), nullable = False)
+    satis = db.Column(db.Float, nullable = False)
     calories = db.Column(db.Float, nullable = False)
     proteins = db.Column(db.Float, nullable = False)
     carbs = db.Column(db.Float, nullable = False)

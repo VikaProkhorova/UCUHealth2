@@ -7,16 +7,24 @@
     font-family: 'Montserrat', sans-serif;
 }
 body {
+    background-image: url('https://i.imgur.com/EOwNIBg.png');
     margin-top: 62px;
-    background: #fff9f5;
     padding: 0 10px;
     /* position: center; */
+
 }
 
 
 .wrapper {
     margin: 40px auto;
     width: 100%;
+    /* margin: 40px auto; */
+    color: #757575;
+    background: #fff;
+    /* margin: 100px auto; */
+    padding: 30px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.125);
+    border: 2.5px solid #a4cfbc;
 }
 
 .wrapper .title {
@@ -61,4 +69,8 @@ body {
 }
 .wrapper .input_field .btn:hover{
     background: #ffd658;
+}
+.alert {
+    text-align: center;
+    font-size: 16px;
 }

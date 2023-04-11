@@ -6,6 +6,9 @@
     {{ form.hidden_tag() }}
     <div class="title">
     Choose available dishes
+    <div class="alert alert-danger">
+      <strong>Attention! Some dishes may include allergens</strong>
+    </div>
     </div>
     {% if form.meals.errors %}
       <div class="invalid-feedback">

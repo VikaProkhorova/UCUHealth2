@@ -8,8 +8,8 @@
 }
 body {
     margin-top: 62px;
-    background: #fff9f5;
     padding: 0 10px;
+    background-image: url('https://i.imgur.com/EOwNIBg.png');
 }
 
 .wrapper {
@@ -39,11 +39,12 @@ body {
 
 .info {
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     color: #57817f;
 }
 
 .elem{
+    margin-top: 10px;
     margin-left: 50px;
     margin-right: auto;
     color: #a4cfbc;

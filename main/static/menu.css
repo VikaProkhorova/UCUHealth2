@@ -8,8 +8,8 @@
 }
 body {
     margin-top: 62px;
-    background: #fff9f5;
     padding: 0 10px;
+    background-image: url('https://i.imgur.com/EOwNIBg.png');
 }
 
 .wrapper {
@@ -61,4 +61,7 @@ body {
     color: #a4cfbc;
     margin-bottom: 20px;
     /* text-align: center; */
+}
+.alert {
+    text-align: center;
 }

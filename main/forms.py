@@ -46,7 +46,7 @@ class SettingsForm(FlaskForm):
     unrepeatable = MultiCheckboxField('Unrepeatable meals', choices=[], coerce=str)
     portions = FieldList(FormField(MultiCheckboxField))
     option = SelectField('Options to show', choices = [(x, x) for x in range(1, 21)], coerce=int)
-    amount = SelectField('Max amount of dishes in meal', 
+    amount = SelectField('Max amount of dishes in meal',
         choices=[(x, x) for x in range(1, 7)], coerce=int)
     submit = SubmitField("Save")
 
@@ -150,7 +150,8 @@ class UpdateAccountForm(FlaskForm):
     (1.8, 'Active lifestyle with more than 6 workouts a week')], coerce=float)
     servings = SelectField('Servings', choices = [], coerce=int)
     submit = SubmitField("Update")
-    picture = FileField('Update Profile Picture', validators=[file.FileAllowed(['jpg', 'png'])])
+    picture = FileField('Update Profile Picture',
+            validators=[file.FileAllowed(['jpg', 'png', 'jpeg'])])
 
     def validate_username(self, username: str) -> None:
         "Validates username"

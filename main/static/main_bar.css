@@ -121,7 +121,7 @@ body {
   background-color: #ffce59;
   border: none;
 }
-.btn-danger.hover{
+.btn-sm.hover{
   color: #fff;
   background-color: #ffce59;
   border: none;
@@ -152,3 +152,4 @@ body {
   color: #757575;
   background-color: #a4cfbc;
 }
+

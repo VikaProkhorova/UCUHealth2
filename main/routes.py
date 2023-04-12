@@ -87,9 +87,9 @@ def choose_dishes(meal_id):
                 if processed[-1] == ",":
                     processed = processed[:-1]
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = round(dish[2][0], -1), proteins = round(dish[2][1], -1),
-                carbs = round(dish[2][2], -1),
-                fats = round(dish[2][3], -1), meal = meal)
+                calories = round(dish[2][0], -1), proteins = round(dish[2][1]),
+                carbs = round(dish[2][2]),
+                fats = round(dish[2][3]), meal = meal)
                 db.session.add(new_dish)
                 db.session.commit()
                 if meal.choicen == 0:
@@ -179,7 +179,7 @@ def available_meals(nutrients):
                 if processed[-1] == ",":
                     processed = processed[:-1]
                 new_dish = Dish(dishes = stringer(processed), satis = dish[1],
-                calories = round(dish[2][0]), proteins = round(dish[2][1]),
+                calories = round(dish[2][0], -1), proteins = round(dish[2][1]),
                 carbs = round(dish[2][2]), fats = round(dish[2][3]))
                 db.session.add(new_dish)
                 db.session.commit()

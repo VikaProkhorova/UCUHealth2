@@ -16,6 +16,7 @@ body {
     margin: 40px auto;
 }
 .media {
+    font-size: clamp(16px, 2vw, 24px);
     display: flex;
     align-items: center;
     margin-bottom: 30px;
@@ -42,6 +43,7 @@ body {
     line-height: 1.2;
 }
 .account-heading {
+    font-size: clamp(16px, 2vw, 24px);
     margin: 0 auto;
     color: #757575;
     /* margin-left: 150px;
@@ -49,6 +51,7 @@ body {
     font-size: 30px;
   }
 .text-secondary{
+    font-size: clamp(16px, 2vw, 24px);
     margin: 0 auto;
     /* margin-left: 150px; */
     font-size: 15px;

@@ -31,7 +31,8 @@ def main():
             for i, j in data[str(current_user.servings)]:
                 meal = Meal(name = j, calories = round(current_user.calories*i, -1),
                     proteins = current_user.proteins*i, carbs = current_user.carbs*i,
-                    fats = current_user.fats*i, author = current_user)
+                    fats = current_user.fats*i,
+                    author = current_user, date_added = datetime.date(datetime.utcnow()))
                 db.session.add(meal)
                 db.session.commit()
             return redirect(url_for('main'))
@@ -58,7 +59,8 @@ def add_meal():
         meal = Meal(name = form.meal_name.data,
             calories = round(((proteins+carbs)*4 + fats*9), -1),
             proteins = proteins, carbs = carbs,
-            fats = fats, author = current_user)
+            fats = fats, author = current_user,
+            date_added = datetime.date(datetime.utcnow()))
         db.session.add(meal)
         db.session.commit()
         return redirect(url_for('main'))
@@ -258,7 +260,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            redirect(url_for('main'))
+            return redirect(url_for('main'))
         flash('Login Unsuccessful. Please check username and password', "danger")
     return render_template('login.html', title='Login', form=form)
 
